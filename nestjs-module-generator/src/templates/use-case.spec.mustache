@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from 'test/setup/base-unit-test.module';
 import { useUserFactory } from '@/infra/tests/factories/user.factory';
-import { {{singularPascal}}DbPort } from '../../ports/{{singularKebab}}-db.port';
+import { {{singularPascal}}DbPort } from '../../ports/{{pluralKebab}}-db.port';
 {{#isCreate}}
 import { Create{{singularPascal}}UseCase } from '../create-{{singularKebab}}.use-case';
 {{/isCreate}}

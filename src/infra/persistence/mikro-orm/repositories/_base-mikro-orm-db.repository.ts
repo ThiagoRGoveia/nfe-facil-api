@@ -73,8 +73,11 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
       orderBy: sortQuery,
     });
     return {
-      count: response[1],
-      data: response[0],
+      items: response[0],
+      total: response[1],
+      page: pagination.currentPage,
+      pageSize: pagination.pageSize,
+      totalPages: Math.ceil(response[1] / pagination.pageSize),
     };
   }
 

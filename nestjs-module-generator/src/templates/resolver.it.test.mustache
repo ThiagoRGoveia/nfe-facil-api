@@ -2,13 +2,14 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { MikroORM, EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { useDbRefresh, useDbSchema } from 'test/setup/integration/db-schema.seed';
+import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
 import { {{featurePascal}}Module } from '@/core/{{featureKebab}}/{{featureKebab}}.module';
 import { UsersModule } from '@/core/users/users.module';
-import { useGraphqlModule } from 'test/setup/integration/graphql-integration-test.module';
-import { useDbUser } from '@/infra/tests/factories/user.factory';
+import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { {{featurePascal}}Resolver } from '../{{featureKebab}}.resolver';
+import { {{singularPascal}}DbPort } from '../../../application/ports/{{pluralKebab}}-db.port';
 
 describe('{{featurePascal}}Resolver (Integration)', () => {
   let app: INestApplication;

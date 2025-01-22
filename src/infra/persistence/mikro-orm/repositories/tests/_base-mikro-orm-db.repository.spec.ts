@@ -83,8 +83,8 @@ describe('MockEntityRepository (unit)', () => {
     jest.spyOn(em, 'findAndCount').mockResolvedValueOnce([dbEntities, dbEntities.length]);
 
     const result = await mockEntityRepository.findAll();
-    expect(result.data).toEqual(dbEntities);
-    expect(result.count).toBe(dbEntities.length);
+    expect(result.items).toEqual(dbEntities);
+    expect(result.total).toBe(dbEntities.length);
   });
 
   it('should apply filters correctly', async () => {
@@ -93,8 +93,8 @@ describe('MockEntityRepository (unit)', () => {
     jest.spyOn(em, 'findAndCount').mockResolvedValueOnce([dbEntities, dbEntities.length]);
 
     const result = await mockEntityRepository.findAll([filter]);
-    expect(result.data).toEqual(dbEntities);
-    expect(result.count).toBe(dbEntities.length);
+    expect(result.items).toEqual(dbEntities);
+    expect(result.total).toBe(dbEntities.length);
   });
 
   it('should apply pagination correctly', async () => {
@@ -103,8 +103,8 @@ describe('MockEntityRepository (unit)', () => {
     jest.spyOn(em, 'findAndCount').mockResolvedValueOnce([dbEntities, 2]);
 
     const result = await mockEntityRepository.findAll(undefined, pagination);
-    expect(result.data).toEqual(dbEntities);
-    expect(result.count).toBe(2);
+    expect(result.items).toEqual(dbEntities);
+    expect(result.total).toBe(2);
   });
 
   it('should apply sorting correctly', async () => {
@@ -116,8 +116,8 @@ describe('MockEntityRepository (unit)', () => {
     jest.spyOn(em, 'findAndCount').mockResolvedValueOnce([dbEntities, dbEntities.length]);
 
     const result = await mockEntityRepository.findAll(undefined, undefined, sort);
-    expect(result.data).toEqual(dbEntities);
-    expect(result.count).toBe(dbEntities.length);
+    expect(result.items).toEqual(dbEntities);
+    expect(result.total).toBe(dbEntities.length);
   });
 
   it('should check if an entity exists by id', async () => {

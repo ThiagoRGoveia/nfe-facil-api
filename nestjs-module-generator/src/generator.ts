@@ -149,7 +149,7 @@ export class ModuleGenerator {
 
     const data = {
       ...this.moduleData,
-      operation,
+      operation: operation ? CaseTransformer.toPascalCase(operation) : '',
       isCreate: operation === 'create',
       isUpdate: operation === 'update',
     };

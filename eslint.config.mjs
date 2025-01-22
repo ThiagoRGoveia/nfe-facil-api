@@ -35,6 +35,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       'prettier/prettier': ['error', { printWidth: 120 }],
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
 );

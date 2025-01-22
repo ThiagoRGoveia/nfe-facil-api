@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { {{singularPascal}} } from '../../domain/entities/{{singularKebab}}.entity';
-import { {{singularPascal}}DbPort } from '../ports/{{singularKebab}}-db.port';
+import { {{singularPascal}}DbPort } from '../ports/{{pluralKebab}}-db.port';
+import { PinoLogger } from 'nestjs-pino';
 {{#isCreate}}
 import { Create{{singularPascal}}Dto } from '../dtos/create-{{singularKebab}}.dto';
 {{/isCreate}}
@@ -17,10 +18,20 @@ interface Create{{singularPascal}}Input {
 
 @Injectable()
 export class Create{{singularPascal}}UseCase {
-  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+  constructor(
+    private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort,
+    private readonly logger: PinoLogger,
+  ) {}
 
   async execute({ user, data }: Create{{singularPascal}}Input): Promise<{{singularPascal}}> {
-    // TODO: Implement create logic
+    try {
+      const {{singularCamel}} = await this.{{singularCamel}}DbPort.create(data);
+      await this.{{singularCamel}}DbPort.save();
+      return {{singularCamel}};
+    } catch (error) {
+      this.logger.error('Failed to create {{singularCamel}}:', error);
+      throw new BadRequestException('Failed to create {{singularCamel}} in database');
+    }
   }
 }
 {{/isCreate}}
@@ -34,27 +45,67 @@ interface Update{{singularPascal}}Input {
 
 @Injectable()
 export class Update{{singularPascal}}UseCase {
-  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+  constructor(
+    private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort,
+    private readonly logger: PinoLogger,
+  ) {}
 
   async execute({ user, id, data }: Update{{singularPascal}}Input): Promise<{{singularPascal}}> {
-    // TODO: Implement {{operation}} logic
+    try {
+      const {{singularCamel}} = await this.{{singularCamel}}DbPort.update(id, data);
+      await this.{{singularCamel}}DbPort.save();
+      return {{singularCamel}};
+    } catch (error) {
+      this.logger.error({ err: error, {{singularCamel}}Id: id }, 'Failed to update {{singularCamel}}');
+      throw new InternalServerErrorException('Failed to update {{singularCamel}} in database');
+    }
   }
 }
 {{/isUpdate}}
 
+{{#isDelete}}
+interface Delete{{singularPascal}}Input {
+  user: User;
+  id: string;
+}
+
+@Injectable()
+export class Delete{{singularPascal}}UseCase {
+  constructor(
+    private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort,
+    private readonly logger: PinoLogger,
+  ) {}
+
+  async execute({ user, id }: Delete{{singularPascal}}Input): Promise<void> {
+    try {
+      await this.{{singularCamel}}DbPort.delete(id);
+      await this.{{singularCamel}}DbPort.save();
+    } catch (error) {
+      this.logger.error({ err: error, {{singularCamel}}Id: id }, 'Failed to delete {{singularCamel}}');
+      throw new InternalServerErrorException('Failed to delete {{singularCamel}} from database');
+    }
+  }
+}
+{{/isDelete}}
+
 {{^isCreate}}
 {{^isUpdate}}
+{{^isDelete}}
 interface {{operation}}{{singularPascal}}Input {
   user: User;
 }
 
 @Injectable()
 export class {{operation}}{{singularPascal}}UseCase {
-  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+  constructor(
+    private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort,
+    private readonly logger: PinoLogger,
+  ) {}
 
   async execute(): Promise<{{singularPascal}} | void> {
     // TODO: Implement {{operation}} logic
   }
 }
+{{/isDelete}}
 {{/isUpdate}}
 {{/isCreate}} 

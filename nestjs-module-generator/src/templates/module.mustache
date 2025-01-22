@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
-import { {{singularPascal}}DbPort } from './application/ports/{{singularKebab}}-db.port';
-import { {{singularPascal}}MikroOrmDbRepository } from './infra/persistence/db/orm/{{singularKebab}}-mikro-orm-db.repository';
-import { {{singularPascal}}Resolver } from './presenters/graphql/resolvers/{{singularKebab}}.resolver';
+import { {{singularPascal}}DbPort } from './application/ports/{{pluralKebab}}-db.port';
+import { {{singularPascal}}MikroOrmDbRepository } from './infra/persistence/db/orm/{{pluralKebab}}-mikro-orm-db.repository';
+import { {{PluralPascal}}Resolver } from './presenters/graphql/resolvers/{{pluralKebab}}.resolver';
 import { Create{{singularPascal}}UseCase } from './application/use-cases/create-{{singularKebab}}.use-case';
 import { Update{{singularPascal}}UseCase } from './application/use-cases/update-{{singularKebab}}.use-case';
 import { Delete{{singularPascal}}UseCase } from './application/use-cases/delete-{{singularKebab}}.use-case';
