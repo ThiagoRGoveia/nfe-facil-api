@@ -1,0 +1,73 @@
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, HttpStatus, HttpCode } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Pagination } from '@/infra/dtos/pagination.dto';
+import { Filter } from '@/infra/dtos/filter.dto';
+import { Sort } from '@/infra/dtos/sort.dto';
+import { Create{{singularPascal}}Dto } from '../../../application/dtos/create-{{singularKebab}}.dto';
+import { Update{{singularPascal}}Dto } from '../../../application/dtos/update-{{singularKebab}}.dto';
+import { Create{{singularPascal}}UseCase } from '../../../application/use-cases/create-{{singularKebab}}.use-case';
+import { Update{{singularPascal}}UseCase } from '../../../application/use-cases/update-{{singularKebab}}.use-case';
+import { Delete{{singularPascal}}UseCase } from '../../../application/use-cases/delete-{{singularKebab}}.use-case';
+import { {{singularPascal}}DbPort } from '../../../application/ports/{{singularKebab}}-db.port';
+import { {{singularPascal}} } from '../../../domain/entities/{{singularKebab}}.entity';
+
+@ApiTags('{{pluralKebab}}')
+@Controller('{{pluralKebab}}')
+export class {{singularPascal}}Controller {
+  constructor(
+    private readonly create{{singularPascal}}UseCase: Create{{singularPascal}}UseCase,
+    private readonly update{{singularPascal}}UseCase: Update{{singularPascal}}UseCase,
+    private readonly delete{{singularPascal}}UseCase: Delete{{singularPascal}}UseCase,
+    private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort,
+  ) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new {{singularKebab}}' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: '{{singularKebab}} created successfully' })
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() create{{singularPascal}}Dto: Create{{singularPascal}}Dto) {
+    return this.create{{singularPascal}}UseCase.execute(create{{singularPascal}}Dto);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a {{singularKebab}} by id' })
+  @ApiResponse({ status: HttpStatus.OK, description: '{{singularKebab}} found' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '{{singularKebab}} not found' })
+  async findOne(@Param('id') id: string): Promise<{{singularPascal}} | null> {
+    return this.{{singularCamel}}DbPort.findById(id);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all {{pluralKebab}}' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'List of {{pluralKebab}}' })
+  async findAll(
+    @Query() pagination: Pagination,
+    @Query() filter: Filter,
+    @Query() sort: Sort,
+  ): Promise<{{singularPascal}}[]> {
+    return this.{{singularCamel}}DbPort.findAll();
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a {{singularKebab}}' })
+  @ApiResponse({ status: HttpStatus.OK, description: '{{singularKebab}} updated successfully' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '{{singularKebab}} not found' })
+  async update(
+    @Param('id') id: string,
+    @Body() update{{singularPascal}}Dto: Update{{singularPascal}}Dto,
+  ) {
+    return this.update{{singularPascal}}UseCase.execute({
+      id,
+      data: update{{singularPascal}}Dto,
+    });
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a {{singularKebab}}' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: '{{singularKebab}} deleted successfully' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: '{{singularKebab}} not found' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: string) {
+    await this.delete{{singularPascal}}UseCase.execute({ id });
+  }
+} 

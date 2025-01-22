@@ -1,0 +1,60 @@
+import { Injectable } from '@nestjs/common';
+import { User } from '@/core/users/domain/entities/user.entity';
+import { {{singularPascal}} } from '../../domain/entities/{{singularKebab}}.entity';
+import { {{singularPascal}}DbPort } from '../ports/{{singularKebab}}-db.port';
+{{#isCreate}}
+import { Create{{singularPascal}}Dto } from '../dtos/create-{{singularKebab}}.dto';
+{{/isCreate}}
+{{#isUpdate}}
+import { Update{{singularPascal}}Dto } from '../dtos/update-{{singularKebab}}.dto';
+{{/isUpdate}}
+
+{{#isCreate}}
+interface Create{{singularPascal}}Input {
+  user: User;
+  data: Create{{singularPascal}}Dto;
+}
+
+@Injectable()
+export class Create{{singularPascal}}UseCase {
+  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+
+  async execute({ user, data }: Create{{singularPascal}}Input): Promise<{{singularPascal}}> {
+    // TODO: Implement create logic
+  }
+}
+{{/isCreate}}
+
+{{#isUpdate}}
+interface Update{{singularPascal}}Input {
+  user: User;
+  id: string;
+  data: Update{{singularPascal}}Dto;
+}
+
+@Injectable()
+export class Update{{singularPascal}}UseCase {
+  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+
+  async execute({ user, id, data }: Update{{singularPascal}}Input): Promise<{{singularPascal}}> {
+    // TODO: Implement {{operation}} logic
+  }
+}
+{{/isUpdate}}
+
+{{^isCreate}}
+{{^isUpdate}}
+interface {{operation}}{{singularPascal}}Input {
+  user: User;
+}
+
+@Injectable()
+export class {{operation}}{{singularPascal}}UseCase {
+  constructor(private readonly {{singularCamel}}DbPort: {{singularPascal}}DbPort) {}
+
+  async execute(): Promise<{{singularPascal}} | void> {
+    // TODO: Implement {{operation}} logic
+  }
+}
+{{/isUpdate}}
+{{/isCreate}} 

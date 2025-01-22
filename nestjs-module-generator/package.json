@@ -1,0 +1,29 @@
+{
+  "name": "module-generator",
+  "version": "1.0.0",
+  "description": "NestJS module generator",
+  "main": "dist/cli.js",
+  "bin": {
+    "nest-module-gen": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && cp -r src/templates dist/",
+    "start": "ts-node src/cli.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "mustache": "^4.2.0",
+    "pluralize": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.5",
+    "@types/node": "^20.10.5",
+    "@types/pluralize": "^0.0.33",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

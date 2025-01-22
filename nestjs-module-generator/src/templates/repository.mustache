@@ -1,0 +1,10 @@
+import { EntityManager } from '@mikro-orm/core';
+import { Injectable } from '@nestjs/common';
+import { {{singularPascal}}DbPort } from '../../../application/ports/{{singularKebab}}-db.port';
+import { {{singularPascal}} } from '../../../domain/entities/{{singularKebab}}.entity';
+import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
+
+@Injectable()
+export class {{singularPascal}}MikroOrmDbRepository extends EntityRepository({{singularPascal}}) implements {{singularPascal}}DbPort {
+  constructor(private readonly em: EntityManager) {}
+} 

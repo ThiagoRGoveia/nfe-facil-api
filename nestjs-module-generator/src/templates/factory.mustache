@@ -1,0 +1,25 @@
+import { {{singularPascal}} } from '@/core/{{featureKebab}}/domain/entities/{{singularKebab}}.entity';
+import { faker } from '@faker-js/faker';
+import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
+import { Factory } from '@mikro-orm/seeder';
+
+export class {{singularPascal}}Factory extends Factory<{{singularPascal}}> {
+  model = {{singularPascal}};
+
+  definition(): Partial<{{singularPascal}}> {
+    return {
+      createdAt: faker.date.past(),
+      updatedAt: faker.date.recent(),
+    };
+  }
+}
+
+export function use{{singularPascal}}Factory(data: Partial<RequiredEntityData<{{singularPascal}}>>, em: EntityManager): {{singularPascal}} {
+  return new {{singularPascal}}Factory(em).makeOne(data);
+}
+
+export async function useDb{{singularPascal}}(data: Partial<RequiredEntityData<{{singularPascal}}>>, em: EntityManager): Promise<{{singularPascal}}> {
+  const {{singularCamel}} = use{{singularPascal}}Factory(data, em);
+  await em.persistAndFlush({{singularCamel}});
+  return {{singularCamel}};
+} 

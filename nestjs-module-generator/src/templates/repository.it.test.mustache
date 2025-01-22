@@ -1,0 +1,53 @@
+import { INestApplication } from '@nestjs/common';
+import { MikroORM } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Test, TestingModule } from '@nestjs/testing';
+import { {{singularPascal}}MikroOrmDbRepository } from '../{{singularKebab}}-mikro-orm-db.repository';
+import { BaseIntegrationTestModule } from 'test/setup/integration/base-integration-test.module';
+import { useDbRefresh, useDbSchema } from 'test/setup/integration/db-schema.seed';
+import { {{singularPascal}} } from '@/core/{{featureKebab}}/domain/entities/{{singularKebab}}.entity';
+import { User } from '@/core/users/domain/entities/user.entity';
+import { useDbUser } from '@/infra/tests/factories/user.factory';
+import { useDb{{singularPascal}} } from '@/infra/tests/factories/{{singularKebab}}.factory';
+
+describe('{{singularPascal}}MikroOrmDbRepository (integration)', () => {
+  let app: INestApplication;
+  let orm: MikroORM;
+  let em: EntityManager;
+  let repository: {{singularPascal}}MikroOrmDbRepository;
+  let testUser: User;
+  let test{{singularPascal}}: {{singularPascal}};
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [BaseIntegrationTestModule],
+      providers: [{{singularPascal}}MikroOrmDbRepository],
+    }).compile();
+
+    orm = module.get<MikroORM>(MikroORM);
+    em = orm.em as EntityManager;
+    repository = module.get<{{singularPascal}}MikroOrmDbRepository>({{singularPascal}}MikroOrmDbRepository);
+    app = module.createNestApplication();
+
+    await app.init();
+    await useDbSchema(orm);
+
+    testUser = await useDbUser({ id: 1 }, em);
+    test{{singularPascal}} = await useDb{{singularPascal}}(
+      {
+        name: 'Test {{singularPascal}}',
+        createdBy: testUser,
+      },
+      em,
+    );
+  });
+
+  afterEach(async () => {
+    await useDbRefresh(orm);
+    await app.close();
+  });
+
+  it('should be defined', () => {
+    expect(repository).toBeDefined();
+  });
+}); 

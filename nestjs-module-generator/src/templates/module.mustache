@@ -1,0 +1,34 @@
+import { Global, Module } from '@nestjs/common';
+import { {{singularPascal}}DbPort } from './application/ports/{{singularKebab}}-db.port';
+import { {{singularPascal}}MikroOrmDbRepository } from './infra/persistence/db/orm/{{singularKebab}}-mikro-orm-db.repository';
+import { {{singularPascal}}Resolver } from './presenters/graphql/resolvers/{{singularKebab}}.resolver';
+import { Create{{singularPascal}}UseCase } from './application/use-cases/create-{{singularKebab}}.use-case';
+import { Update{{singularPascal}}UseCase } from './application/use-cases/update-{{singularKebab}}.use-case';
+import { Delete{{singularPascal}}UseCase } from './application/use-cases/delete-{{singularKebab}}.use-case';
+
+@Global()
+@Module({
+  providers: [
+    {{singularPascal}}Resolver,
+    {
+      provide: {{singularPascal}}DbPort,
+      useClass: {{singularPascal}}MikroOrmDbRepository,
+    },
+    Create{{singularPascal}}UseCase,
+    Update{{singularPascal}}UseCase,
+    Delete{{singularPascal}}UseCase,
+  ],
+  exports: [
+    {{singularPascal}}DbPort,
+    Create{{singularPascal}}UseCase,
+  ],
+})
+export class {{featurePascal}}Module {}
+
+export {
+  {{singularPascal}}DbPort,
+  Create{{singularPascal}}UseCase,
+  Update{{singularPascal}}UseCase,
+  Delete{{singularPascal}}UseCase,
+  {{singularPascal}}Resolver,
+}; 
