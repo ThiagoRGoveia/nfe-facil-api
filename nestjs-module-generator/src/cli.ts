@@ -6,10 +6,7 @@ type PresenterType = 'rest' | 'graphql' | 'all';
 
 const program = new Command();
 
-program
-  .name('nest-module-gen')
-  .description('NestJS module generator')
-  .version('1.0.0');
+program.name('nest-module-gen').description('NestJS module generator').version('1.0.0');
 
 program
   .command('generate')
@@ -27,15 +24,8 @@ program
     '--operation <operation>',
     'Operation type for use cases (create/update). Required when type is use-case or use-case-test',
   )
-  .option(
-    '-u, --use-case <names...>',
-    'Names of use cases to generate (can specify multiple)',
-  )
-  .option(
-    '--presenter <type>',
-    'Type of presenter to generate (rest, graphql, all)',
-    'rest' as PresenterType,
-  )
+  .option('-u, --use-case <names...>', 'Names of use cases to generate (can specify multiple)')
+  .option('--presenter <type>', 'Type of presenter to generate (rest, graphql, all)', 'all' as PresenterType)
   .action(
     (
       featureName: string,
@@ -51,9 +41,7 @@ program
       try {
         // Validate presenter type
         if (!['rest', 'graphql', 'all'].includes(options.presenter)) {
-          throw new Error(
-            'Invalid presenter type. Valid values: rest, graphql, all',
-          );
+          throw new Error('Invalid presenter type. Valid values: rest, graphql, all');
         }
 
         const generator = new ModuleGenerator(options.path, featureName);
@@ -61,28 +49,18 @@ program
         if (options.type) {
           // Skip presenter validation for individual file generation
           // Validate operation for use cases
-          if (
-            (options.type === 'use-case' || options.type === 'use-case-test') &&
-            !options.operation
-          ) {
+          if ((options.type === 'use-case' || options.type === 'use-case-test') && !options.operation) {
             throw new Error(
               'Operation (--operation) is required for use case generation. Valid values: create, update',
             );
           }
 
-          if (
-            options.operation &&
-            !['create', 'update'].includes(options.operation)
-          ) {
+          if (options.operation && !['create', 'update'].includes(options.operation)) {
             throw new Error('Invalid operation. Valid values: create, update');
           }
 
           // Generate specific file
-          generator.generateFile(
-            options.type,
-            options.output,
-            options.operation,
-          );
+          generator.generateFile(options.type, options.output, options.operation);
           console.log(
             `✅ Successfully generated ${options.type} file${options.operation ? ` (${options.operation})` : ''}${
               options.output ? ` at: ${options.output}` : ''

@@ -43,8 +43,7 @@ const FILE_TEMPLATES: Record<FileType, FileTemplate> = {
   },
   'resolver-test': {
     template: 'resolver.it.test.mustache',
-    outputPattern:
-      'presenters/graphql/resolvers/tests/{featureKebab}.resolver.it.test.ts',
+    outputPattern: 'presenters/graphql/resolvers/tests/{featureKebab}.resolver.it.test.ts',
   },
   'db-port': {
     template: 'db-port.mustache',
@@ -52,18 +51,15 @@ const FILE_TEMPLATES: Record<FileType, FileTemplate> = {
   },
   repository: {
     template: 'repository.mustache',
-    outputPattern:
-      'infra/persistence/db/orm/{featureKebab}-mikro-orm-db.repository.ts',
+    outputPattern: 'infra/persistence/db/orm/{featureKebab}-mikro-orm-db.repository.ts',
   },
   'repository-test': {
     template: 'repository.spec.mustache',
-    outputPattern:
-      'infra/persistence/db/orm/tests/{featureKebab}-mikro-orm-db.repository.spec.ts',
+    outputPattern: 'infra/persistence/db/orm/tests/{featureKebab}-mikro-orm-db.repository.spec.ts',
   },
   'repository-it-test': {
     template: 'repository.it.test.mustache',
-    outputPattern:
-      'infra/persistence/db/orm/tests/{featureKebab}-mikro-orm-db.repository.it.test.ts',
+    outputPattern: 'infra/persistence/db/orm/tests/{featureKebab}-mikro-orm-db.repository.it.test.ts',
   },
   'create-dto': {
     template: 'create-dto.mustache',
@@ -75,13 +71,11 @@ const FILE_TEMPLATES: Record<FileType, FileTemplate> = {
   },
   'use-case': {
     template: 'use-case.mustache',
-    outputPattern:
-      'application/use-cases/{operation}-{singularKebab}.use-case.ts',
+    outputPattern: 'application/use-cases/{operation}-{singularKebab}.use-case.ts',
   },
   'use-case-test': {
     template: 'use-case.spec.mustache',
-    outputPattern:
-      'application/use-cases/tests/{operation}-{singularKebab}.use-case.spec.ts',
+    outputPattern: 'application/use-cases/tests/{operation}-{singularKebab}.use-case.spec.ts',
   },
   factory: {
     template: 'factory.mustache',
@@ -93,8 +87,7 @@ const FILE_TEMPLATES: Record<FileType, FileTemplate> = {
   },
   'controller-test': {
     template: 'controller.spec.mustache',
-    outputPattern:
-      'presenters/rest/controllers/tests/{featureKebab}.controller.spec.ts',
+    outputPattern: 'presenters/rest/controllers/tests/{featureKebab}.controller.spec.ts',
   },
 };
 
@@ -122,21 +115,11 @@ export class ModuleGenerator {
       singularCamel: CaseTransformer.toCamelCase(singular),
       singularSnake: CaseTransformer.toSnakeCase(singular),
       singularUpperSnake: CaseTransformer.toUpperSnakeCase(singular),
-      pluralKebab: CaseTransformer.toKebabCase(
-        CaseTransformer.pluralize(singular),
-      ),
-      pluralPascal: CaseTransformer.toPascalCase(
-        CaseTransformer.pluralize(singular),
-      ),
-      pluralCamel: CaseTransformer.toCamelCase(
-        CaseTransformer.pluralize(singular),
-      ),
-      pluralSnake: CaseTransformer.toSnakeCase(
-        CaseTransformer.pluralize(singular),
-      ),
-      pluralUpperSnake: CaseTransformer.toUpperSnakeCase(
-        CaseTransformer.pluralize(singular),
-      ),
+      pluralKebab: CaseTransformer.toKebabCase(CaseTransformer.pluralize(singular)),
+      pluralPascal: CaseTransformer.toPascalCase(CaseTransformer.pluralize(singular)),
+      pluralCamel: CaseTransformer.toCamelCase(CaseTransformer.pluralize(singular)),
+      pluralSnake: CaseTransformer.toSnakeCase(CaseTransformer.pluralize(singular)),
+      pluralUpperSnake: CaseTransformer.toUpperSnakeCase(CaseTransformer.pluralize(singular)),
     };
   }
 
@@ -158,16 +141,10 @@ export class ModuleGenerator {
     fs.writeFileSync(filePath, content);
   }
 
-  public generateFile(
-    type: FileType,
-    customOutputPath?: string,
-    operation?: string,
-  ): void {
+  public generateFile(type: FileType, customOutputPath?: string, operation?: string): void {
     const template = FILE_TEMPLATES[type];
     if (!template) {
-      throw new Error(
-        `Invalid file type. Available types: ${AVAILABLE_FILE_TYPES.join(', ')}`,
-      );
+      throw new Error(`Invalid file type. Available types: ${AVAILABLE_FILE_TYPES.join(', ')}`);
     }
 
     const data = {
@@ -178,14 +155,7 @@ export class ModuleGenerator {
     };
 
     const renderedContent = this.renderTemplate(template.template, data);
-    let outputPath =
-      customOutputPath ||
-      path.join(
-        this.basePath,
-        'src/core',
-        this.featureName,
-        template.outputPattern,
-      );
+    let outputPath = customOutputPath || path.join(this.basePath, 'src/core', this.featureName, template.outputPattern);
 
     outputPath = outputPath
       .replace(/{featureKebab}/g, data.featureKebab)
@@ -216,19 +186,11 @@ export class ModuleGenerator {
 
     // Add presenter directories based on type
     if (presenterType === 'rest' || presenterType === 'all') {
-      directories.push(
-        'presenters/rest/controllers',
-        'presenters/rest/controllers/tests',
-        'presenters/rest/dtos',
-      );
+      directories.push('presenters/rest/controllers', 'presenters/rest/controllers/tests', 'presenters/rest/dtos');
     }
 
     if (presenterType === 'graphql' || presenterType === 'all') {
-      directories.push(
-        'presenters/graphql/dtos',
-        'presenters/graphql/resolvers',
-        'presenters/graphql/resolvers/tests',
-      );
+      directories.push('presenters/graphql/dtos', 'presenters/graphql/resolvers', 'presenters/graphql/resolvers/tests');
     }
 
     directories.forEach((dir) => {
