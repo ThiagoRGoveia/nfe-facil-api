@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DataloaderType, defineConfig } from '@mikro-orm/postgresql';
 import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
+import { UuidAdapter } from '../adapters/uuid.adapter';
+import { SecretAdapter } from '../adapters/secret.adapter';
 
 @Global()
 @Module({
@@ -29,11 +31,13 @@ import { createMock } from '@golevelup/ts-jest';
   ],
   controllers: [],
   providers: [
+    UuidAdapter,
+    SecretAdapter,
     {
       provide: PinoLogger,
       useValue: createMock<PinoLogger>(),
     },
   ],
-  exports: [PinoLogger],
+  exports: [PinoLogger, UuidAdapter, SecretAdapter],
 })
 export class BaseIntegrationTestModule {}

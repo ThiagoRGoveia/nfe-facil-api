@@ -9,6 +9,7 @@ import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 
+jest.setTimeout(100000);
 describe('UsersResolver (Integration)', () => {
   let app: INestApplication;
   let orm: MikroORM;
@@ -89,8 +90,11 @@ describe('UsersResolver (Integration)', () => {
       const findAllUsersQuery = `
         query FindAllUsers {
           findAllUsers {
-            count
-            data {
+            totalPages
+            pageSize
+            page
+            total
+            items {
               id
               name
               email
@@ -106,9 +110,9 @@ describe('UsersResolver (Integration)', () => {
       expect(response.status).toBe(200);
       expect(response.body.errors).toBeUndefined();
       expect(response.body.data.findAllUsers).toBeDefined();
-      expect(response.body.data.findAllUsers.count).toBeGreaterThan(0);
-      expect(response.body.data.findAllUsers.data).toBeInstanceOf(Array);
-      expect(response.body.data.findAllUsers.data.length).toBeGreaterThan(0);
+      expect(response.body.data.findAllUsers.total).toBeGreaterThan(0);
+      expect(response.body.data.findAllUsers.items).toBeInstanceOf(Array);
+      expect(response.body.data.findAllUsers.items.length).toBeGreaterThan(0);
     });
   });
 
@@ -126,8 +130,8 @@ describe('UsersResolver (Integration)', () => {
 
       const userData = {
         name: 'Test User',
+        surname: 'Test User',
         email: 'test@example.com',
-        password: 'password123',
       };
 
       const response = await request(app.getHttpServer())

@@ -23,14 +23,14 @@ export class UpdateUserDto {
   @IsOptional()
   surname?: string;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => String, { nullable: true })
   @ApiProperty({
-    description: 'Client unique identifier',
+    description: 'User email',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  clientId?: number;
+  email?: string;
 
   @Field(() => Number, { nullable: true })
   @ApiProperty({

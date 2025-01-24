@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'health-check', method: RequestMethod.GET },

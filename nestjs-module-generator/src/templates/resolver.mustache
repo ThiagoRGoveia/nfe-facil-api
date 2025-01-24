@@ -6,6 +6,13 @@ import { {{singularPascal}}DbPort } from '../../../application/ports/{{pluralKeb
 import { Create{{singularPascal}}UseCase } from '../../../application/use-cases/create-{{singularKebab}}.use-case';
 import { Update{{singularPascal}}UseCase } from '../../../application/use-cases/update-{{singularKebab}}.use-case';
 import { Delete{{singularPascal}}UseCase } from '../../../application/use-cases/delete-{{singularKebab}}.use-case';
+import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { Filters } from '@/infra/dtos/filter.dto';
+import { Pagination } from '@/infra/dtos/pagination.dto';
+import { Sort } from '@/infra/dtos/sort.dto';
+
+const Paginated{{pluralPascal}} = PaginatedGraphqlResponse({{singularPascal}});
 
 @Resolver(() => {{singularPascal}})
 export class {{featurePascal}}Resolver {
@@ -17,25 +24,27 @@ export class {{featurePascal}}Resolver {
   ) {}
 
   @Query(() => {{singularPascal}}, { nullable: true })
-  async find{{singularPascal}}ById(@Args('id') id: string): Promise<{{singularPascal}} | null> {
+  async find{{singularPascal}}ById(@Args('id', { type: () => Number }) id: number): Promise<{{singularPascal}} | null> {
     return this.{{singularCamel}}DbPort.findById(id);
   }
 
-  @Query(() => [{{singularPascal}}])
-  async findAll{{pluralPascal}}(): Promise<{{singularPascal}}[]> {
-    return this.{{singularCamel}}DbPort.findAll();
+  @Query(() => Paginated{{pluralPascal}})
+  async findAll{{pluralPascal}}(
+    @Args('filters', { nullable: true }) filters?: Filters,
+    @Args('pagination', { nullable: true }) pagination?: Pagination,
+    @Args('sort', { nullable: true }) sort?: Sort,
+  ): Promise<PaginatedResponse<{{singularPascal}}>> {
+    return this.{{singularCamel}}DbPort.findAll(filters?.filters, pagination, sort);
   }
 
   @Mutation(() => {{singularPascal}})
-  async create{{singularPascal}}(
-    @Args('input') input: Create{{singularPascal}}Dto,
-  ): Promise<{{singularPascal}}> {
+  async create{{singularPascal}}(@Args('input') input: Create{{singularPascal}}Dto): Promise<{{singularPascal}}> {
     return this.create{{singularPascal}}UseCase.execute(input);
   }
 
   @Mutation(() => {{singularPascal}})
   async update{{singularPascal}}(
-    @Args('id') id: string,
+    @Args('id', { type: () => Number }) id: number,
     @Args('input') input: Update{{singularPascal}}Dto,
   ): Promise<{{singularPascal}}> {
     return this.update{{singularPascal}}UseCase.execute({
@@ -45,7 +54,7 @@ export class {{featurePascal}}Resolver {
   }
 
   @Mutation(() => Boolean)
-  async delete{{singularPascal}}(@Args('id') id: string): Promise<boolean> {
+  async delete{{singularPascal}}(@Args('id', { type: () => Number }) id: number): Promise<boolean> {
     await this.delete{{singularPascal}}UseCase.execute({ id });
     return true;
   }

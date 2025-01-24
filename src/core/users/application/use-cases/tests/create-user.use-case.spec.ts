@@ -9,11 +9,15 @@ import { UserRole } from '../../../domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { SecretAdapter } from '@/infra/adapters/secret.adapter';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
   let logger: jest.Mocked<PinoLogger>;
+  let uuidAdapter: jest.Mocked<UuidAdapter>;
+  let secretAdapter: jest.Mocked<SecretAdapter>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -29,12 +33,22 @@ describe('CreateUserUseCase', () => {
           provide: PinoLogger,
           useValue: createMock<PinoLogger>(),
         },
+        {
+          provide: UuidAdapter,
+          useValue: createMock<UuidAdapter>(),
+        },
+        {
+          provide: SecretAdapter,
+          useValue: createMock<SecretAdapter>(),
+        },
       ],
     }).compile();
 
     useCase = module.get<CreateUserUseCase>(CreateUserUseCase);
     userDbPort = module.get(UserDbPort);
     logger = module.get(PinoLogger);
+    uuidAdapter = module.get(UuidAdapter);
+    secretAdapter = module.get(SecretAdapter);
     em = module.get(EntityManager);
   });
 
@@ -52,18 +66,27 @@ describe('CreateUserUseCase', () => {
     const createUserDto: CreateUserDto = {
       name: 'John',
       surname: 'Doe',
-      clientId: 1,
       credits: 100,
       role: UserRole.CUSTOMER,
+      email: 'john.doe@example.com',
     };
 
+    const generatedUuid = 'generated-uuid';
+    const generatedSecret = 'GENERATED-SECRET';
+
+    uuidAdapter.generate.mockReturnValue(generatedUuid);
+    secretAdapter.generate.mockReturnValue(generatedSecret);
     userDbPort.create.mockReturnValue(user);
 
     // Act
     const result = await useCase.execute(createUserDto);
 
     // Assert
-    expect(userDbPort.create).toHaveBeenCalledWith(createUserDto);
+    expect(userDbPort.create).toHaveBeenCalledWith({
+      ...createUserDto,
+      clientId: generatedUuid,
+      clientSecret: generatedSecret,
+    });
     expect(userDbPort.save).toHaveBeenCalled();
     expect(result).toBe(user);
   });
@@ -74,9 +97,9 @@ describe('CreateUserUseCase', () => {
     const createUserDto: CreateUserDto = {
       name: 'John',
       surname: 'Doe',
-      clientId: 1,
       credits: 100,
       role: UserRole.CUSTOMER,
+      email: 'john.doe@example.com',
     };
 
     userDbPort.save.mockRejectedValue(error);

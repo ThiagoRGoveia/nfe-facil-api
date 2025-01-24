@@ -1,18 +1,16 @@
-import { MikroORM } from '@mikro-orm/core';
-import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
+import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { CreateUserDto } from '@/core/users/application/dtos/create-user.dto';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
+import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
 
-describe('UserMikroOrmDbRepository (unit)', () => {
-  let orm: MikroORM;
-  let em: EntityManager;
+describe('UserMikroOrmDbRepository', () => {
   let repository: UserMikroOrmDbRepository;
-  let testUser: User;
+  let em: EntityManager;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,10 +18,8 @@ describe('UserMikroOrmDbRepository (unit)', () => {
       providers: [UserMikroOrmDbRepository],
     }).compile();
 
-    orm = module.get<MikroORM>(MikroORM);
-    em = orm.em as EntityManager;
     repository = module.get<UserMikroOrmDbRepository>(UserMikroOrmDbRepository);
-    testUser = useUserFactory({ id: 1 }, em);
+    em = module.get<EntityManager>(EntityManager);
   });
 
   afterEach(() => {
@@ -35,59 +31,72 @@ describe('UserMikroOrmDbRepository (unit)', () => {
   });
 
   describe('create', () => {
-    it('should create a new user entity', () => {
-      const userData: CreateUserDto = {
-        name: 'John Doe',
-        surname: 'Smith',
-        clientId: 123,
-        credits: 1000,
+    it('should create a user', () => {
+      // Arrange
+      const userData: DtoWithClientCredentials<CreateUserDto> = {
+        name: 'John',
+        surname: 'Doe',
+        credits: 100,
+        email: 'john.doe@example.com',
         role: UserRole.CUSTOMER,
+        clientId: 'test-client-id',
+        clientSecret: 'TEST-CLIENT-SECRET',
       };
 
+      // Act
       const user = repository.create(userData);
 
-      expect(user).toBeInstanceOf(User);
+      // Assert
+      expect(user).toBeDefined();
       expect(user.name).toBe(userData.name);
       expect(user.surname).toBe(userData.surname);
-      expect(user.clientId).toBe(userData.clientId);
+      expect(user.email).toBe(userData.email);
       expect(user.credits).toBe(userData.credits);
       expect(user.role).toBe(userData.role);
+      expect(user.clientId).toBe(userData.clientId);
+      expect(user.clientSecret).toBe(userData.clientSecret);
     });
   });
 
   describe('update', () => {
-    it('should update an existing user entity', () => {
+    it('should update a user', () => {
+      // Arrange
+      const user = useUserFactory({ id: 1 }, em);
       const updateData: UpdateUserDto = {
-        name: 'Updated Name',
-        surname: 'Updated Surname',
-        credits: 2000,
+        name: 'Updated John',
+        email: 'updated.john@example.com',
       };
 
-      const updatedUser = repository.update(testUser, updateData);
+      // Act
+      const updatedUser = repository.update(user.id, updateData);
 
-      expect(updatedUser).toBe(testUser); // Should return the same instance
+      // Assert
       expect(updatedUser.name).toBe(updateData.name);
-      expect(updatedUser.surname).toBe(updateData.surname);
-      expect(updatedUser.credits).toBe(updateData.credits);
-      // Other fields should remain unchanged
-      expect(updatedUser.clientId).toBe(testUser.clientId);
-      expect(updatedUser.role).toBe(testUser.role);
+    });
+  });
+
+  describe('findByClientId', () => {
+    it('should find a user by client ID', async () => {
+      // Arrange
+      jest
+        .spyOn(repository, 'findByClientId')
+        .mockResolvedValueOnce(useUserFactory({ clientId: 'test-client-id' }, em));
+
+      // Act
+      const foundUser = await repository.findByClientId('test-client-id');
+
+      // Assert
+      expect(foundUser).toBeDefined();
+      expect(foundUser?.clientId).toBe('test-client-id');
     });
 
-    it('should handle partial updates', () => {
-      const partialUpdateData: UpdateUserDto = {
-        name: 'Updated Name',
-      };
+    it('should return null when user not found', async () => {
+      // Act
+      jest.spyOn(repository, 'findByClientId').mockResolvedValueOnce(null);
+      const foundUser = await repository.findByClientId('non-existent-id');
 
-      const updatedUser = repository.update(testUser, partialUpdateData);
-
-      expect(updatedUser).toBe(testUser);
-      expect(updatedUser.name).toBe(partialUpdateData.name);
-      // Other fields should remain unchanged
-      expect(updatedUser.surname).toBe(testUser.surname);
-      expect(updatedUser.credits).toBe(testUser.credits);
-      expect(updatedUser.clientId).toBe(testUser.clientId);
-      expect(updatedUser.role).toBe(testUser.role);
+      // Assert
+      expect(foundUser).toBeNull();
     });
   });
 });

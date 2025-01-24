@@ -36,12 +36,26 @@ export class User extends BaseEntity {
   @Property()
   surname: string;
 
-  @Field(() => Number)
+  @Field(() => String)
+  @ApiProperty({
+    description: 'User email',
+  })
+  @Property()
+  email: string;
+
+  @Field(() => String)
   @ApiProperty({
     description: 'Client unique identifier',
   })
   @Property()
-  clientId: number;
+  clientId: string;
+
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Client secret',
+  })
+  @Property()
+  clientSecret: string;
 
   @Field(() => Number)
   @ApiProperty({

@@ -6,7 +6,14 @@ import { UserDbPort } from '../../../application/ports/users-db.port';
 import { CreateUserUseCase } from '../../../application/use-cases/create-user.use-case';
 import { UpdateUserUseCase } from '../../../application/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '../../../application/use-cases/delete-user.use-case';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { RefreshClientSecretUseCase } from '../../../application/use-cases/refresh-client-secret.use-case';
+import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
+import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { Filters } from '@/infra/dtos/filter.dto';
+import { Pagination } from '@/infra/dtos/pagination.dto';
+import { Sort } from '@/infra/dtos/sort.dto';
+
+const PaginatedUsers = PaginatedGraphqlResponse(User);
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -15,6 +22,7 @@ export class UsersResolver {
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
+    private readonly refreshClientSecretUseCase: RefreshClientSecretUseCase,
   ) {}
 
   @Query(() => User, { nullable: true })
@@ -22,9 +30,13 @@ export class UsersResolver {
     return this.userDbPort.findById(id);
   }
 
-  @Query(() => [User])
-  async findAllUsers(): Promise<PaginatedResponse<User>> {
-    return this.userDbPort.findAll();
+  @Query(() => PaginatedUsers)
+  async findAllUsers(
+    @Args('filters', { nullable: true }) filters?: Filters,
+    @Args('pagination', { nullable: true }) pagination?: Pagination,
+    @Args('sort', { nullable: true }) sort?: Sort,
+  ): Promise<PaginatedResponseType<User>> {
+    return this.userDbPort.findAll(filters?.filters, pagination, sort);
   }
 
   @Mutation(() => User)
@@ -44,5 +56,10 @@ export class UsersResolver {
   async deleteUser(@Args('id', { type: () => Number }) id: number): Promise<boolean> {
     await this.deleteUserUseCase.execute({ id });
     return true;
+  }
+
+  @Mutation(() => User)
+  async refreshUserClientSecret(@Args('id', { type: () => Number }) id: number): Promise<User> {
+    return this.refreshClientSecretUseCase.execute({ id });
   }
 }

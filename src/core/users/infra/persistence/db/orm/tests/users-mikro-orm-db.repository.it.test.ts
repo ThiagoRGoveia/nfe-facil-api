@@ -9,6 +9,7 @@ import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { CreateUserDto } from '@/core/users/application/dtos/create-user.dto';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
+import { DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
 
 describe('UserMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;
@@ -43,10 +44,12 @@ describe('UserMikroOrmDbRepository (integration)', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      const userData: CreateUserDto = {
+      const userData: DtoWithClientCredentials<CreateUserDto> = {
         name: 'John Doe',
         surname: 'Smith',
-        clientId: 123,
+        email: 'john.doe@example.com',
+        clientId: '123',
+        clientSecret: 'TEST-CLIENT-SECRET',
         credits: 1000,
         role: UserRole.CUSTOMER,
       };
@@ -57,6 +60,7 @@ describe('UserMikroOrmDbRepository (integration)', () => {
       expect(user.id).toBeDefined();
       expect(user.name).toBe(userData.name);
       expect(user.surname).toBe(userData.surname);
+      expect(user.email).toBe(userData.email);
       expect(user.clientId).toBe(userData.clientId);
       expect(user.credits).toBe(userData.credits);
       expect(user.role).toBe(userData.role);
@@ -70,9 +74,10 @@ describe('UserMikroOrmDbRepository (integration)', () => {
         name: 'Updated Name',
         surname: 'Updated Surname',
         credits: 2000,
+        email: 'updated.john@example.com',
       };
 
-      const updatedUser = repository.update(testUser, updateData);
+      const updatedUser = repository.update(testUser.id, updateData);
       await em.persistAndFlush(updatedUser);
 
       expect(updatedUser.id).toBe(testUser.id);
@@ -82,6 +87,19 @@ describe('UserMikroOrmDbRepository (integration)', () => {
       // Other fields should remain unchanged
       expect(updatedUser.clientId).toBe(testUser.clientId);
       expect(updatedUser.role).toBe(testUser.role);
+    });
+  });
+
+  describe('findByClientId', () => {
+    it('should find a user by clientId', async () => {
+      const user = await useDbUser({ clientId: '123' }, em);
+      const foundUser = await repository.findByClientId('123');
+      expect(foundUser).toBe(user);
+    });
+
+    it('should return null if no user is found', async () => {
+      const foundUser = await repository.findByClientId('456');
+      expect(foundUser).toBeNull();
     });
   });
 });

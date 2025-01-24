@@ -21,21 +21,21 @@ export class CreateUserDto {
   @IsNotEmpty()
   surname: string;
 
-  @Field(() => Number)
+  @Field(() => String)
   @ApiProperty({
-    description: 'Client unique identifier',
+    description: 'User email',
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  clientId: number;
+  email: string;
 
   @Field(() => Number)
   @ApiProperty({
     description: 'User available credits',
   })
   @IsNumber()
-  @IsNotEmpty()
-  credits: number;
+  @IsOptional()
+  credits: number = 0;
 
   @Field(() => String, { nullable: true })
   @ApiProperty({
@@ -52,6 +52,6 @@ export class CreateUserDto {
     enum: UserRole,
   })
   @IsEnum(UserRole)
-  @IsNotEmpty()
-  role: UserRole;
+  @IsOptional()
+  role: UserRole = UserRole.CUSTOMER;
 }

@@ -5,6 +5,7 @@ import { UsersResolver } from './presenters/graphql/resolvers/users.resolver';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
+import { RefreshClientSecretUseCase } from './application/use-cases/refresh-client-secret.use-case';
 
 @Global()
 @Module({
@@ -17,8 +18,9 @@ import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case'
     CreateUserUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,
+    RefreshClientSecretUseCase,
   ],
-  exports: [UserDbPort, CreateUserUseCase],
+  exports: [UserDbPort, CreateUserUseCase, RefreshClientSecretUseCase, UpdateUserUseCase, DeleteUserUseCase],
 })
 export class UsersModule {}
 

@@ -1,13 +1,17 @@
+import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 
+@InputType()
 export class Filter {
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     description: 'Field to filter by, for nested fields use dot notation, e.g: shipment.carrier.name',
   })
   @Allow()
   field?: string;
 
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     required: false,
     description: 'Value to filter by. Should not be used with range or in.',
@@ -15,6 +19,7 @@ export class Filter {
   @Allow()
   value?: string;
 
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     required: false,
     description: 'Value to filter by. Should not be used with range or in.',
@@ -22,6 +27,7 @@ export class Filter {
   @Allow()
   ilike?: string;
 
+  @Field(() => [String], { nullable: true })
   @ApiProperty({
     required: false,
     type: [String],
@@ -30,6 +36,7 @@ export class Filter {
   @Allow()
   range?: [string, string];
 
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     required: false,
     description: 'Value to filter by. Should not be used with range or in.',
@@ -37,6 +44,7 @@ export class Filter {
   @Allow()
   greaterThan?: string;
 
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     required: false,
     description: 'Value to filter by. Should not be used with range or in.',
@@ -44,6 +52,7 @@ export class Filter {
   @Allow()
   lessThan?: string;
 
+  @Field(() => [String], { nullable: true })
   @ApiProperty({
     required: false,
     type: [String],
@@ -57,6 +66,7 @@ export class Filter {
    * for example if the filter is { field: 'name', value: 'John', not: true } it will filter all records where name is not John.
    * Default value is false.
    */
+  @Field(() => Boolean, { nullable: true })
   @ApiProperty({
     required: false,
     default: false,
@@ -66,7 +76,9 @@ export class Filter {
   not?: boolean;
 }
 
+@InputType()
 export class Filters {
+  @Field(() => [Filter], { nullable: true })
   @ApiProperty({
     type: [Filter],
     required: false,

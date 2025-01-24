@@ -11,9 +11,11 @@ export class UserFactory extends Factory<User> {
       id: faker.number.int({ min: 1, max: 1000 }),
       name: faker.person.firstName(),
       surname: faker.person.lastName(),
-      clientId: faker.number.int({ min: 1, max: 1000 }),
+      clientId: faker.string.uuid(),
+      clientSecret: faker.string.alphanumeric(36).toUpperCase(),
       credits: faker.number.int({ min: 0, max: 10000 }),
       paymentExternalId: faker.string.uuid(),
+      email: faker.internet.email(),
       role: faker.helpers.arrayElement([UserRole.ADMIN, UserRole.CUSTOMER]),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
@@ -21,8 +23,8 @@ export class UserFactory extends Factory<User> {
   }
 }
 
-export function useUserFactory(data: Partial<RequiredEntityData<User>>, em: EntityManager): User {
-  return new UserFactory(em).makeOne(data);
+export function useUserFactory(override: Partial<RequiredEntityData<User>> = {}, em: EntityManager): User {
+  return new UserFactory(em).makeOne(override);
 }
 
 export async function useDbUser(data: Partial<RequiredEntityData<User>>, em: EntityManager): Promise<User> {

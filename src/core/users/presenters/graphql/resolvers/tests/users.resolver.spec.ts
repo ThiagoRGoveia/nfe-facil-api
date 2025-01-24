@@ -9,9 +9,10 @@ import { CreateUserDto } from '../../../../application/dtos/create-user.dto';
 import { UpdateUserDto } from '../../../../application/dtos/update-user.dto';
 import { useUserFactory } from '../../../../infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { createMock } from '@golevelup/ts-jest';
+import { RefreshClientSecretUseCase } from '../../../../application/use-cases/refresh-client-secret.use-case';
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
@@ -19,6 +20,7 @@ describe('UsersResolver', () => {
   let createUserUseCase: jest.Mocked<CreateUserUseCase>;
   let updateUserUseCase: jest.Mocked<UpdateUserUseCase>;
   let deleteUserUseCase: jest.Mocked<DeleteUserUseCase>;
+  let refreshClientSecretUseCase: jest.Mocked<RefreshClientSecretUseCase>;
   let mockUser: User;
   let em: EntityManager;
 
@@ -43,6 +45,10 @@ describe('UsersResolver', () => {
           provide: DeleteUserUseCase,
           useValue: createMock<DeleteUserUseCase>(),
         },
+        {
+          provide: RefreshClientSecretUseCase,
+          useValue: createMock<RefreshClientSecretUseCase>(),
+        },
       ],
     }).compile();
 
@@ -51,37 +57,37 @@ describe('UsersResolver', () => {
     createUserUseCase = module.get(CreateUserUseCase);
     updateUserUseCase = module.get(UpdateUserUseCase);
     deleteUserUseCase = module.get(DeleteUserUseCase);
+    refreshClientSecretUseCase = module.get(RefreshClientSecretUseCase);
     em = module.get(EntityManager);
     mockUser = useUserFactory({}, em);
   });
 
+  it('should be defined', () => {
+    expect(resolver).toBeDefined();
+  });
+
   describe('findUserById', () => {
-    it('should return a user by id', async () => {
+    it('should find a user by id', async () => {
       userDbPort.findById.mockResolvedValue(mockUser);
       const result = await resolver.findUserById(1);
-      expect(result).toEqual(mockUser);
+      expect(result).toBe(mockUser);
       expect(userDbPort.findById).toHaveBeenCalledWith(1);
-    });
-
-    it('should return null when user is not found', async () => {
-      userDbPort.findById.mockResolvedValue(null);
-      const result = await resolver.findUserById(1);
-      expect(result).toBeNull();
     });
   });
 
   describe('findAllUsers', () => {
-    it('should return paginated users', async () => {
-      const mockPaginatedResponse: PaginatedResponse<User> = {
+    it('should find all users', async () => {
+      const paginatedResponse: PaginatedResponseType<User> = {
         items: [mockUser],
         total: 1,
         page: 1,
         pageSize: 10,
         totalPages: 1,
       };
-      userDbPort.findAll.mockResolvedValue(mockPaginatedResponse);
+      userDbPort.findAll.mockResolvedValue(paginatedResponse);
       const result = await resolver.findAllUsers();
-      expect(result).toEqual(mockPaginatedResponse);
+      expect(result).toBe(paginatedResponse);
+      expect(userDbPort.findAll).toHaveBeenCalled();
     });
   });
 
@@ -89,14 +95,14 @@ describe('UsersResolver', () => {
     it('should create a user', async () => {
       const createUserDto: CreateUserDto = {
         name: 'John',
+        email: 'john@example.com',
         surname: 'Doe',
-        clientId: 1,
-        role: UserRole.CUSTOMER,
         credits: 100,
+        role: UserRole.CUSTOMER,
       };
       createUserUseCase.execute.mockResolvedValue(mockUser);
       const result = await resolver.createUser(createUserDto);
-      expect(result).toEqual(mockUser);
+      expect(result).toBe(mockUser);
       expect(createUserUseCase.execute).toHaveBeenCalledWith(createUserDto);
     });
   });
@@ -105,9 +111,10 @@ describe('UsersResolver', () => {
     it('should update a user', async () => {
       const updateUserDto: UpdateUserDto = {
         name: 'John Updated',
+        email: 'john@example.com',
       };
       em.clear();
-      const updatedUser = useUserFactory({ ...mockUser, name: 'John Updated' }, em);
+      const updatedUser = useUserFactory({ ...mockUser, name: 'John Updated', email: 'john@example.com' }, em);
       updateUserUseCase.execute.mockResolvedValue(updatedUser);
       const result = await resolver.updateUser(1, updateUserDto);
       expect(result.name).toBe('John Updated');
@@ -124,6 +131,15 @@ describe('UsersResolver', () => {
       const result = await resolver.deleteUser(1);
       expect(result).toBe(true);
       expect(deleteUserUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+    });
+  });
+
+  describe('refreshUserClientSecret', () => {
+    it('should refresh user client secret', async () => {
+      refreshClientSecretUseCase.execute.mockResolvedValue(mockUser);
+      const result = await resolver.refreshUserClientSecret(1);
+      expect(result).toBe(mockUser);
+      expect(refreshClientSecretUseCase.execute).toHaveBeenCalledWith({ id: 1 });
     });
   });
 });

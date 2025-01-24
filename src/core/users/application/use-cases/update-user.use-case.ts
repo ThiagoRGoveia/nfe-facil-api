@@ -18,11 +18,11 @@ export class UpdateUserUseCase {
 
   async execute({ id, data }: UpdateUserInput): Promise<User> {
     try {
-      const user = await this.userDb.findById(id);
+      const user = await this.userDb.exists(id);
       if (!user) {
         throw new NotFoundException(`User with id ${id} not found`);
       }
-      const updatedUser = this.userDb.update(user, data);
+      const updatedUser = this.userDb.update(id, data);
       await this.userDb.save();
       return updatedUser;
     } catch (error) {

@@ -61,7 +61,7 @@ describe('UpdateUserUseCase', () => {
     const result = await useCase.execute({ id: user.id, data: updateUserDto });
 
     // Assert
-    expect(userDbPort.update).toHaveBeenCalledWith(user, updateUserDto);
+    expect(userDbPort.update).toHaveBeenCalledWith(user.id, updateUserDto);
     expect(userDbPort.save).toHaveBeenCalled();
     expect(result).toEqual(expect.objectContaining(updateUserDto));
   });

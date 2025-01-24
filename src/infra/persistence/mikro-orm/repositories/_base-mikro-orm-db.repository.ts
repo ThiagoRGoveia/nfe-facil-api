@@ -13,7 +13,7 @@ import { Sort } from '@/infra/dtos/sort.dto';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable } from '@nestjs/common';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
 
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
@@ -50,7 +50,7 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
     pagination: Pagination = { pageSize: 20, currentPage: 1 },
     sort?: Sort,
     all = false,
-  ): Promise<PaginatedResponse<T>> {
+  ): Promise<PaginatedResponseType<T>> {
     let sortQuery: OrderDefinition<T> = {};
 
     let filterQuery: FilterQuery<T> = {};
