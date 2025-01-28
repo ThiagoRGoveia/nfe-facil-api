@@ -11,21 +11,39 @@ import { ManagementClient } from 'auth0';
 @Injectable()
 export class Auth0Client {
   public client: ManagementClient;
+  private domain: string;
 
   constructor(private readonly configService: ConfigService) {
-    const domain = this.configService.get('AUTH_DOMAIN');
-    const clientId = this.configService.get('AUTH_CLIENT_ID');
-    const clientSecret = this.configService.get('AUTH_CLIENT_SECRET');
+    const domain = this.configService.get<string>('AUTH_DOMAIN');
+    const clientId = this.configService.get<string>('AUTH_CLIENT_ID');
+    const clientSecret = this.configService.get<string>('AUTH_CLIENT_SECRET');
 
     if (!domain || !clientId || !clientSecret) {
       throw new Error('Missing required Auth0 configuration');
     }
 
+    this.domain = domain;
     this.client = new ManagementClient({
-      domain,
+      domain: domain.replace('https://', ''),
       clientId,
       clientSecret,
+      audience: `${domain}/api/v2/`,
     });
+  }
+
+  async getUserInfo(userId: string) {
+    try {
+      const user = await this.client.users.get({ id: userId });
+      return user;
+    } catch (error) {
+      if (error.statusCode === 404) {
+        throw new NotFoundException('User not found');
+      }
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        throw new UnauthorizedException('Not authorized to get user info');
+      }
+      throw new InternalServerErrorException('Failed to get user info from Auth0');
+    }
   }
 
   async createUser(email: string, password: string) {

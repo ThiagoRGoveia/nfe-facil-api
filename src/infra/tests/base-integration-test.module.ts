@@ -38,10 +38,7 @@ import { Auth0Client } from '../auth/auth0.client';
       provide: PinoLogger,
       useValue: createMock<PinoLogger>(),
     },
-    {
-      provide: Auth0Client,
-      useValue: createMock<Auth0Client>(),
-    },
+    Auth0Client,
   ],
   exports: [PinoLogger, UuidAdapter, SecretAdapter, Auth0Client],
 })

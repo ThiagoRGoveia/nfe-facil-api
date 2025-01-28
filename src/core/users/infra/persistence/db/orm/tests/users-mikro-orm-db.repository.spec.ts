@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { EntityManager } from '@mikro-orm/postgresql';
+import { EntityManager, RequiredEntityData } from '@mikro-orm/postgresql';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
-import { CreateUserDto } from '@/core/users/application/dtos/create-user.dto';
+import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
 
 describe('UserMikroOrmDbRepository', () => {
   let repository: UserMikroOrmDbRepository;
@@ -33,7 +31,7 @@ describe('UserMikroOrmDbRepository', () => {
   describe('create', () => {
     it('should create a user', () => {
       // Arrange
-      const userData: DtoWithClientCredentials<CreateUserDto> = {
+      const userData: RequiredEntityData<User> = {
         name: 'John',
         surname: 'Doe',
         credits: 100,
@@ -41,6 +39,7 @@ describe('UserMikroOrmDbRepository', () => {
         role: UserRole.CUSTOMER,
         clientId: 'test-client-id',
         clientSecret: 'TEST-CLIENT-SECRET',
+        auth0Id: 'test-auth0-id',
       };
 
       // Act

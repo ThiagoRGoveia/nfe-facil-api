@@ -12,8 +12,16 @@ import { UsersModule } from '@/core/users/users.module';
 import { Resolver, Query, ObjectType, Field } from '@nestjs/graphql';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
+import { UserDbPort } from '@/core/users/application/ports/users-db.port';
+import { CreateUserSocialUseCase } from '@/core/users/application/use-cases/create-user-social.use-case';
+import { User } from '@/core/users/domain/entities/user.entity';
+import { createMock } from '@golevelup/ts-jest';
+import { UserMikroOrmDbRepository } from '@/core/users/infra/persistence/db/orm/users-mikro-orm-db.repository';
+import { useDbRefresh, useDbSchema } from '../tests/db-schema.seed';
+import { MikroORM } from '@mikro-orm/core';
+import { Auth0Client } from './auth0.client';
 
-jest.setTimeout(10000);
+jest.setTimeout(100000);
 
 @ObjectType()
 class TestResponse {
@@ -54,8 +62,14 @@ class TestResolver {
 describe('JwtAuthGuard (integration)', () => {
   let app: INestApplication;
   let guard: JwtAuthGuard;
+  let userDbPort: jest.Mocked<UserDbPort>;
+  let createUserSocial: jest.Mocked<CreateUserSocialUseCase>;
+  let orm: MikroORM;
 
   beforeEach(async () => {
+    userDbPort = createMock<UserDbPort>();
+    createUserSocial = createMock<CreateUserSocialUseCase>();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         BaseIntegrationTestModule,
@@ -76,13 +90,16 @@ describe('JwtAuthGuard (integration)', () => {
         },
       ],
     }).compile();
+    orm = module.get<MikroORM>(MikroORM);
     app = module.createNestApplication();
     guard = module.get<JwtAuthGuard>(JwtAuthGuard);
+    await useDbSchema(orm);
     await app.init();
   });
 
   afterEach(async () => {
     await app.close();
+    await useDbRefresh(orm);
   });
 
   describe('REST endpoints', () => {
@@ -133,10 +150,15 @@ describe('JwtAuthGuard (integration)', () => {
         });
     });
 
-    // TODO implement after auth0 is integrated for user oauth2
-    // it('should allow access to protected routes with valid token', async () => {
-    //   const token = 'TEST-TOKEN';
+    // NOTICE: Used to test the JWT guard with a valid token DO NOT REMOVE
+    // it('should allow access to protected routes with valid token for existing user', async () => {
+    //   const token =
+    //     'TOKEN';
+    //   // const mockUser = { id: 1, name: 'Test User' } as User;
+
     //   jest.spyOn(guard, 'parentCanActivate').mockResolvedValueOnce(true);
+    //   // userDbPort.findByClientId.mockResolvedValueOnce(mockUser);
+
     //   await request(app.getHttpServer())
     //     .post('/graphql')
     //     .send({ query: protectedQuery })

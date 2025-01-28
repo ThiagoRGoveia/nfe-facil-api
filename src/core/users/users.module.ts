@@ -7,6 +7,7 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.use-case'
 import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 import { RefreshClientSecretUseCase } from './application/use-cases/refresh-client-secret.use-case';
 import { UpdatePasswordUseCase } from './application/use-cases/update-password.use-case';
+import { CreateUserSocialUseCase } from './application/use-cases/create-user-social.use-case';
 
 @Global()
 @Module({
@@ -21,6 +22,7 @@ import { UpdatePasswordUseCase } from './application/use-cases/update-password.u
     DeleteUserUseCase,
     RefreshClientSecretUseCase,
     UpdatePasswordUseCase,
+    CreateUserSocialUseCase,
   ],
   exports: [
     UserDbPort,
@@ -29,8 +31,17 @@ import { UpdatePasswordUseCase } from './application/use-cases/update-password.u
     UpdateUserUseCase,
     DeleteUserUseCase,
     UpdatePasswordUseCase,
+    CreateUserSocialUseCase,
   ],
 })
 export class UsersModule {}
 
-export { UserDbPort, CreateUserUseCase, UpdateUserUseCase, DeleteUserUseCase, UpdatePasswordUseCase, UsersResolver };
+export {
+  UserDbPort,
+  CreateUserUseCase,
+  UpdateUserUseCase,
+  DeleteUserUseCase,
+  UpdatePasswordUseCase,
+  UsersResolver,
+  CreateUserSocialUseCase,
+};

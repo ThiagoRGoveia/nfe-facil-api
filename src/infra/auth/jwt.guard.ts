@@ -4,14 +4,21 @@ import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { UserDbPort } from '@/core/users/application/ports/users-db.port';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { CreateUserSocialUseCase } from '@/core/users/application/use-cases/create-user-social.use-case';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private reflector: Reflector,
     private readonly userDb: UserDbPort,
+    private readonly createUserSocial: CreateUserSocialUseCase,
   ) {
     super();
+  }
+
+  getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
   }
 
   async canActivate(context: ExecutionContext) {
@@ -29,6 +36,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const ctx = GqlExecutionContext.create(context);
+
     const request = ctx.getContext().req;
     if (!this.hasJwtToken(request)) {
       return false;
@@ -39,11 +47,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return false;
     }
 
-    const user = await this.userDb.findByClientId(request.user.user_id);
-    if (!user) {
-      return false;
+    const user = await this.userDb.findByAuth0Id(request.user.sub);
+    if (user) {
+      request.user = user;
+      return true;
     }
-    request.user = user;
+
+    // Handle social login case
+    const socialUser = await this.createUserSocial.execute({
+      auth0Id: request.user.sub,
+      email: request.user.email,
+      name: request.user.name,
+    });
+    request.user = socialUser;
     return true;
   }
 

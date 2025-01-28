@@ -8,11 +8,11 @@ import { ConfigService } from '@nestjs/config';
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly configService: ConfigService) {
     const AUTH_DOMAIN = configService.get('AUTH_DOMAIN');
-    const AUTH_AUDIENCE = configService.get('AUTH_AUDIENCE');
     const AUTH_ISSUER_URL = configService.get('AUTH_ISSUER_URL');
+    const AUTH_AUDIENCE = configService.get('AUTH_AUDIENCE');
 
-    if (!AUTH_DOMAIN || !AUTH_AUDIENCE || !AUTH_ISSUER_URL) {
-      throw new Error('AUTH_DOMAIN or AUTH_AUDIENCE or AUTH_ISSUER_URL is not set');
+    if (!AUTH_DOMAIN || !AUTH_ISSUER_URL || !AUTH_AUDIENCE) {
+      throw new Error('AUTH_DOMAIN or AUTH_ISSUER_URL or AUTH_AUDIENCE is not set');
     }
 
     super({
@@ -26,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       issuer: AUTH_ISSUER_URL,
       algorithms: ['RS256'],
+      audience: AUTH_AUDIENCE,
     });
   }
 

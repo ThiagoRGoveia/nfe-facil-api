@@ -1,7 +1,6 @@
 import { User } from '../../domain/entities/user.entity';
 import { BaseDbPort } from '@/infra/ports/_base-db-port';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UpdateUserDto } from '../dtos/update-user.dto';
+import { RequiredEntityData } from '@mikro-orm/core';
 
 export type DtoWithClientCredentials<T> = T & {
   clientId: string;
@@ -10,7 +9,8 @@ export type DtoWithClientCredentials<T> = T & {
 };
 
 export abstract class UserDbPort extends BaseDbPort<User> {
-  abstract create(data: DtoWithClientCredentials<Omit<CreateUserDto, 'password'>>): User;
-  abstract update(id: User['id'], data: Partial<DtoWithClientCredentials<UpdateUserDto>>): User;
+  abstract create(data: DtoWithClientCredentials<RequiredEntityData<User>>): User;
+  abstract update(id: User['id'], data: Partial<DtoWithClientCredentials<RequiredEntityData<User>>>): User;
   abstract findByClientId(clientId: string): Promise<User | null>;
+  abstract findByAuth0Id(auth0Id: string): Promise<User | null>;
 }

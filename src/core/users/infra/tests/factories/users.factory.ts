@@ -20,6 +20,7 @@ export class UserFactory extends Factory<User> {
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
       auth0Id: faker.string.uuid(),
+      isSocial: false,
     };
   }
 }

@@ -14,7 +14,7 @@ registerEnumType(UserRole, {
 
 @ObjectType()
 @Entity({ tableName: 'user' })
-export class User extends BaseEntity {
+export class User extends BaseEntity<'isSocial'> {
   @Field(() => Number)
   @ApiProperty({
     description: 'User unique identifier',
@@ -22,26 +22,29 @@ export class User extends BaseEntity {
   @PrimaryKey()
   id: number;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     description: 'User first name',
+    required: false,
   })
-  @Property()
-  name: string;
+  @Property({ nullable: true })
+  name?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     description: 'User last name',
+    required: false,
   })
-  @Property()
-  surname: string;
+  @Property({ nullable: true })
+  surname?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @ApiProperty({
     description: 'User email',
+    required: false,
   })
-  @Property()
-  email: string;
+  @Property({ nullable: true })
+  email?: string;
 
   @Field(() => String)
   @ApiProperty({
@@ -86,4 +89,12 @@ export class User extends BaseEntity {
   })
   @Enum(() => UserRole)
   role: UserRole;
+
+  @Property({ default: false })
+  @Field(() => Boolean)
+  @ApiProperty({
+    description: 'Whether the user was created through social login',
+    default: false,
+  })
+  isSocial: boolean = false;
 }

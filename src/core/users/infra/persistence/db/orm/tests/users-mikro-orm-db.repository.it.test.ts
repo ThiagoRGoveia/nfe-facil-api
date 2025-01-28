@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { MikroORM } from '@mikro-orm/core';
+import { MikroORM, RequiredEntityData } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
@@ -7,9 +7,7 @@ import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
 import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { CreateUserDto } from '@/core/users/application/dtos/create-user.dto';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
-import { DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
 
 describe('UserMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;
@@ -44,7 +42,7 @@ describe('UserMikroOrmDbRepository (integration)', () => {
 
   describe('create', () => {
     it('should create a new user', async () => {
-      const userData: DtoWithClientCredentials<CreateUserDto> = {
+      const userData: RequiredEntityData<User> = {
         name: 'John Doe',
         surname: 'Smith',
         email: 'john.doe@example.com',
@@ -52,6 +50,7 @@ describe('UserMikroOrmDbRepository (integration)', () => {
         clientSecret: 'TEST-CLIENT-SECRET',
         credits: 1000,
         role: UserRole.CUSTOMER,
+        auth0Id: 'auth0|123',
       };
 
       const user = repository.create(userData);
