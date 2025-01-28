@@ -7,12 +7,14 @@ import { DeleteUserUseCase } from '../../../../application/use-cases/delete-user
 import { User, UserRole } from '../../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../../../application/dtos/create-user.dto';
 import { UpdateUserDto } from '../../../../application/dtos/update-user.dto';
+import { UpdatePasswordDto } from '../../../../application/dtos/update-password.dto';
 import { useUserFactory } from '../../../../infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { RefreshClientSecretUseCase } from '../../../../application/use-cases/refresh-client-secret.use-case';
+import { UpdatePasswordUseCase } from '../../../../application/use-cases/update-password.use-case';
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
@@ -21,6 +23,7 @@ describe('UsersResolver', () => {
   let updateUserUseCase: jest.Mocked<UpdateUserUseCase>;
   let deleteUserUseCase: jest.Mocked<DeleteUserUseCase>;
   let refreshClientSecretUseCase: jest.Mocked<RefreshClientSecretUseCase>;
+  let updatePasswordUseCase: jest.Mocked<UpdatePasswordUseCase>;
   let mockUser: User;
   let em: EntityManager;
 
@@ -49,6 +52,10 @@ describe('UsersResolver', () => {
           provide: RefreshClientSecretUseCase,
           useValue: createMock<RefreshClientSecretUseCase>(),
         },
+        {
+          provide: UpdatePasswordUseCase,
+          useValue: createMock<UpdatePasswordUseCase>(),
+        },
       ],
     }).compile();
 
@@ -58,6 +65,7 @@ describe('UsersResolver', () => {
     updateUserUseCase = module.get(UpdateUserUseCase);
     deleteUserUseCase = module.get(DeleteUserUseCase);
     refreshClientSecretUseCase = module.get(RefreshClientSecretUseCase);
+    updatePasswordUseCase = module.get(UpdatePasswordUseCase);
     em = module.get(EntityManager);
     mockUser = useUserFactory({}, em);
   });
@@ -99,6 +107,7 @@ describe('UsersResolver', () => {
         surname: 'Doe',
         credits: 100,
         role: UserRole.CUSTOMER,
+        password: 'StrongPass123!',
       };
       createUserUseCase.execute.mockResolvedValue(mockUser);
       const result = await resolver.createUser(createUserDto);
@@ -140,6 +149,24 @@ describe('UsersResolver', () => {
       const result = await resolver.refreshUserClientSecret(1);
       expect(result).toBe(mockUser);
       expect(refreshClientSecretUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+    });
+  });
+
+  describe('updateUserPassword', () => {
+    it('should update user password', async () => {
+      const updatePasswordDto: UpdatePasswordDto = {
+        currentPassword: 'oldPassword123',
+        newPassword: 'newPassword123',
+      };
+
+      updatePasswordUseCase.execute.mockResolvedValue(true);
+      const result = await resolver.updateUserPassword(1, updatePasswordDto);
+
+      expect(result).toBe(true);
+      expect(updatePasswordUseCase.execute).toHaveBeenCalledWith({
+        id: 1,
+        data: updatePasswordDto,
+      });
     });
   });
 });

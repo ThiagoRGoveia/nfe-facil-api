@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
 import { UuidAdapter } from '../adapters/uuid.adapter';
 import { SecretAdapter } from '../adapters/secret.adapter';
+import { Auth0Client } from '../auth/auth0.client';
 
 @Global()
 @Module({
@@ -37,7 +38,11 @@ import { SecretAdapter } from '../adapters/secret.adapter';
       provide: PinoLogger,
       useValue: createMock<PinoLogger>(),
     },
+    {
+      provide: Auth0Client,
+      useValue: createMock<Auth0Client>(),
+    },
   ],
-  exports: [PinoLogger, UuidAdapter, SecretAdapter],
+  exports: [PinoLogger, UuidAdapter, SecretAdapter, Auth0Client],
 })
 export class BaseIntegrationTestModule {}

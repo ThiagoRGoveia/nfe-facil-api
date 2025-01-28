@@ -72,6 +72,13 @@ export class User extends BaseEntity {
   @Property({ nullable: true })
   paymentExternalId?: string;
 
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Auth0 user identifier',
+  })
+  @Property()
+  auth0Id: string;
+
   @Field(() => UserRole)
   @ApiProperty({
     description: 'User role',

@@ -19,6 +19,7 @@ export class UserFactory extends Factory<User> {
       role: faker.helpers.arrayElement([UserRole.ADMIN, UserRole.CUSTOMER]),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
+      auth0Id: faker.string.uuid(),
     };
   }
 }

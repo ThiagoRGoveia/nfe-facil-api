@@ -8,6 +8,11 @@ import { UsersModule } from '@/core/users/users.module';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+import { Auth0Client } from '@/infra/auth/auth0.client';
+import { createMock } from '@golevelup/ts-jest';
+import { faker } from '@faker-js/faker';
+import { GetUsers200ResponseOneOfInner } from 'auth0';
+import { ApiResponse } from 'auth0';
 
 jest.setTimeout(100000);
 describe('UsersResolver (Integration)', () => {
@@ -15,6 +20,7 @@ describe('UsersResolver (Integration)', () => {
   let orm: MikroORM;
   let em: EntityManager;
   let user: User;
+  let auth0Client: jest.Mocked<Auth0Client>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,6 +31,7 @@ describe('UsersResolver (Integration)', () => {
     orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
+    auth0Client = module.get<jest.Mocked<Auth0Client>>(Auth0Client);
     await useDbSchema(orm);
     await app.init();
     user = await useDbUser({}, em);
@@ -118,6 +125,15 @@ describe('UsersResolver (Integration)', () => {
 
   describe('createUser', () => {
     it('should successfully create a user', async () => {
+      auth0Client.createUser.mockResolvedValue(
+        createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
+          data: {
+            user_id: faker.string.uuid(),
+            email: 'test@example.com',
+            email_verified: false,
+          },
+        }),
+      );
       const createUserMutation = `
         mutation CreateUser($input: CreateUserDto!) {
           createUser(input: $input) {
@@ -132,6 +148,7 @@ describe('UsersResolver (Integration)', () => {
         name: 'Test User',
         surname: 'Test User',
         email: 'test@example.com',
+        password: 'password123',
       };
 
       const response = await request(app.getHttpServer())
@@ -220,6 +237,71 @@ describe('UsersResolver (Integration)', () => {
         });
 
       expect(verifyResponse.body.data.findUserById).toBeNull();
+    });
+  });
+
+  describe('updateUserPassword', () => {
+    it('should update user password', async () => {
+      auth0Client.updatePassword.mockResolvedValue(
+        createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
+          data: {
+            user_id: faker.string.uuid(),
+            email: 'test@example.com',
+            email_verified: false,
+          },
+        }),
+      );
+      const updatePasswordMutation = `
+        mutation UpdateUserPassword($id: Float!, $input: UpdatePasswordDto!) {
+          updateUserPassword(id: $id, input: $input)
+        }
+      `;
+
+      const updatePasswordData = {
+        currentPassword: 'oldPassword123',
+        newPassword: 'newPassword123',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: updatePasswordMutation,
+          variables: {
+            id: user.id,
+            input: updatePasswordData,
+          },
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.errors).toBeUndefined();
+      expect(response.body.data.updateUserPassword).toBe(true);
+    });
+
+    it('should fail to update password for non-existent user', async () => {
+      const updatePasswordMutation = `
+        mutation UpdateUserPassword($id: Float!, $input: UpdatePasswordDto!) {
+          updateUserPassword(id: $id, input: $input)
+        }
+      `;
+
+      const updatePasswordData = {
+        currentPassword: 'oldPassword123',
+        newPassword: 'newPassword123',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/graphql')
+        .send({
+          query: updatePasswordMutation,
+          variables: {
+            id: 99999,
+            input: updatePasswordData,
+          },
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.errors).toBeDefined();
+      expect(response.body.errors[0].message).toBe('User not found');
     });
   });
 });

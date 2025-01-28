@@ -2,11 +2,13 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
 import { UpdateUserDto } from '../../../application/dtos/update-user.dto';
+import { UpdatePasswordDto } from '../../../application/dtos/update-password.dto';
 import { UserDbPort } from '../../../application/ports/users-db.port';
 import { CreateUserUseCase } from '../../../application/use-cases/create-user.use-case';
 import { UpdateUserUseCase } from '../../../application/use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '../../../application/use-cases/delete-user.use-case';
 import { RefreshClientSecretUseCase } from '../../../application/use-cases/refresh-client-secret.use-case';
+import { UpdatePasswordUseCase } from '../../../application/use-cases/update-password.use-case';
 import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
 import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
 import { Filters } from '@/infra/dtos/filter.dto';
@@ -23,6 +25,7 @@ export class UsersResolver {
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly refreshClientSecretUseCase: RefreshClientSecretUseCase,
+    private readonly updatePasswordUseCase: UpdatePasswordUseCase,
   ) {}
 
   @Query(() => User, { nullable: true })
@@ -47,6 +50,17 @@ export class UsersResolver {
   @Mutation(() => User)
   async updateUser(@Args('id', { type: () => Number }) id: number, @Args('input') input: UpdateUserDto): Promise<User> {
     return this.updateUserUseCase.execute({
+      id,
+      data: input,
+    });
+  }
+
+  @Mutation(() => Boolean)
+  async updateUserPassword(
+    @Args('id', { type: () => Number }) id: number,
+    @Args('input') input: UpdatePasswordDto,
+  ): Promise<boolean> {
+    return this.updatePasswordUseCase.execute({
       id,
       data: input,
     });

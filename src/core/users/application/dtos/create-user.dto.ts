@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../domain/entities/user.entity';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
 
 @InputType()
 export class CreateUserDto {
@@ -28,6 +28,16 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   email: string;
+
+  @Field(() => String)
+  @ApiProperty({
+    description: 'User password',
+    minLength: 8,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  password: string;
 
   @Field(() => Number)
   @ApiProperty({

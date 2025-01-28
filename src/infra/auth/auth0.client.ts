@@ -50,6 +50,23 @@ export class Auth0Client {
     }
   }
 
+  async updatePassword(userId: string, newPassword: string) {
+    try {
+      return await this.client.users.update({ id: userId }, { password: newPassword });
+    } catch (error) {
+      if (error.statusCode === 404) {
+        throw new NotFoundException('User not found');
+      }
+      if (error.statusCode === 400) {
+        throw new BadRequestException(error.message);
+      }
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        throw new UnauthorizedException('Not authorized to update user password');
+      }
+      throw new InternalServerErrorException('Failed to update password in Auth0');
+    }
+  }
+
   async disableUser(userId: string) {
     try {
       return await this.client.users.update({ id: userId }, { blocked: true });
