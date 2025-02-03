@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AuthzModule } from './infra/auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './infra/auth/jwt.guard';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { DataloaderType, defineConfig } from '@mikro-orm/core';
 import { Migrator } from '@mikro-orm/migrations';
@@ -59,11 +57,6 @@ import { GraphQLModule } from '@nestjs/graphql';
     }),
   ],
   controllers: [AppController],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}
