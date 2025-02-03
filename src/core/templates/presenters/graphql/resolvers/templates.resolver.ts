@@ -26,7 +26,7 @@ export class TemplatesResolver {
   ) {}
 
   @Query(() => Template, { nullable: true })
-  async findTemplateById(@Args('id', { type: () => Number }) id: number): Promise<Template | null> {
+  async findTemplateById(@Args('id', { type: () => String }) id: string): Promise<Template | null> {
     return this.templateDbPort.findByIdOrFail(id);
   }
 
@@ -53,7 +53,7 @@ export class TemplatesResolver {
   @Mutation(() => Template)
   async updateTemplate(
     @Context() context: GraphqlExpressContext,
-    @Args('id', { type: () => Number }) id: number,
+    @Args('id', { type: () => String }) id: string,
     @Args('input') input: UpdateTemplateDto,
   ): Promise<Template> {
     return this.updateTemplateUseCase.execute({
@@ -66,7 +66,7 @@ export class TemplatesResolver {
   @Mutation(() => Boolean)
   async deleteTemplate(
     @Context() context: GraphqlExpressContext,
-    @Args('id', { type: () => Number }) id: number,
+    @Args('id', { type: () => String }) id: string,
   ): Promise<boolean> {
     await this.deleteTemplateUseCase.execute({
       user: context.req.user,

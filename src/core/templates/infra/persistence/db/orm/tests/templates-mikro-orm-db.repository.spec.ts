@@ -31,7 +31,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
   describe('create', () => {
     it('should create a new template', () => {
       // Arrange
-      const user = useUserFactory({ id: 1 }, em);
+      const user = useUserFactory({ id: '1' }, em);
       const templateData: RequiredEntityData<Template> = {
         name: 'Test Template',
         processCode: 'test-process',
@@ -63,7 +63,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
   describe('update', () => {
     it('should update an existing template', () => {
       // Arrange
-      const templateId = 1;
+      const templateId = '1';
       const updateData: Partial<RequiredEntityData<Template>> = {
         name: 'Updated Template',
         metadata: { fields: ['updated'] },
@@ -86,7 +86,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
   describe('findById', () => {
     it('should find template by id', async () => {
       // Arrange
-      const templateId = 1;
+      const templateId = '1';
       const template = new Template();
       const findOneSpy = jest.spyOn(em, 'findOne').mockResolvedValue(template);
 
@@ -100,7 +100,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
 
     it('should return null if template not found', async () => {
       // Arrange
-      const templateId = 999;
+      const templateId = '999';
       jest.spyOn(em, 'findOne').mockResolvedValue(null);
 
       // Act
@@ -114,7 +114,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
   describe('delete', () => {
     it('should delete template by id', async () => {
       // Arrange
-      const templateId = 1;
+      const templateId = '1';
       const template = new Template();
       const getReferenceSpy = jest.spyOn(em, 'getReference').mockReturnValue(template);
       const removeAndFlushSpy = jest.spyOn(em, 'removeAndFlush').mockResolvedValue(undefined);

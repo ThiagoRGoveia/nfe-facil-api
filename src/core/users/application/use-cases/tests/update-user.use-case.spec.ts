@@ -45,7 +45,7 @@ describe('UpdateUserUseCase', () => {
 
   it('should update user successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1 }, em);
+    const user = useUserFactory({ id: '1' }, em);
     const updateUserDto: UpdateUserDto = {
       name: 'Updated John',
       surname: 'Updated Doe',
@@ -74,7 +74,7 @@ describe('UpdateUserUseCase', () => {
     userDbPort.save.mockRejectedValue(error);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 1, data: updateUserDto })).rejects.toThrow(
+    await expect(useCase.execute({ id: '1', data: updateUserDto })).rejects.toThrow(
       new InternalServerErrorException('Failed to update user in database'),
     );
   });

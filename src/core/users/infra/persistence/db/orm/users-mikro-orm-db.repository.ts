@@ -10,7 +10,7 @@ export class UserMikroOrmDbRepository extends EntityRepository(User) implements 
     return this.em.create(User, data);
   }
 
-  update(id: number, data: Partial<DtoWithClientCredentials<RequiredEntityData<User>>>): User {
+  update(id: User['id'], data: Partial<DtoWithClientCredentials<RequiredEntityData<User>>>): User {
     const user = this.em.getReference(User, id);
     user.assign(data);
     return user;

@@ -43,7 +43,7 @@ describe('UsersResolver (Integration)', () => {
   describe('findUserById', () => {
     it('should find a user by id', async () => {
       const findUserQuery = `
-        query FindUser($id: Float!) {
+        query FindUser($id: String!) {
           findUserById(id: $id) {
             id
             name
@@ -67,7 +67,7 @@ describe('UsersResolver (Integration)', () => {
 
     it('should return null for non-existent user', async () => {
       const findUserQuery = `
-        query FindUser($id: Float!) {
+        query FindUser($id: String!) {
           findUserById(id: $id) {
             id
           }
@@ -78,7 +78,7 @@ describe('UsersResolver (Integration)', () => {
         .post('/graphql')
         .send({
           query: findUserQuery,
-          variables: { id: 99999 },
+          variables: { id: '99999' },
         });
 
       expect(response.status).toBe(200);
@@ -165,7 +165,7 @@ describe('UsersResolver (Integration)', () => {
   describe('updateUser', () => {
     it('should successfully update a user', async () => {
       const updateUserMutation = `
-        mutation UpdateUser($id: Float!, $input: UpdateUserDto!) {
+        mutation UpdateUser($id: String!, $input: UpdateUserDto!) {
           updateUser(id: $id, input: $input) {
             id
             name
@@ -200,7 +200,7 @@ describe('UsersResolver (Integration)', () => {
   describe('deleteUser', () => {
     it('should successfully delete a user', async () => {
       const deleteUserMutation = `
-        mutation DeleteUser($id: Float!) {
+        mutation DeleteUser($id: String!) {
           deleteUser(id: $id)
         }
       `;
@@ -218,7 +218,7 @@ describe('UsersResolver (Integration)', () => {
 
       // Verify user is deleted
       const findUserQuery = `
-        query FindUser($id: Float!) {
+        query FindUser($id: String!) {
           findUserById(id: $id) {
             id
           }
@@ -246,7 +246,7 @@ describe('UsersResolver (Integration)', () => {
         }),
       );
       const updatePasswordMutation = `
-        mutation UpdateUserPassword($id: Float!, $input: UpdatePasswordDto!) {
+        mutation UpdateUserPassword($id: String!, $input: UpdatePasswordDto!) {
           updateUserPassword(id: $id, input: $input)
         }
       `;
@@ -273,7 +273,7 @@ describe('UsersResolver (Integration)', () => {
 
     it('should fail to update password for non-existent user', async () => {
       const updatePasswordMutation = `
-        mutation UpdateUserPassword($id: Float!, $input: UpdatePasswordDto!) {
+        mutation UpdateUserPassword($id: String!, $input: UpdatePasswordDto!) {
           updateUserPassword(id: $id, input: $input)
         }
       `;
@@ -288,7 +288,7 @@ describe('UsersResolver (Integration)', () => {
         .send({
           query: updatePasswordMutation,
           variables: {
-            id: 99999,
+            id: '99999',
             input: updatePasswordData,
           },
         });

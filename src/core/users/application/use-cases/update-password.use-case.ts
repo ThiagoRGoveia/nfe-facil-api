@@ -3,9 +3,10 @@ import { PinoLogger } from 'nestjs-pino';
 import { AuthPort } from '@/infra/auth/ports/auth.port';
 import { UserDbPort } from '../ports/users-db.port';
 import { UpdatePasswordDto } from '../dtos/update-password.dto';
+import { User } from '../../domain/entities/user.entity';
 
 interface UpdatePasswordCommand {
-  id: number;
+  id: User['id'];
   data: UpdatePasswordDto;
 }
 

@@ -5,7 +5,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { PinoLogger } from 'nestjs-pino';
 
 interface UpdateUserInput {
-  id: number;
+  id: User['id'];
   data: UpdateUserDto;
 }
 

@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
 
 interface RefreshClientSecretInput {
-  id: number;
+  id: User['id'];
 }
 
 @Injectable()

@@ -3,7 +3,7 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 
-export abstract class BaseDbPort<T = unknown> {
+export abstract class BaseDbPort<T extends { id: string | number }> {
   /**
    * Persists the current state of the entity to the database
    * @returns A promise that resolves when the save operation is complete
@@ -24,39 +24,39 @@ export abstract class BaseDbPort<T = unknown> {
    * @param id - The unique identifier of the entity
    * @returns A promise that resolves to the entity if found, or null if not found
    */
-  abstract findById(id: number): Promise<T | null>;
+  abstract findById(id: T['id']): Promise<T | null>;
 
   /**
    * Retrieves a single entity by its ID
    * @param id - The unique identifier of the entity
    * @returns A promise that resolves to the entity if found, or null if not found
    */
-  abstract findByIdOrFail(id: number): Promise<T>;
+  abstract findByIdOrFail(id: T['id']): Promise<T>;
 
   /**
    * Checks if an entity with the specified ID exists
    * @param id - The unique identifier to check
    * @returns A promise that resolves to true if the entity exists, false otherwise
    */
-  abstract exists(id: number): Promise<boolean>;
+  abstract exists(id: T['id']): Promise<boolean>;
 
   /**
    * Verifies that all provided IDs correspond to existing entities
    * @param ids - Array of entity IDs to check
    * @returns A promise that resolves to true if all entities exist, false if any are missing
    */
-  abstract allExist(ids: number[]): Promise<boolean>;
+  abstract allExist(ids: T['id'][]): Promise<boolean>;
 
   /**
    * Permanently removes an entity from the database
    * @param id - The unique identifier of the entity to delete
    * @returns A promise that resolves when the deletion is complete
    */
-  abstract delete(id: number): Promise<void>;
+  abstract delete(id: T['id']): Promise<void>;
 
   /**
    * Marks an entity for deletion in the next database operation batch
    * @param ids - The ID of the entity to be marked for deletion
    */
-  abstract setToBeDeleted(ids: number): void;
+  abstract setToBeDeleted(ids: T['id']): void;
 }

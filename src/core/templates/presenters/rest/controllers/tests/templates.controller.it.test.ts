@@ -88,15 +88,21 @@ describe('TemplateController (REST Integration)', () => {
   describe('GET /templates', () => {
     it('should list all templates', async () => {
       // Create second template
-      await useDbTemplate({}, em);
+      const secondTemplate = await useDbTemplate({}, em);
 
       const { body } = await request(app.getHttpServer()).get('/templates').expect(200);
 
       expect(body.total).toBe(2);
       expect(body.items).toHaveLength(2);
+      body.items.sort((a, b) => a.id.localeCompare(b.id));
+      const templates = [template, secondTemplate].sort((a, b) => a.id.localeCompare(b.id));
       expect(body.items[0]).toMatchObject({
-        id: template.id,
-        name: template.name,
+        id: templates[0].id,
+        name: templates[0].name,
+      });
+      expect(body.items[1]).toMatchObject({
+        id: templates[1].id,
+        name: templates[1].name,
       });
     });
   });

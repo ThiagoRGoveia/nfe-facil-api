@@ -38,8 +38,8 @@ describe('UpdateTemplateUseCase', () => {
     templateDbPort = module.get(TemplateDbPort);
     em = module.get(EntityManager);
 
-    testUser = useUserFactory({ id: 1 }, em);
-    testTemplate = useTemplateFactory({ id: 1, owner: testUser }, em);
+    testUser = useUserFactory({ id: '1' }, em);
+    testTemplate = useTemplateFactory({ id: '1', owner: testUser }, em);
   });
 
   const validUpdate: UpdateTemplateDto = {
@@ -68,11 +68,11 @@ describe('UpdateTemplateUseCase', () => {
   it('should prevent updating non-existent templates', async () => {
     templateDbPort.findById.mockResolvedValue(null);
 
-    await expect(useCase.execute({ user: testUser, id: 999, data: validUpdate })).rejects.toThrow(NotFoundException);
+    await expect(useCase.execute({ user: testUser, id: '999', data: validUpdate })).rejects.toThrow(NotFoundException);
   });
 
   it('should validate template ownership', async () => {
-    const otherUser = useUserFactory({ id: 2, role: UserRole.CUSTOMER }, em);
+    const otherUser = useUserFactory({ id: '2', role: UserRole.CUSTOMER }, em);
     templateDbPort.findById.mockResolvedValue(testTemplate);
 
     await expect(useCase.execute({ user: otherUser, id: testTemplate.id, data: validUpdate })).rejects.toThrow(

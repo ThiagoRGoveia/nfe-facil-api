@@ -1,4 +1,5 @@
 import { Template } from '@/core/templates/domain/entities/template.entity';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
@@ -8,6 +9,7 @@ export class TemplateFactory extends Factory<Template> {
 
   definition(): Partial<Template> {
     return {
+      id: new UuidAdapter().generate(),
       name: faker.lorem.word(),
       processCode: faker.lorem.word(),
       metadata: {

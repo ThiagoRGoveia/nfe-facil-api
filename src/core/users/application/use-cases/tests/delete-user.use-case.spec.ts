@@ -47,7 +47,7 @@ describe('DeleteUserUseCase', () => {
 
   it('should delete user successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    const user = useUserFactory({ id: '1', auth0Id: 'auth0|123' }, em);
     userDbPort.findById.mockResolvedValue(user);
     userDbPort.delete.mockResolvedValue();
 
@@ -66,12 +66,12 @@ describe('DeleteUserUseCase', () => {
     userDbPort.findById.mockResolvedValue(null);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 999 })).rejects.toThrow(new NotFoundException('User not found'));
+    await expect(useCase.execute({ id: '999' })).rejects.toThrow(new NotFoundException('User not found'));
   });
 
   it('should handle auth0 deletion errors', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    const user = useUserFactory({ id: '1', auth0Id: 'auth0|123' }, em);
     const authError = new Error('Auth0 error');
     userDbPort.findById.mockResolvedValue(user);
     authPort.deleteUser.mockRejectedValue(authError);

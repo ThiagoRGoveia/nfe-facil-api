@@ -20,6 +20,7 @@ import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
+import { SortDirection } from '@/infra/dtos/sort.dto';
 
 const PaginatedTemplateResponse = PaginatedRestResponse(Template);
 
@@ -65,7 +66,7 @@ export class TemplateController {
     status: HttpStatus.NOT_FOUND,
     description: 'Template not found',
   })
-  async findOne(@Param('id') id: number): Promise<Template> {
+  async findOne(@Param('id') id: Template['id']): Promise<Template> {
     return this.templateDbPort.findByIdOrFail(id);
   }
 
@@ -79,7 +80,8 @@ export class TemplateController {
     const pagination = query.toPagination();
     const sort = query.toSort();
     if (req.user.role === UserRole.ADMIN) {
-      return await this.templateDbPort.findAll(undefined, pagination, sort);
+      const defaultSort = { field: 'createdAt', direction: SortDirection.DESC };
+      return await this.templateDbPort.findAll(undefined, pagination, { ...defaultSort, ...sort });
     } else {
       return await this.templateDbPort.findByOwner(req.user.id, undefined, pagination, sort);
     }
@@ -105,7 +107,7 @@ export class TemplateController {
   })
   async update(
     @Req() req: Request,
-    @Param('id') id: number,
+    @Param('id') id: Template['id'],
     @Body() updateTemplateDto: UpdateTemplateDto,
   ): Promise<Template> {
     return this.updateTemplateUseCase.execute({
@@ -129,7 +131,7 @@ export class TemplateController {
     description: 'Insufficient permissions',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Req() req: Request, @Param('id') id: number): Promise<void> {
+  async remove(@Req() req: Request, @Param('id') id: Template['id']): Promise<void> {
     await this.deleteTemplateUseCase.execute({
       user: req.user,
       id,

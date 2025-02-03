@@ -33,7 +33,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
     await app.init();
     await useDbSchema(orm);
 
-    testUser = await useDbUser({ id: 1 }, em);
+    testUser = await useDbUser({ id: '1' }, em);
 
     testTemplate = await useDbTemplate(
       {
@@ -104,7 +104,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
     });
 
     it('should return null for non-existent id', async () => {
-      const foundTemplate = await repository.findById(999);
+      const foundTemplate = await repository.findById('999');
       expect(foundTemplate).toBeNull();
     });
   });

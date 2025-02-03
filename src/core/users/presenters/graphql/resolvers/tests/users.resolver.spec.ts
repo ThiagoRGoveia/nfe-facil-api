@@ -77,9 +77,9 @@ describe('UsersResolver', () => {
   describe('findUserById', () => {
     it('should find a user by id', async () => {
       userDbPort.findById.mockResolvedValue(mockUser);
-      const result = await resolver.findUserById(1);
+      const result = await resolver.findUserById('1');
       expect(result).toBe(mockUser);
-      expect(userDbPort.findById).toHaveBeenCalledWith(1);
+      expect(userDbPort.findById).toHaveBeenCalledWith('1');
     });
   });
 
@@ -125,10 +125,10 @@ describe('UsersResolver', () => {
       em.clear();
       const updatedUser = useUserFactory({ ...mockUser, name: 'John Updated', email: 'john@example.com' }, em);
       updateUserUseCase.execute.mockResolvedValue(updatedUser);
-      const result = await resolver.updateUser(1, updateUserDto);
+      const result = await resolver.updateUser('1', updateUserDto);
       expect(result.name).toBe('John Updated');
       expect(updateUserUseCase.execute).toHaveBeenCalledWith({
-        id: 1,
+        id: '1',
         data: updateUserDto,
       });
     });
@@ -137,18 +137,18 @@ describe('UsersResolver', () => {
   describe('deleteUser', () => {
     it('should delete a user', async () => {
       deleteUserUseCase.execute.mockResolvedValue(undefined);
-      const result = await resolver.deleteUser(1);
+      const result = await resolver.deleteUser('1');
       expect(result).toBe(true);
-      expect(deleteUserUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(deleteUserUseCase.execute).toHaveBeenCalledWith({ id: '1' });
     });
   });
 
   describe('refreshUserClientSecret', () => {
     it('should refresh user client secret', async () => {
       refreshClientSecretUseCase.execute.mockResolvedValue(mockUser);
-      const result = await resolver.refreshUserClientSecret(1);
+      const result = await resolver.refreshUserClientSecret('1');
       expect(result).toBe(mockUser);
-      expect(refreshClientSecretUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(refreshClientSecretUseCase.execute).toHaveBeenCalledWith({ id: '1' });
     });
   });
 
@@ -160,11 +160,11 @@ describe('UsersResolver', () => {
       };
 
       updatePasswordUseCase.execute.mockResolvedValue(true);
-      const result = await resolver.updateUserPassword(1, updatePasswordDto);
+      const result = await resolver.updateUserPassword('1', updatePasswordDto);
 
       expect(result).toBe(true);
       expect(updatePasswordUseCase.execute).toHaveBeenCalledWith({
-        id: 1,
+        id: '1',
         data: updatePasswordDto,
       });
     });

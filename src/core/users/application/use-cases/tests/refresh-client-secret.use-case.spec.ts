@@ -51,7 +51,7 @@ describe('RefreshClientSecretUseCase', () => {
 
   it('should refresh client secret successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1 }, em);
+    const user = useUserFactory({ id: '1' }, em);
     const oldSecret = user.clientSecret;
     const newSecret = 'NEW-GENERATED-SECRET';
 
@@ -77,12 +77,12 @@ describe('RefreshClientSecretUseCase', () => {
     userDbPort.exists.mockResolvedValue(false);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 1 })).rejects.toThrow(new NotFoundException('User not found'));
+    await expect(useCase.execute({ id: '1' })).rejects.toThrow(new NotFoundException('User not found'));
   });
 
   it('should handle errors properly', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1 }, em);
+    const user = useUserFactory({ id: '1' }, em);
     const error = new Error('Database error');
 
     userDbPort.findById.mockResolvedValue(user);

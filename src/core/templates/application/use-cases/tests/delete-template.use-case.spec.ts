@@ -37,12 +37,12 @@ describe('DeleteTemplateUseCase', () => {
     templateDbPort = module.get(TemplateDbPort);
     em = module.get(EntityManager);
 
-    testUser = useUserFactory({ id: 1, role: UserRole.ADMIN }, em);
-    testTemplate = useTemplateFactory({ id: 1, owner: testUser }, em);
+    testUser = useUserFactory({ id: '1', role: UserRole.ADMIN }, em);
+    testTemplate = useTemplateFactory({ id: '1', owner: testUser }, em);
   });
 
   it('should delete owned template', async () => {
-    templateDbPort.findById.mockResolvedValue(useTemplateFactory({ id: 1, owner: testUser, isPublic: false }, em));
+    templateDbPort.findById.mockResolvedValue(useTemplateFactory({ id: '1', owner: testUser, isPublic: false }, em));
 
     await useCase.execute({
       user: testUser,
@@ -55,18 +55,18 @@ describe('DeleteTemplateUseCase', () => {
   it('should prevent deleting non-existent templates', async () => {
     templateDbPort.findById.mockResolvedValue(null);
 
-    await expect(useCase.execute({ user: testUser, id: 999 })).rejects.toThrow(NotFoundException);
+    await expect(useCase.execute({ user: testUser, id: '999' })).rejects.toThrow(NotFoundException);
   });
 
   it('should prevent deleting others templates', async () => {
-    const otherUser = useUserFactory({ id: 2, role: UserRole.CUSTOMER }, em);
+    const otherUser = useUserFactory({ id: '2', role: UserRole.CUSTOMER }, em);
     templateDbPort.findById.mockResolvedValue(testTemplate);
 
     await expect(useCase.execute({ user: otherUser, id: testTemplate.id })).rejects.toThrow(BadRequestException);
   });
 
   it('should allow admins to delete any template', async () => {
-    const adminUser = useUserFactory({ id: 3, role: UserRole.ADMIN }, em);
+    const adminUser = useUserFactory({ id: '3', role: UserRole.ADMIN }, em);
     templateDbPort.findById.mockResolvedValue(testTemplate);
 
     await useCase.execute({

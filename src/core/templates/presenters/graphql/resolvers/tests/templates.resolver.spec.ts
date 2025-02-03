@@ -68,12 +68,12 @@ describe('TemplatesResolver', () => {
 
   describe('findTemplateById', () => {
     it('should return a template by id', async () => {
-      const template = useTemplateFactory({ id: 1 }, em);
+      const template = useTemplateFactory({ id: '1' }, em);
       templateDbPort.findByIdOrFail.mockResolvedValue(template);
 
-      const result = await resolver.findTemplateById(1);
+      const result = await resolver.findTemplateById('1');
       expect(result).toEqual(template);
-      expect(templateDbPort.findByIdOrFail).toHaveBeenCalledWith(1);
+      expect(templateDbPort.findByIdOrFail).toHaveBeenCalledWith('1');
     });
   });
 
@@ -98,11 +98,11 @@ describe('TemplatesResolver', () => {
     it('should create a template', async () => {
       const mockCtx = createMock<GraphqlExpressContext>({
         req: createMock<Request>({
-          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+          user: createMock<User>({ id: '1', role: UserRole.CUSTOMER }),
         }),
       });
       const input = createMock<CreateTemplateDto>({ name: 'Test Template' });
-      const expected = useTemplateFactory({ id: 1 }, em);
+      const expected = useTemplateFactory({ id: '1' }, em);
 
       createTemplateUseCase.execute.mockResolvedValue(expected);
       const result = await resolver.createTemplate(mockCtx, input);
@@ -119,19 +119,19 @@ describe('TemplatesResolver', () => {
     it('should update a template', async () => {
       const mockCtx = createMock<GraphqlExpressContext>({
         req: createMock<Request>({
-          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+          user: createMock<User>({ id: '1', role: UserRole.CUSTOMER }),
         }),
       });
       const input = createMock<UpdateTemplateDto>({ name: 'Updated Name' });
-      const updatedTemplate = useTemplateFactory({ id: 1, name: 'Updated Name' }, em);
+      const updatedTemplate = useTemplateFactory({ id: '1', name: 'Updated Name' }, em);
 
       updateTemplateUseCase.execute.mockResolvedValue(updatedTemplate);
-      const result = await resolver.updateTemplate(mockCtx, 1, input);
+      const result = await resolver.updateTemplate(mockCtx, '1', input);
 
       expect(result).toEqual(updatedTemplate);
       expect(updateTemplateUseCase.execute).toHaveBeenCalledWith({
         user: mockCtx.req.user,
-        id: 1,
+        id: '1',
         data: input,
       });
     });
@@ -141,15 +141,15 @@ describe('TemplatesResolver', () => {
     it('should delete a template', async () => {
       const mockCtx = createMock<GraphqlExpressContext>({
         req: createMock<Request>({
-          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+          user: createMock<User>({ id: '1', role: UserRole.CUSTOMER }),
         }),
       });
 
-      const result = await resolver.deleteTemplate(mockCtx, 1);
+      const result = await resolver.deleteTemplate(mockCtx, '1');
       expect(result).toBe(true);
       expect(deleteTemplateUseCase.execute).toHaveBeenCalledWith({
         user: mockCtx.req.user,
-        id: 1,
+        id: '1',
       });
     });
   });

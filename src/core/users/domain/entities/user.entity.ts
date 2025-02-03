@@ -2,6 +2,7 @@ import { Entity, PrimaryKey, Property, Enum } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -15,12 +16,12 @@ registerEnumType(UserRole, {
 @ObjectType()
 @Entity({ tableName: 'user' })
 export class User extends BaseEntity<'isSocial'> {
-  @Field(() => Number)
+  @Field(() => String)
   @ApiProperty({
     description: 'User unique identifier',
   })
   @PrimaryKey()
-  id: number;
+  id: string = new UuidAdapter().generate();
 
   @Field(() => String, { nullable: true })
   @ApiProperty({

@@ -8,7 +8,7 @@ export class UserFactory extends Factory<User> {
 
   definition(): RequiredEntityData<User> {
     return {
-      id: faker.number.int({ min: 1, max: 1000 }),
+      id: faker.string.uuid(),
       name: faker.person.firstName(),
       surname: faker.person.lastName(),
       clientId: faker.string.uuid(),

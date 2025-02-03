@@ -63,7 +63,7 @@ describe('CreateUserSocialUseCase', () => {
 
   it('should create social user successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, isSocial: true }, em);
+    const user = useUserFactory({ id: '1', isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
       auth0Id: 'auth0|123456789',
     };
@@ -105,7 +105,7 @@ describe('CreateUserSocialUseCase', () => {
 
   it('should create social user with minimal data', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, isSocial: true }, em);
+    const user = useUserFactory({ id: '1', isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
       auth0Id: 'auth0|987654321',
     };

@@ -2,9 +2,10 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { UserDbPort } from '../ports/users-db.port';
 import { PinoLogger } from 'nestjs-pino';
 import { AuthPort } from '@/infra/auth/ports/auth.port';
+import { User } from '../../domain/entities/user.entity';
 
 interface DeleteUserInput {
-  id: number;
+  id: User['id'];
 }
 
 @Injectable()

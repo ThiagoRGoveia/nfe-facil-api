@@ -5,11 +5,13 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort, SortDirection } from '@/infra/dtos/sort.dto';
 import { BaseMikroOrmDbRepository, EntityRepository } from '../_base-mikro-orm-db.repository';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 @Entity()
-class MockEntity {
+class MockEntity extends BaseEntity {
   @PrimaryKey()
-  id: number;
+  id: string = new UuidAdapter().generate();
 
   @Property()
   name: string;
@@ -59,18 +61,18 @@ describe('MockEntityRepository (unit)', () => {
 
   it('should return null if no entity is found by id', async () => {
     jest.spyOn(em, 'findOne').mockResolvedValueOnce(null);
-    const entity = await mockEntityRepository.findById(1);
+    const entity = await mockEntityRepository.findById('1');
     expect(entity).toBeNull();
   });
 
   it('should return the entity if an entity with the given id is found', async () => {
-    const dbEntity = { id: 1, name: 'Test Entity' };
+    const dbEntity = { id: '1', name: 'Test Entity' };
 
     jest.spyOn(em, 'findOne').mockImplementationOnce(() => {
       return Promise.resolve(dbEntity);
     });
 
-    const entity = await mockEntityRepository.findById(1);
+    const entity = await mockEntityRepository.findById('1');
     expect(entity).toBeDefined();
     expect(entity).toBe(dbEntity);
   });
@@ -122,25 +124,25 @@ describe('MockEntityRepository (unit)', () => {
 
   it('should check if an entity exists by id', async () => {
     jest.spyOn(em, 'findOne').mockResolvedValueOnce(new MockEntity());
-    const exists = await mockEntityRepository.exists(1);
+    const exists = await mockEntityRepository.exists('1');
     expect(exists).toBe(true);
   });
 
   it('should return false if entity does not exist', async () => {
     jest.spyOn(em, 'findOne').mockResolvedValueOnce(null);
-    const exists = await mockEntityRepository.exists(1);
+    const exists = await mockEntityRepository.exists('1');
     expect(exists).toBe(false);
   });
 
   it('should check if multiple entities exist by ids', async () => {
     jest.spyOn(em, 'find').mockResolvedValueOnce([new MockEntity(), new MockEntity()]);
-    const exists = await mockEntityRepository.allExist([1, 2]);
+    const exists = await mockEntityRepository.allExist(['1', '2']);
     expect(exists).toBe(true);
   });
 
   it('should return false if not all requested entities exist', async () => {
     jest.spyOn(em, 'find').mockResolvedValueOnce([new MockEntity()]);
-    const exists = await mockEntityRepository.allExist([1, 2]);
+    const exists = await mockEntityRepository.allExist(['1', '2']);
     expect(exists).toBe(false);
   });
 
@@ -149,9 +151,9 @@ describe('MockEntityRepository (unit)', () => {
     const removeAndFlushSpy = jest.spyOn(em, 'removeAndFlush').mockResolvedValueOnce(undefined);
     const getReferenceSpy = jest.spyOn(em, 'getReference').mockReturnValueOnce(entity);
 
-    await mockEntityRepository.delete(1);
+    await mockEntityRepository.delete('1');
 
-    expect(getReferenceSpy).toHaveBeenCalledWith(MockEntity, 1);
+    expect(getReferenceSpy).toHaveBeenCalledWith(MockEntity, '1');
     expect(removeAndFlushSpy).toHaveBeenCalledWith(entity);
   });
 });

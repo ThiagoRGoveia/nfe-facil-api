@@ -68,7 +68,7 @@ describe('UserMikroOrmDbRepository (integration)', () => {
 
   describe('update', () => {
     it('should update an existing user', async () => {
-      testUser = await useDbUser({ id: 1 }, em);
+      testUser = await useDbUser({ id: '1' }, em);
       const updateData: UpdateUserDto = {
         name: 'Updated Name',
         surname: 'Updated Surname',

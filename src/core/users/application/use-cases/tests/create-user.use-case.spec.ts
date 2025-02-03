@@ -63,7 +63,7 @@ describe('CreateUserUseCase', () => {
 
   it('should create user successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1 }, em);
+    const user = useUserFactory({ id: '1' }, em);
     const createUserDto: CreateUserDto = {
       name: 'John',
       surname: 'Doe',

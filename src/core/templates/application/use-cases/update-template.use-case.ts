@@ -8,7 +8,7 @@ import { UserRole } from '@/core/users/domain/entities/user.entity';
 
 interface UpdateTemplateInput {
   user: User;
-  id: number;
+  id: Template['id'];
   data: UpdateTemplateDto;
 }
 

@@ -48,7 +48,7 @@ describe('UpdatePasswordUseCase', () => {
 
   it('should update password successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    const user = useUserFactory({ id: '1', auth0Id: 'auth0|123' }, em);
     const updatePasswordDto: UpdatePasswordDto = {
       currentPassword: 'oldPassword123',
       newPassword: 'newPassword123',
@@ -64,11 +64,11 @@ describe('UpdatePasswordUseCase', () => {
     );
 
     // Act
-    const result = await useCase.execute({ id: 1, data: updatePasswordDto });
+    const result = await useCase.execute({ id: '1', data: updatePasswordDto });
 
     // Assert
     expect(result).toBe(true);
-    expect(userDbPort.findById).toHaveBeenCalledWith(1);
+    expect(userDbPort.findById).toHaveBeenCalledWith('1');
     expect(authPort.updatePassword).toHaveBeenCalledWith(user.auth0Id, updatePasswordDto.newPassword);
   });
 
@@ -82,7 +82,7 @@ describe('UpdatePasswordUseCase', () => {
     userDbPort.findById.mockResolvedValue(null);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 1, data: updatePasswordDto })).rejects.toThrow(
+    await expect(useCase.execute({ id: '1', data: updatePasswordDto })).rejects.toThrow(
       new BadRequestException('User not found'),
     );
     expect(authPort.updatePassword).not.toHaveBeenCalled();
@@ -90,7 +90,7 @@ describe('UpdatePasswordUseCase', () => {
 
   it('should handle Auth0 update failure', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    const user = useUserFactory({ id: '1', auth0Id: 'auth0|123' }, em);
     const updatePasswordDto: UpdatePasswordDto = {
       currentPassword: 'oldPassword123',
       newPassword: 'newPassword123',
@@ -101,7 +101,7 @@ describe('UpdatePasswordUseCase', () => {
     authPort.updatePassword.mockRejectedValue(error);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 1, data: updatePasswordDto })).rejects.toThrow(
+    await expect(useCase.execute({ id: '1', data: updatePasswordDto })).rejects.toThrow(
       new BadRequestException('Failed to update password'),
     );
   });

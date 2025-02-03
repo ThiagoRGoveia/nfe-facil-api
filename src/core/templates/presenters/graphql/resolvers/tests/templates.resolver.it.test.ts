@@ -45,7 +45,7 @@ describe('TemplatesResolver (Integration)', () => {
   describe('findTemplateById', () => {
     it('should find a template by id', async () => {
       const query = `
-        query FindTemplate($id: Float!) {
+        query FindTemplate($id: String!) {
           findTemplateById(id: $id) {
             id
             name
@@ -80,7 +80,7 @@ describe('TemplatesResolver (Integration)', () => {
 
     it('should return null for non-existent template', async () => {
       const query = `
-        query FindTemplate($id: Float!) {
+        query FindTemplate($id: String!) {
           findTemplateById(id: $id) {
             id
           }
@@ -91,7 +91,7 @@ describe('TemplatesResolver (Integration)', () => {
         .post('/graphql')
         .send({
           query,
-          variables: { id: 99999 },
+          variables: { id: '99999' },
         });
 
       expect(response.status).toBe(200);
@@ -171,7 +171,7 @@ describe('TemplatesResolver (Integration)', () => {
   describe('updateTemplate', () => {
     it('should update an existing template', async () => {
       const mutation = `
-        mutation UpdateTemplate($id: Float!, $input: UpdateTemplateDto!) {
+        mutation UpdateTemplate($id: String!, $input: UpdateTemplateDto!) {
           updateTemplate(id: $id, input: $input) {
             id
             name
@@ -215,7 +215,7 @@ describe('TemplatesResolver (Integration)', () => {
   describe('deleteTemplate', () => {
     it('should delete a template', async () => {
       const mutation = `
-        mutation DeleteTemplate($id: Float!) {
+        mutation DeleteTemplate($id: String!) {
           deleteTemplate(id: $id)
         }
       `;
@@ -242,7 +242,7 @@ describe('TemplatesResolver (Integration)', () => {
   describe('owner field resolver', () => {
     it('should resolve template owner', async () => {
       const query = `
-        query GetTemplateWithOwner($id: Float!) {
+        query GetTemplateWithOwner($id: String!) {
           findTemplateById(id: $id) {
             id
             owner {

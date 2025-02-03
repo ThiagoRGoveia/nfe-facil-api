@@ -59,9 +59,9 @@ describe('TemplateController', () => {
     it('should create a template', async () => {
       const createDto = createMock<CreateTemplateDto>();
       const mockReq = createMock<Request>({
-        user: createMock<{ id: number; role: UserRole }>({ id: 1, role: UserRole.CUSTOMER }),
+        user: createMock<{ id: string; role: UserRole }>({ id: '1', role: UserRole.CUSTOMER }),
       });
-      const expected = useTemplateFactory({ id: 1 }, em);
+      const expected = useTemplateFactory({ id: '1' }, em);
 
       createTemplateUseCase.execute.mockResolvedValue(expected);
       const result = await controller.create(mockReq, createDto);
@@ -76,12 +76,12 @@ describe('TemplateController', () => {
 
   describe('findOne', () => {
     it('should find a template by id', async () => {
-      const template = useTemplateFactory({ id: 1 }, em);
+      const template = useTemplateFactory({ id: '1' }, em);
       templateDbPort.findByIdOrFail.mockResolvedValue(template);
 
-      const result = await controller.findOne(1);
+      const result = await controller.findOne('1');
       expect(result).toEqual(template);
-      expect(templateDbPort.findByIdOrFail).toHaveBeenCalledWith(1);
+      expect(templateDbPort.findByIdOrFail).toHaveBeenCalledWith('1');
     });
   });
 
@@ -109,7 +109,7 @@ describe('TemplateController', () => {
 
     it('should handle regular user query', async () => {
       const mockReq = createMock<Request>({
-        user: createMock<{ id: number; role: UserRole }>({ id: 2, role: UserRole.CUSTOMER }),
+        user: createMock<{ id: string; role: UserRole }>({ id: '2', role: UserRole.CUSTOMER }),
       });
       const query = createMock<RestQueryDto>();
       const paginatedResponse = createMock<PaginatedResponse<Template>>({
@@ -141,17 +141,17 @@ describe('TemplateController', () => {
         },
       });
       const mockReq = createMock<Request>({
-        user: createMock<{ id: number; role: UserRole }>({ id: 1, role: UserRole.CUSTOMER }),
+        user: createMock<{ id: string; role: UserRole }>({ id: '1', role: UserRole.CUSTOMER }),
       });
-      const updatedTemplate = useTemplateFactory({ id: 1 }, em);
+      const updatedTemplate = useTemplateFactory({ id: '1' }, em);
 
       updateTemplateUseCase.execute.mockResolvedValue(updatedTemplate);
-      const result = await controller.update(mockReq, 1, updateDto);
+      const result = await controller.update(mockReq, '1', updateDto);
 
       expect(result).toEqual(updatedTemplate);
       expect(updateTemplateUseCase.execute).toHaveBeenCalledWith({
         user: mockReq.user,
-        id: 1,
+        id: '1',
         data: updateDto,
       });
     });
@@ -160,13 +160,13 @@ describe('TemplateController', () => {
   describe('remove', () => {
     it('should delete a template', async () => {
       const mockReq = createMock<Request>({
-        user: createMock<{ id: number; role: UserRole }>({ id: 1, role: UserRole.CUSTOMER }),
+        user: createMock<{ id: string; role: UserRole }>({ id: '1', role: UserRole.CUSTOMER }),
       });
 
-      await controller.remove(mockReq, 1);
+      await controller.remove(mockReq, '1');
       expect(deleteTemplateUseCase.execute).toHaveBeenCalledWith({
         user: mockReq.user,
-        id: 1,
+        id: '1',
       });
       expect(HttpStatus.NO_CONTENT);
     });

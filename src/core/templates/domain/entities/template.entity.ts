@@ -4,17 +4,18 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { GraphQLJSON } from 'graphql-scalars';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 @ObjectType()
 @Entity({ tableName: 'template' })
 export class Template extends BaseEntity {
-  @Field(() => Number)
+  @Field(() => String)
   @ApiProperty({
     description: 'Template unique identifier',
     example: 1,
   })
   @PrimaryKey()
-  id: number;
+  id: string = new UuidAdapter().generate();
 
   @Field(() => String)
   @ApiProperty({

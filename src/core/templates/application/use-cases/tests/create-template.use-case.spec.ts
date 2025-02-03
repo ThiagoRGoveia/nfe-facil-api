@@ -24,7 +24,7 @@ describe('CreateTemplateUseCase', () => {
         {
           provide: TemplateDbPort,
           useValue: createMock<TemplateDbPort>({
-            create: jest.fn().mockImplementation((data) => ({ ...data, id: 1 })),
+            create: jest.fn().mockImplementation((data) => ({ ...data, id: '1' })),
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
@@ -35,7 +35,7 @@ describe('CreateTemplateUseCase', () => {
     templateDbPort = module.get(TemplateDbPort);
     em = module.get(EntityManager);
 
-    testUser = useUserFactory({ id: 1, role: UserRole.CUSTOMER }, em);
+    testUser = useUserFactory({ id: '1', role: UserRole.CUSTOMER }, em);
   });
 
   afterEach(() => {
@@ -74,7 +74,7 @@ describe('CreateTemplateUseCase', () => {
   });
 
   it('should allow admins to create public templates', async () => {
-    const adminUser = useUserFactory({ id: 2, role: UserRole.ADMIN }, em);
+    const adminUser = useUserFactory({ id: '2', role: UserRole.ADMIN }, em);
 
     const result = await useCase.execute({
       user: adminUser,

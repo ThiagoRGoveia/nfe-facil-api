@@ -7,11 +7,12 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Sort } from '@/infra/dtos/sort.dto';
+import { User } from '@/core/users/domain/entities/user.entity';
 
 @Injectable()
 export class TemplateMikroOrmDbRepository extends EntityRepository(Template) implements TemplateDbPort {
   findByOwner(
-    ownerId: number,
+    ownerId: User['id'],
     filters?: Filter[],
     pagination?: Pagination,
     sort?: Sort,
@@ -32,7 +33,7 @@ export class TemplateMikroOrmDbRepository extends EntityRepository(Template) imp
     return newTemplate;
   }
 
-  update(id: number, template: Partial<RequiredEntityData<Template>>): Template {
+  update(id: Template['id'], template: Partial<RequiredEntityData<Template>>): Template {
     const existingTemplate = this.em.getReference(Template, id);
     this.em.assign(existingTemplate, template);
     return existingTemplate;

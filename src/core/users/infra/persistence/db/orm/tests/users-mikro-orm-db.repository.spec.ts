@@ -60,7 +60,7 @@ describe('UserMikroOrmDbRepository', () => {
   describe('update', () => {
     it('should update a user', () => {
       // Arrange
-      const user = useUserFactory({ id: 1 }, em);
+      const user = useUserFactory({ id: '1' }, em);
       const updateData: UpdateUserDto = {
         name: 'Updated John',
         email: 'updated.john@example.com',

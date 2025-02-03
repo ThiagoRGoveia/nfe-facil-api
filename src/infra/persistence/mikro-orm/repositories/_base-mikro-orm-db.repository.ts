@@ -14,10 +14,9 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
-  class Repository extends BaseMikroOrmDbRepository<T, typeof entity> {
+  class Repository extends BaseMikroOrmDbRepository<T extends { id: string | number } ? T : never, typeof entity> {
     constructor(em: EntityManager, orm: MikroORM) {
       super(em, orm);
       this.entity = entity;
@@ -27,7 +26,7 @@ export function EntityRepository<T>(entity: EntityClass<T>) {
   return Repository;
 }
 
-export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
+export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> implements BaseDbPort<T> {
   public entity: S extends EntityClass<S> ? S : EntityClass<S>;
   public em: EntityManager;
   public orm: MikroORM;
@@ -41,11 +40,11 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
     await this.em.flush();
   }
 
-  findById(id: number): Promise<T | null> {
+  findById(id: T['id']): Promise<T | null> {
     return this.em.findOne(this.entity, { id });
   }
 
-  async findByIdOrFail(id: number): Promise<T> {
+  async findByIdOrFail(id: T['id']): Promise<T> {
     const entity = await this.findById(id);
     if (!entity) {
       throw new NotFoundException(`${this.entity.name} not found`);
@@ -70,7 +69,9 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
     if (filters) {
       for (const filter of filters) {
         if (this.isFilterValid(filter)) {
-          filterQuery = { ...filterQuery, ...this.buildFilter(filter) };
+          // filterQuery = { ...filterQuery, ...this.buildFilter(filter) };
+          const builtFilter = this.buildFilter(filter);
+          filterQuery = { ...filterQuery, ...(builtFilter as object) };
         }
       }
     }
@@ -89,21 +90,21 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
     };
   }
 
-  setToBeDeleted(id: number): void {
+  setToBeDeleted(id: T['id']): void {
     this.em.remove(this.em.getReference(this.entity, id));
   }
 
-  async exists(id: number): Promise<boolean> {
+  async exists(id: T['id']): Promise<boolean> {
     const entity = await this.em.findOne(this.entity, id, { fields: ['id'] });
     return !!entity;
   }
 
-  async allExist(ids: number[]): Promise<boolean> {
+  async allExist(ids: T['id'][]): Promise<boolean> {
     const entities = await this.em.find(this.entity, { id: { $in: ids } }, { fields: ['id'] });
     return entities.length === ids.length;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: T['id']): Promise<void> {
     await this.em.removeAndFlush(this.em.getReference(this.entity, id));
   }
 

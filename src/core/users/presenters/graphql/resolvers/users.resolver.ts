@@ -29,7 +29,7 @@ export class UsersResolver {
   ) {}
 
   @Query(() => User, { nullable: true })
-  async findUserById(@Args('id', { type: () => Number }) id: number): Promise<User | null> {
+  async findUserById(@Args('id', { type: () => String }) id: string): Promise<User | null> {
     return this.userDbPort.findById(id);
   }
 
@@ -48,7 +48,7 @@ export class UsersResolver {
   }
 
   @Mutation(() => User)
-  async updateUser(@Args('id', { type: () => Number }) id: number, @Args('input') input: UpdateUserDto): Promise<User> {
+  async updateUser(@Args('id', { type: () => String }) id: string, @Args('input') input: UpdateUserDto): Promise<User> {
     return this.updateUserUseCase.execute({
       id,
       data: input,
@@ -57,7 +57,7 @@ export class UsersResolver {
 
   @Mutation(() => Boolean)
   async updateUserPassword(
-    @Args('id', { type: () => Number }) id: number,
+    @Args('id', { type: () => String }) id: string,
     @Args('input') input: UpdatePasswordDto,
   ): Promise<boolean> {
     return this.updatePasswordUseCase.execute({
@@ -67,13 +67,13 @@ export class UsersResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteUser(@Args('id', { type: () => Number }) id: number): Promise<boolean> {
+  async deleteUser(@Args('id', { type: () => String }) id: string): Promise<boolean> {
     await this.deleteUserUseCase.execute({ id });
     return true;
   }
 
   @Mutation(() => User)
-  async refreshUserClientSecret(@Args('id', { type: () => Number }) id: number): Promise<User> {
+  async refreshUserClientSecret(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.refreshClientSecretUseCase.execute({ id });
   }
 }

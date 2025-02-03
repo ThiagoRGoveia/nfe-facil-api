@@ -3,10 +3,10 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { TemplateDbPort } from '../ports/templates-db.port';
 import { PinoLogger } from 'nestjs-pino';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
-
+import { Template } from '../../domain/entities/template.entity';
 interface DeleteTemplateInput {
   user: User;
-  id: number;
+  id: Template['id'];
 }
 
 @Injectable()
