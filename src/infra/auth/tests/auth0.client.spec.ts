@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { Auth0Client } from './auth0.client';
+import { Auth0Client } from '../auth0.client';
 import { ApiResponse, GetUsers200ResponseOneOfInner, ManagementClient } from 'auth0';
 import { createMock } from '@golevelup/ts-jest';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';

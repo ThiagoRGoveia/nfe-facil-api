@@ -1,15 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '../tests/base-integration-test.module';
-import { ApiKeyAuthGuard } from './api-key.guard';
+import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
+import { ApiKeyAuthGuard } from '../api-key.guard';
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { Public } from './public.decorator';
+import { Public } from '../public.decorator';
 import * as request from 'supertest';
-import { ApiKeyStrategy } from './api-key.strategy';
+import { ApiKeyStrategy } from '../api-key.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbRefresh, useDbSchema } from '../tests/db-schema.seed';
+import { useDbRefresh, useDbSchema } from '../../tests/db-schema.seed';
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { UsersModule } from '@/core/users/users.module';
 

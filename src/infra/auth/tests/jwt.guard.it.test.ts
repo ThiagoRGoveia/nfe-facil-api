@@ -1,11 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '../tests/base-integration-test.module';
-import { JwtAuthGuard } from './jwt.guard';
+import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
+import { JwtAuthGuard } from '../jwt.guard';
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { Public } from './public.decorator';
+import { Public } from '../public.decorator';
 import * as request from 'supertest';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from '../jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { UsersModule } from '@/core/users/users.module';
@@ -14,12 +14,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { UserDbPort } from '@/core/users/application/ports/users-db.port';
 import { CreateUserSocialUseCase } from '@/core/users/application/use-cases/create-user-social.use-case';
-import { User } from '@/core/users/domain/entities/user.entity';
 import { createMock } from '@golevelup/ts-jest';
-import { UserMikroOrmDbRepository } from '@/core/users/infra/persistence/db/orm/users-mikro-orm-db.repository';
-import { useDbRefresh, useDbSchema } from '../tests/db-schema.seed';
+import { useDbRefresh, useDbSchema } from '../../tests/db-schema.seed';
 import { MikroORM } from '@mikro-orm/core';
-import { Auth0Client } from './auth0.client';
 
 jest.setTimeout(100000);
 
