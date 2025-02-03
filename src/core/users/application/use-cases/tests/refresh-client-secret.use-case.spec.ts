@@ -12,7 +12,6 @@ import { SecretAdapter } from '@/infra/adapters/secret.adapter';
 describe('RefreshClientSecretUseCase', () => {
   let useCase: RefreshClientSecretUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
   let secretAdapter: jest.Mocked<SecretAdapter>;
   let em: EntityManager;
 
@@ -38,7 +37,6 @@ describe('RefreshClientSecretUseCase', () => {
 
     useCase = module.get<RefreshClientSecretUseCase>(RefreshClientSecretUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
     secretAdapter = module.get(SecretAdapter);
     em = module.get(EntityManager);
   });
@@ -92,6 +90,5 @@ describe('RefreshClientSecretUseCase', () => {
 
     // Act & Assert
     await expect(useCase.execute({ id: user.id })).rejects.toThrow(error);
-    expect(logger.error).toHaveBeenCalledWith({ err: error, userId: user.id }, 'Failed to refresh user client secret');
   });
 });

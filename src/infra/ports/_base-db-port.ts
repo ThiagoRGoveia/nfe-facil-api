@@ -1,7 +1,7 @@
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 
 export abstract class BaseDbPort<T = unknown> {
   /**
@@ -17,7 +17,7 @@ export abstract class BaseDbPort<T = unknown> {
    * @param sort - Optional sorting criteria
    * @returns A promise that resolves to a paginated response containing the matching entities
    */
-  abstract findAll(filter?: Filter[], pagination?: Pagination, sort?: Sort): Promise<PaginatedResponseType<T>>;
+  abstract findAll(filter?: Filter[], pagination?: Pagination, sort?: Sort): Promise<PaginatedResponse<T>>;
 
   /**
    * Retrieves a single entity by its ID
@@ -25,6 +25,13 @@ export abstract class BaseDbPort<T = unknown> {
    * @returns A promise that resolves to the entity if found, or null if not found
    */
   abstract findById(id: number): Promise<T | null>;
+
+  /**
+   * Retrieves a single entity by its ID
+   * @param id - The unique identifier of the entity
+   * @returns A promise that resolves to the entity if found, or null if not found
+   */
+  abstract findByIdOrFail(id: number): Promise<T>;
 
   /**
    * Checks if an entity with the specified ID exists

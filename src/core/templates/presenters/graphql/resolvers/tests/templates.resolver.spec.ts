@@ -1,0 +1,156 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { createMock } from '@golevelup/ts-jest';
+import { TemplatesResolver } from '../templates.resolver';
+import { TemplateDbPort } from '../../../../application/ports/templates-db.port';
+import { Template } from '../../../../domain/entities/template.entity';
+import { useTemplateFactory } from '../../../../infra/tests/factories/templates.factory';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { Request } from '@/infra/express/types/request';
+import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { CreateTemplateDto } from '@/core/templates/application/dtos/create-template.dto';
+import { SortDirection } from '@/infra/dtos/sort.dto';
+import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';
+import { CreateTemplateUseCase, DeleteTemplateUseCase, UpdateTemplateUseCase } from '@/core/templates/templates.module';
+import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+
+describe('TemplatesResolver', () => {
+  let resolver: TemplatesResolver;
+  let templateDbPort: jest.Mocked<TemplateDbPort>;
+  let createTemplateUseCase: jest.Mocked<CreateTemplateUseCase>;
+  let updateTemplateUseCase: jest.Mocked<UpdateTemplateUseCase>;
+  let deleteTemplateUseCase: jest.Mocked<DeleteTemplateUseCase>;
+  let em: EntityManager;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [useUnitTestModule()],
+      providers: [
+        TemplatesResolver,
+        {
+          provide: TemplateDbPort,
+          useValue: createMock<TemplateDbPort>({
+            findById: jest.fn(),
+            findAll: jest.fn(),
+          }),
+        },
+        {
+          provide: CreateTemplateUseCase,
+          useValue: createMock<CreateTemplateUseCase>(),
+        },
+        {
+          provide: UpdateTemplateUseCase,
+          useValue: createMock<UpdateTemplateUseCase>(),
+        },
+        {
+          provide: DeleteTemplateUseCase,
+          useValue: createMock<DeleteTemplateUseCase>(),
+        },
+        {
+          provide: EntityManager,
+          useValue: createMock<EntityManager>(),
+        },
+      ],
+    }).compile();
+
+    resolver = module.get(TemplatesResolver);
+    templateDbPort = module.get(TemplateDbPort);
+    createTemplateUseCase = module.get(CreateTemplateUseCase);
+    updateTemplateUseCase = module.get(UpdateTemplateUseCase);
+    deleteTemplateUseCase = module.get(DeleteTemplateUseCase);
+    em = module.get<EntityManager>(EntityManager);
+  });
+
+  it('should be defined', () => {
+    expect(resolver).toBeDefined();
+  });
+
+  describe('findTemplateById', () => {
+    it('should return a template by id', async () => {
+      const template = useTemplateFactory({ id: 1 }, em);
+      templateDbPort.findByIdOrFail.mockResolvedValue(template);
+
+      const result = await resolver.findTemplateById(1);
+      expect(result).toEqual(template);
+      expect(templateDbPort.findByIdOrFail).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('findAllTemplates', () => {
+    it('should return paginated templates', async () => {
+      const paginatedResponse = createMock<PaginatedResponse<Template>>({
+        items: [useTemplateFactory({}, em)],
+      });
+      const filters = { filters: [] };
+      const pagination = { page: 1, pageSize: 10 };
+      const sort = { field: 'id', direction: SortDirection.ASC };
+
+      templateDbPort.findAll.mockResolvedValue(paginatedResponse);
+      const result = await resolver.findAllTemplates(filters, pagination, sort);
+
+      expect(result).toEqual(paginatedResponse);
+      expect(templateDbPort.findAll).toHaveBeenCalledWith(filters.filters, pagination, sort);
+    });
+  });
+
+  describe('createTemplate', () => {
+    it('should create a template', async () => {
+      const mockCtx = createMock<GraphqlExpressContext>({
+        req: createMock<Request>({
+          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+        }),
+      });
+      const input = createMock<CreateTemplateDto>({ name: 'Test Template' });
+      const expected = useTemplateFactory({ id: 1 }, em);
+
+      createTemplateUseCase.execute.mockResolvedValue(expected);
+      const result = await resolver.createTemplate(mockCtx, input);
+
+      expect(result).toEqual(expected);
+      expect(createTemplateUseCase.execute).toHaveBeenCalledWith({
+        user: mockCtx.req.user,
+        data: input,
+      });
+    });
+  });
+
+  describe('updateTemplate', () => {
+    it('should update a template', async () => {
+      const mockCtx = createMock<GraphqlExpressContext>({
+        req: createMock<Request>({
+          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+        }),
+      });
+      const input = createMock<UpdateTemplateDto>({ name: 'Updated Name' });
+      const updatedTemplate = useTemplateFactory({ id: 1, name: 'Updated Name' }, em);
+
+      updateTemplateUseCase.execute.mockResolvedValue(updatedTemplate);
+      const result = await resolver.updateTemplate(mockCtx, 1, input);
+
+      expect(result).toEqual(updatedTemplate);
+      expect(updateTemplateUseCase.execute).toHaveBeenCalledWith({
+        user: mockCtx.req.user,
+        id: 1,
+        data: input,
+      });
+    });
+  });
+
+  describe('deleteTemplate', () => {
+    it('should delete a template', async () => {
+      const mockCtx = createMock<GraphqlExpressContext>({
+        req: createMock<Request>({
+          user: createMock<User>({ id: 1, role: UserRole.CUSTOMER }),
+        }),
+      });
+
+      const result = await resolver.deleteTemplate(mockCtx, 1);
+      expect(result).toBe(true);
+      expect(deleteTemplateUseCase.execute).toHaveBeenCalledWith({
+        user: mockCtx.req.user,
+        id: 1,
+      });
+    });
+  });
+});

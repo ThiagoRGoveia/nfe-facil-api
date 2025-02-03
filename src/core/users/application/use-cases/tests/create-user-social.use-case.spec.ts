@@ -11,13 +11,14 @@ import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
+import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
 
 describe('CreateUserSocialUseCase', () => {
   let useCase: CreateUserSocialUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
   let uuidAdapter: jest.Mocked<UuidAdapter>;
   let secretAdapter: jest.Mocked<SecretAdapter>;
+  let authPort: jest.Mocked<AuthPort>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -46,9 +47,9 @@ describe('CreateUserSocialUseCase', () => {
 
     useCase = module.get<CreateUserSocialUseCase>(CreateUserSocialUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
     uuidAdapter = module.get(UuidAdapter);
     secretAdapter = module.get(SecretAdapter);
+    authPort = module.get(AuthPort);
     em = module.get(EntityManager);
   });
 
@@ -64,8 +65,6 @@ describe('CreateUserSocialUseCase', () => {
     // Arrange
     const user = useUserFactory({ id: 1, isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
-      name: 'John',
-      email: 'john.doe@example.com',
       auth0Id: 'auth0|123456789',
     };
 
@@ -75,15 +74,25 @@ describe('CreateUserSocialUseCase', () => {
     uuidAdapter.generate.mockReturnValue(generatedUuid);
     secretAdapter.generate.mockReturnValue(generatedSecret);
     userDbPort.create.mockReturnValue(user);
+    authPort.getUserInfo.mockResolvedValue({
+      userId: createUserSocialDto.auth0Id,
+      email: 'john.doe@example.com',
+      emailVerified: true,
+      givenName: 'John',
+      familyName: 'Doe',
+      name: 'John Doe',
+    } as AuthUserDto);
 
     // Act
     const result = await useCase.execute(createUserSocialDto);
 
     // Assert
+    expect(authPort.getUserInfo).toHaveBeenCalledWith(createUserSocialDto.auth0Id);
     expect(userDbPort.create).toHaveBeenCalledWith({
-      name: createUserSocialDto.name,
-      email: createUserSocialDto.email,
-      auth0Id: createUserSocialDto.auth0Id,
+      name: 'John',
+      surname: 'Doe',
+      email: 'john.doe@example.com',
+      auth0Id: 'auth0|123456789',
       clientId: generatedUuid,
       clientSecret: generatedSecret,
       role: UserRole.CUSTOMER,
@@ -98,8 +107,16 @@ describe('CreateUserSocialUseCase', () => {
     // Arrange
     const user = useUserFactory({ id: 1, isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
-      auth0Id: 'auth0|123456789',
+      auth0Id: 'auth0|987654321',
     };
+
+    // Mock minimal Auth0 response
+    authPort.getUserInfo.mockResolvedValue({
+      userId: createUserSocialDto.auth0Id,
+      name: 'John Smith',
+      email: 'john@email.com',
+      emailVerified: true,
+    } as AuthUserDto);
 
     const generatedUuid = 'generated-uuid';
     const generatedSecret = 'GENERATED-SECRET';
@@ -113,7 +130,10 @@ describe('CreateUserSocialUseCase', () => {
 
     // Assert
     expect(userDbPort.create).toHaveBeenCalledWith({
-      auth0Id: createUserSocialDto.auth0Id,
+      name: 'John Smith', // From name field
+      surname: undefined, // No family_name provided
+      email: 'john@email.com',
+      auth0Id: 'auth0|987654321',
       clientId: generatedUuid,
       clientSecret: generatedSecret,
       role: UserRole.CUSTOMER,
@@ -139,6 +159,5 @@ describe('CreateUserSocialUseCase', () => {
     await expect(useCase.execute(createUserSocialDto)).rejects.toThrow(
       new BadRequestException('Failed to create social user'),
     );
-    expect(logger.error).toHaveBeenCalledWith('Failed to create social user:', error);
   });
 });

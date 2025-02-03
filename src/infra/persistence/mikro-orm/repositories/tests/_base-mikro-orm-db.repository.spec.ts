@@ -98,7 +98,7 @@ describe('MockEntityRepository (unit)', () => {
   });
 
   it('should apply pagination correctly', async () => {
-    const pagination: Pagination = { currentPage: 1, pageSize: 1 };
+    const pagination: Pagination = { page: 1, pageSize: 1 };
     const dbEntities = [{ id: 1, name: 'Entity1' }];
     jest.spyOn(em, 'findAndCount').mockResolvedValueOnce([dbEntities, 2]);
 

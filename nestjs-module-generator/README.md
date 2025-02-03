@@ -33,7 +33,7 @@ cd module-generator
 2. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. Build the project:
@@ -146,9 +146,7 @@ Example of a custom use case:
 export class ArchiveUserProfileUseCase {
   constructor(private readonly userProfileDbPort: UserProfileDbPort) {}
 
-  async execute({
-    user,
-  }: ArchiveUserProfileInput): Promise<UserProfile | void> {
+  async execute({ user }: ArchiveUserProfileInput): Promise<UserProfile | void> {
     // TODO: Implement archive logic
   }
 }

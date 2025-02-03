@@ -58,7 +58,6 @@ describe('RequestTypeGuard (integration)', () => {
   let app: INestApplication;
   let em: EntityManager;
   let orm: MikroORM;
-  let jwtGuard: JwtAuthGuard;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -87,7 +86,6 @@ describe('RequestTypeGuard (integration)', () => {
     app = module.createNestApplication();
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
-    jwtGuard = module.get<JwtAuthGuard>(JwtAuthGuard);
     await app.init();
     await useDbSchema(orm);
 

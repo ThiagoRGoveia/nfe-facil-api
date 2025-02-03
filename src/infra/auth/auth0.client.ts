@@ -6,12 +6,30 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ManagementClient } from 'auth0';
+import { GetUsers200ResponseOneOfInner, ManagementClient } from 'auth0';
+import { AuthPort, AuthUserDto } from './ports/auth.port';
+
+export class Auth0UserMapper {
+  static toDto(auth0User: GetUsers200ResponseOneOfInner): AuthUserDto {
+    return {
+      userId: auth0User.user_id,
+      email: auth0User.email,
+      emailVerified: auth0User.email_verified,
+      username: auth0User.username,
+      phoneNumber: auth0User.phone_number,
+      phoneVerified: auth0User.phone_verified,
+      picture: auth0User.picture,
+      name: auth0User.name,
+      blocked: auth0User.blocked,
+      givenName: auth0User.given_name,
+      familyName: auth0User.family_name,
+    };
+  }
+}
 
 @Injectable()
-export class Auth0Client {
+export class Auth0Client implements AuthPort {
   public client: ManagementClient;
-  private domain: string;
 
   constructor(private readonly configService: ConfigService) {
     const domain = this.configService.get<string>('AUTH_DOMAIN');
@@ -22,7 +40,6 @@ export class Auth0Client {
       throw new Error('Missing required Auth0 configuration');
     }
 
-    this.domain = domain;
     this.client = new ManagementClient({
       domain: domain.replace('https://', ''),
       clientId,
@@ -31,10 +48,10 @@ export class Auth0Client {
     });
   }
 
-  async getUserInfo(userId: string) {
+  async getUserInfo(userId: string): Promise<AuthUserDto> {
     try {
       const user = await this.client.users.get({ id: userId });
-      return user;
+      return Auth0UserMapper.toDto(user.data);
     } catch (error) {
       if (error.statusCode === 404) {
         throw new NotFoundException('User not found');
@@ -46,14 +63,15 @@ export class Auth0Client {
     }
   }
 
-  async createUser(email: string, password: string) {
+  async createUser(email: string, password: string): Promise<AuthUserDto> {
     try {
-      return await this.client.users.create({
+      const response = await this.client.users.create({
         email,
         password,
         connection: 'Username-Password-Authentication',
         email_verified: false,
       });
+      return Auth0UserMapper.toDto(response.data);
     } catch (error) {
       if (error.statusCode === 409) {
         throw new BadRequestException('User already exists');
@@ -68,9 +86,10 @@ export class Auth0Client {
     }
   }
 
-  async updatePassword(userId: string, newPassword: string) {
+  async updatePassword(userId: string, newPassword: string): Promise<AuthUserDto> {
     try {
-      return await this.client.users.update({ id: userId }, { password: newPassword });
+      const response = await this.client.users.update({ id: userId }, { password: newPassword });
+      return Auth0UserMapper.toDto(response.data);
     } catch (error) {
       if (error.statusCode === 404) {
         throw new NotFoundException('User not found');
@@ -85,9 +104,10 @@ export class Auth0Client {
     }
   }
 
-  async disableUser(userId: string) {
+  async disableUser(userId: string): Promise<AuthUserDto> {
     try {
-      return await this.client.users.update({ id: userId }, { blocked: true });
+      const response = await this.client.users.update({ id: userId }, { blocked: true });
+      return Auth0UserMapper.toDto(response.data);
     } catch (error) {
       if (error.statusCode === 404) {
         throw new NotFoundException('User not found');
@@ -102,9 +122,9 @@ export class Auth0Client {
     }
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<void> {
     try {
-      return await this.client.users.delete({ id: userId });
+      await this.client.users.delete({ id: userId });
     } catch (error) {
       if (error.statusCode === 404) {
         throw new NotFoundException('User not found');

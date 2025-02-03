@@ -12,8 +12,8 @@ import { BaseDbPort } from '@/infra/ports/_base-db-port';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Injectable } from '@nestjs/common';
-import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
@@ -45,12 +45,20 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
     return this.em.findOne(this.entity, { id });
   }
 
+  async findByIdOrFail(id: number): Promise<T> {
+    const entity = await this.findById(id);
+    if (!entity) {
+      throw new NotFoundException(`${this.entity.name} not found`);
+    }
+    return entity;
+  }
+
   async findAll(
     filters?: Filter[],
-    pagination: Pagination = { pageSize: 20, currentPage: 1 },
+    pagination: Pagination = { pageSize: 20, page: 1 },
     sort?: Sort,
     all = false,
-  ): Promise<PaginatedResponseType<T>> {
+  ): Promise<PaginatedResponse<T>> {
     let sortQuery: OrderDefinition<T> = {};
 
     let filterQuery: FilterQuery<T> = {};
@@ -69,13 +77,13 @@ export class BaseMikroOrmDbRepository<T, S> implements BaseDbPort {
 
     const response = await this.em.findAndCount(this.entity, filterQuery, {
       limit: !all ? pagination?.pageSize : undefined,
-      offset: !all ? (pagination.currentPage - 1) * pagination?.pageSize : undefined,
+      offset: !all ? (pagination.page - 1) * pagination?.pageSize : undefined,
       orderBy: sortQuery,
     });
     return {
       items: response[0],
       total: response[1],
-      page: pagination.currentPage,
+      page: pagination.page,
       pageSize: pagination.pageSize,
       totalPages: Math.ceil(response[1] / pagination.pageSize),
     };

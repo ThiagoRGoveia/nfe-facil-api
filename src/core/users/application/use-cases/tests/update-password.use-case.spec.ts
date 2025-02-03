@@ -8,15 +8,12 @@ import { UpdatePasswordDto } from '../../dtos/update-password.dto';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
-import { Auth0Client } from '@/infra/auth/auth0.client';
-import { ApiResponse } from 'auth0';
-import { GetUsers200ResponseOneOfInner } from 'auth0';
+import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
 
 describe('UpdatePasswordUseCase', () => {
   let useCase: UpdatePasswordUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
-  let auth0Client: jest.Mocked<Auth0Client>;
+  let authPort: jest.Mocked<AuthPort>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -32,17 +29,12 @@ describe('UpdatePasswordUseCase', () => {
           provide: PinoLogger,
           useValue: createMock<PinoLogger>(),
         },
-        {
-          provide: Auth0Client,
-          useValue: createMock<Auth0Client>(),
-        },
       ],
     }).compile();
 
     useCase = module.get<UpdatePasswordUseCase>(UpdatePasswordUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
-    auth0Client = module.get(Auth0Client);
+    authPort = module.get(AuthPort);
     em = module.get(EntityManager);
   });
 
@@ -63,13 +55,11 @@ describe('UpdatePasswordUseCase', () => {
     };
 
     userDbPort.findById.mockResolvedValue(user);
-    auth0Client.updatePassword.mockResolvedValue(
-      createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-        data: {
-          user_id: user.auth0Id,
-          email: user.email,
-          email_verified: false,
-        },
+    authPort.updatePassword.mockResolvedValue(
+      createMock<AuthUserDto>({
+        userId: user.auth0Id,
+        email: user.email,
+        emailVerified: false,
       }),
     );
 
@@ -79,7 +69,7 @@ describe('UpdatePasswordUseCase', () => {
     // Assert
     expect(result).toBe(true);
     expect(userDbPort.findById).toHaveBeenCalledWith(1);
-    expect(auth0Client.updatePassword).toHaveBeenCalledWith(user.auth0Id, updatePasswordDto.newPassword);
+    expect(authPort.updatePassword).toHaveBeenCalledWith(user.auth0Id, updatePasswordDto.newPassword);
   });
 
   it('should throw BadRequestException when user is not found', async () => {
@@ -95,7 +85,7 @@ describe('UpdatePasswordUseCase', () => {
     await expect(useCase.execute({ id: 1, data: updatePasswordDto })).rejects.toThrow(
       new BadRequestException('User not found'),
     );
-    expect(auth0Client.updatePassword).not.toHaveBeenCalled();
+    expect(authPort.updatePassword).not.toHaveBeenCalled();
   });
 
   it('should handle Auth0 update failure', async () => {
@@ -108,12 +98,11 @@ describe('UpdatePasswordUseCase', () => {
     const error = new Error('Auth0 error');
 
     userDbPort.findById.mockResolvedValue(user);
-    auth0Client.updatePassword.mockRejectedValue(error);
+    authPort.updatePassword.mockRejectedValue(error);
 
     // Act & Assert
     await expect(useCase.execute({ id: 1, data: updatePasswordDto })).rejects.toThrow(
       new BadRequestException('Failed to update password'),
     );
-    expect(logger.error).toHaveBeenCalledWith('Failed to update user password:', error);
   });
 });

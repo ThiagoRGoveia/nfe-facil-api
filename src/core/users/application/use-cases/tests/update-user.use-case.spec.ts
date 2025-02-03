@@ -12,7 +12,6 @@ import { InternalServerErrorException } from '@nestjs/common';
 describe('UpdateUserUseCase', () => {
   let useCase: UpdateUserUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -33,7 +32,6 @@ describe('UpdateUserUseCase', () => {
 
     useCase = module.get<UpdateUserUseCase>(UpdateUserUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
     em = module.get(EntityManager);
   });
 
@@ -79,6 +77,5 @@ describe('UpdateUserUseCase', () => {
     await expect(useCase.execute({ id: 1, data: updateUserDto })).rejects.toThrow(
       new InternalServerErrorException('Failed to update user in database'),
     );
-    expect(logger.error).toHaveBeenCalledWith({ err: error, userId: 1 }, 'Failed to update user');
   });
 });

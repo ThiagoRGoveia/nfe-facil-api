@@ -6,12 +6,13 @@ import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory
 import { UserDbPort } from '../../ports/users-db.port';
 import { DeleteUserUseCase } from '../delete-user.use-case';
 import { PinoLogger } from 'nestjs-pino';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { AuthPort } from '@/infra/auth/ports/auth.port';
 
 describe('DeleteUserUseCase', () => {
   let useCase: DeleteUserUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
+  let authPort: jest.Mocked<AuthPort>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -32,7 +33,7 @@ describe('DeleteUserUseCase', () => {
 
     useCase = module.get<DeleteUserUseCase>(DeleteUserUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
+    authPort = module.get(AuthPort);
     em = module.get(EntityManager);
   });
 
@@ -46,26 +47,38 @@ describe('DeleteUserUseCase', () => {
 
   it('should delete user successfully', async () => {
     // Arrange
-    const user = useUserFactory({ id: 1 }, em);
+    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    userDbPort.findById.mockResolvedValue(user);
     userDbPort.delete.mockResolvedValue();
 
     // Act
     await useCase.execute({ id: user.id });
 
     // Assert
+    expect(userDbPort.findById).toHaveBeenCalledWith(user.id);
     expect(userDbPort.delete).toHaveBeenCalledWith(user.id);
+    expect(authPort.deleteUser).toHaveBeenCalledWith(user.auth0Id);
     expect(userDbPort.save).toHaveBeenCalled();
   });
 
-  it('should handle deletion errors', async () => {
+  it('should throw NotFoundException when user doesnt exist', async () => {
     // Arrange
-    const error = new Error('Database error');
-    userDbPort.delete.mockRejectedValue(error);
+    userDbPort.findById.mockResolvedValue(null);
 
     // Act & Assert
-    await expect(useCase.execute({ id: 1 })).rejects.toThrow(
+    await expect(useCase.execute({ id: 999 })).rejects.toThrow(new NotFoundException('User not found'));
+  });
+
+  it('should handle auth0 deletion errors', async () => {
+    // Arrange
+    const user = useUserFactory({ id: 1, auth0Id: 'auth0|123' }, em);
+    const authError = new Error('Auth0 error');
+    userDbPort.findById.mockResolvedValue(user);
+    authPort.deleteUser.mockRejectedValue(authError);
+
+    // Act & Assert
+    await expect(useCase.execute({ id: user.id })).rejects.toThrow(
       new InternalServerErrorException('Failed to delete user from database'),
     );
-    expect(logger.error).toHaveBeenCalledWith({ err: error, userId: 1 }, 'Failed to delete user');
   });
 });

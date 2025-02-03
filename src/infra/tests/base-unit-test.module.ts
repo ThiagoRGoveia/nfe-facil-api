@@ -1,7 +1,9 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ConfigModule } from '@nestjs/config';
 import { defineConfig } from '@mikro-orm/postgresql';
-
+import { PinoLogger } from 'nestjs-pino';
+import { createMock } from '@golevelup/ts-jest';
+import { AuthPort } from '../auth/ports/auth.port';
 /**
  *
  * @ignore
@@ -12,7 +14,7 @@ export function useUnitTestModule() {
     global: true,
     imports: [
       ConfigModule.forRoot({
-        envFilePath: '.test.env',
+        envFilePath: '.env.test.local',
         isGlobal: true,
       }),
       MikroOrmModule.forRoot(
@@ -25,7 +27,16 @@ export function useUnitTestModule() {
         }),
       ),
     ],
-    providers: [],
-    exports: [],
+    providers: [
+      {
+        provide: PinoLogger,
+        useValue: createMock<PinoLogger>(),
+      },
+      {
+        provide: AuthPort,
+        useValue: createMock<AuthPort>(),
+      },
+    ],
+    exports: [PinoLogger, AuthPort],
   };
 }

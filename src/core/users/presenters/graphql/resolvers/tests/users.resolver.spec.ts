@@ -10,7 +10,7 @@ import { UpdateUserDto } from '../../../../application/dtos/update-user.dto';
 import { UpdatePasswordDto } from '../../../../application/dtos/update-password.dto';
 import { useUserFactory } from '../../../../infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { PaginatedResponseType } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { RefreshClientSecretUseCase } from '../../../../application/use-cases/refresh-client-secret.use-case';
@@ -85,7 +85,7 @@ describe('UsersResolver', () => {
 
   describe('findAllUsers', () => {
     it('should find all users', async () => {
-      const paginatedResponse: PaginatedResponseType<User> = {
+      const paginatedResponse: PaginatedResponse<User> = {
         items: [mockUser],
         total: 1,
         page: 1,

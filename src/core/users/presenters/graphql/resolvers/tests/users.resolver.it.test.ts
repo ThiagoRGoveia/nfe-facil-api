@@ -8,11 +8,9 @@ import { UsersModule } from '@/core/users/users.module';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
-import { Auth0Client } from '@/infra/auth/auth0.client';
 import { createMock } from '@golevelup/ts-jest';
 import { faker } from '@faker-js/faker';
-import { GetUsers200ResponseOneOfInner } from 'auth0';
-import { ApiResponse } from 'auth0';
+import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
 
 jest.setTimeout(100000);
 describe('UsersResolver (Integration)', () => {
@@ -20,7 +18,7 @@ describe('UsersResolver (Integration)', () => {
   let orm: MikroORM;
   let em: EntityManager;
   let user: User;
-  let auth0Client: jest.Mocked<Auth0Client>;
+  let authPort: jest.Mocked<AuthPort>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,7 +29,7 @@ describe('UsersResolver (Integration)', () => {
     orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
-    auth0Client = module.get<jest.Mocked<Auth0Client>>(Auth0Client);
+    authPort = module.get<jest.Mocked<AuthPort>>(AuthPort);
     await useDbSchema(orm);
     await app.init();
     user = await useDbUser({}, em);
@@ -125,13 +123,11 @@ describe('UsersResolver (Integration)', () => {
 
   describe('createUser', () => {
     it('should successfully create a user', async () => {
-      auth0Client.createUser.mockResolvedValue(
-        createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-          data: {
-            user_id: faker.string.uuid(),
-            email: 'test@example.com',
-            email_verified: false,
-          },
+      authPort.createUser.mockResolvedValue(
+        createMock<AuthUserDto>({
+          userId: faker.string.uuid(),
+          email: 'test@example.com',
+          emailVerified: false,
         }),
       );
       const createUserMutation = `
@@ -242,13 +238,11 @@ describe('UsersResolver (Integration)', () => {
 
   describe('updateUserPassword', () => {
     it('should update user password', async () => {
-      auth0Client.updatePassword.mockResolvedValue(
-        createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-          data: {
-            user_id: faker.string.uuid(),
-            email: 'test@example.com',
-            email_verified: false,
-          },
+      authPort.updatePassword.mockResolvedValue(
+        createMock<AuthUserDto>({
+          userId: faker.string.uuid(),
+          email: 'test@example.com',
+          emailVerified: false,
         }),
       );
       const updatePasswordMutation = `

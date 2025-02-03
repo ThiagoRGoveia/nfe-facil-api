@@ -5,7 +5,7 @@ import { User } from '../../domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { Auth0Client } from '@/infra/auth/auth0.client';
+import { AuthPort } from '@/infra/auth/ports/auth.port';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -14,16 +14,16 @@ export class CreateUserUseCase {
     private readonly logger: PinoLogger,
     private readonly uuidAdapter: UuidAdapter,
     private readonly secretAdapter: SecretAdapter,
-    private readonly auth0Client: Auth0Client,
+    private readonly authPort: AuthPort,
   ) {}
 
   async execute(data: CreateUserDto): Promise<User> {
     try {
       const { password, ...userDataWithoutPassword } = data;
-      const auth0Response = await this.auth0Client.createUser(data.email, password);
+      const auth0User = await this.authPort.createUser(data.email, password);
 
-      if (!auth0Response.data.user_id) {
-        throw new BadRequestException('Failed to get Auth0 user ID');
+      if (!auth0User.userId) {
+        throw new BadRequestException('Failed to create user');
       }
 
       // Create user in our database without the password
@@ -31,7 +31,7 @@ export class CreateUserUseCase {
         ...userDataWithoutPassword,
         clientId: this.uuidAdapter.generate(),
         clientSecret: this.secretAdapter.generate(),
-        auth0Id: auth0Response.data.user_id,
+        auth0Id: auth0User.userId,
       });
 
       await this.userDb.save();

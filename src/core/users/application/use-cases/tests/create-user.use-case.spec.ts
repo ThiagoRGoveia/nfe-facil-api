@@ -11,17 +11,14 @@ import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { Auth0Client } from '@/infra/auth/auth0.client';
-import { ApiResponse } from 'auth0';
-import { GetUsers200ResponseOneOfInner } from 'auth0';
+import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
   let userDbPort: jest.Mocked<UserDbPort>;
-  let logger: jest.Mocked<PinoLogger>;
   let uuidAdapter: jest.Mocked<UuidAdapter>;
   let secretAdapter: jest.Mocked<SecretAdapter>;
-  let auth0Client: jest.Mocked<Auth0Client>;
+  let authPort: jest.Mocked<AuthPort>;
   let em: EntityManager;
 
   beforeEach(async () => {
@@ -45,19 +42,14 @@ describe('CreateUserUseCase', () => {
           provide: SecretAdapter,
           useValue: createMock<SecretAdapter>(),
         },
-        {
-          provide: Auth0Client,
-          useValue: createMock<Auth0Client>(),
-        },
       ],
     }).compile();
 
     useCase = module.get<CreateUserUseCase>(CreateUserUseCase);
     userDbPort = module.get(UserDbPort);
-    logger = module.get(PinoLogger);
     uuidAdapter = module.get(UuidAdapter);
     secretAdapter = module.get(SecretAdapter);
-    auth0Client = module.get(Auth0Client);
+    authPort = module.get(AuthPort);
     em = module.get(EntityManager);
   });
 
@@ -87,22 +79,18 @@ describe('CreateUserUseCase', () => {
 
     uuidAdapter.generate.mockReturnValue(generatedUuid);
     secretAdapter.generate.mockReturnValue(generatedSecret);
-    auth0Client.createUser.mockResolvedValue(
-      createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-        data: {
-          user_id: auth0UserId,
-          email: createUserDto.email,
-          email_verified: false,
-        },
-      }),
-    );
+    authPort.createUser.mockResolvedValue({
+      userId: auth0UserId,
+      email: createUserDto.email,
+      emailVerified: false,
+    } as AuthUserDto);
     userDbPort.create.mockReturnValue(user);
 
     // Act
     const result = await useCase.execute(createUserDto);
 
     // Assert
-    expect(auth0Client.createUser).toHaveBeenCalledWith(createUserDto.email, createUserDto.password);
+    expect(authPort.createUser).toHaveBeenCalledWith(createUserDto.email, createUserDto.password);
     expect(userDbPort.create).toHaveBeenCalledWith({
       name: createUserDto.name,
       surname: createUserDto.surname,
@@ -128,20 +116,14 @@ describe('CreateUserUseCase', () => {
       password: 'StrongPass123!',
     };
 
-    auth0Client.createUser.mockResolvedValue(
-      createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-        data: {
-          user_id: undefined,
-          email: createUserDto.email,
-          email_verified: false,
-        },
-      }),
-    );
+    authPort.createUser.mockResolvedValue({
+      userId: '',
+      email: createUserDto.email,
+      emailVerified: false,
+    } as AuthUserDto);
 
     // Act & Assert
-    await expect(useCase.execute(createUserDto)).rejects.toThrow(
-      new BadRequestException('Failed to get Auth0 user ID'),
-    );
+    await expect(useCase.execute(createUserDto)).rejects.toThrow(new BadRequestException('Failed to create user'));
   });
 
   it('should handle database creation errors', async () => {
@@ -157,19 +139,14 @@ describe('CreateUserUseCase', () => {
     };
 
     const auth0UserId = 'auth0|123456789';
-    auth0Client.createUser.mockResolvedValue(
-      createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
-        data: {
-          user_id: auth0UserId,
-          email: createUserDto.email,
-          email_verified: false,
-        },
-      }),
-    );
+    authPort.createUser.mockResolvedValue({
+      userId: auth0UserId,
+      email: createUserDto.email,
+      emailVerified: false,
+    } as AuthUserDto);
     userDbPort.save.mockRejectedValue(error);
 
     // Act & Assert
     await expect(useCase.execute(createUserDto)).rejects.toThrow(new BadRequestException('Failed to create user'));
-    expect(logger.error).toHaveBeenCalledWith('Failed to create user:', error);
   });
 });

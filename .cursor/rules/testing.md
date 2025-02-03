@@ -1,0 +1,3 @@
+- Never use any type or cast, always use createMock from @golevelup/ts-jest
+- When creating entities, always use the factory named use{Entity}Factory
+- When creating entities persisted in the database, always use the factory named useDb{Entity}

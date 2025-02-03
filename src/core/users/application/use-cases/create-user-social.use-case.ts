@@ -5,7 +5,7 @@ import { User, UserRole } from '../../domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { Auth0Client } from '@/infra/auth/auth0.client';
+import { AuthPort } from '@/infra/auth/ports/auth.port';
 
 @Injectable()
 export class CreateUserSocialUseCase {
@@ -14,16 +14,17 @@ export class CreateUserSocialUseCase {
     private readonly logger: PinoLogger,
     private readonly uuidAdapter: UuidAdapter,
     private readonly secretAdapter: SecretAdapter,
-    private readonly auth0Client: Auth0Client,
+    private readonly authPort: AuthPort,
   ) {}
 
   async execute(data: CreateUserSocialDto): Promise<User> {
     try {
-      const userInfo = await this.auth0Client.getUserInfo(data.auth0Id);
+      const auth0User = await this.authPort.getUserInfo(data.auth0Id);
+
       const user = this.userDb.create({
-        name: userInfo.data.given_name || userInfo.data.name,
-        surname: userInfo.data.family_name,
-        email: userInfo.data.email,
+        name: auth0User.givenName || auth0User.name,
+        surname: auth0User.familyName,
+        email: auth0User.email,
         auth0Id: data.auth0Id,
         clientId: this.uuidAdapter.generate(),
         clientSecret: this.secretAdapter.generate(),

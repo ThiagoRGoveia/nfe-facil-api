@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { Auth0Client } from '../auth0.client';
+import { Auth0Client, Auth0UserMapper } from '../auth0.client';
 import { ApiResponse, GetUsers200ResponseOneOfInner, ManagementClient } from 'auth0';
 import { createMock } from '@golevelup/ts-jest';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import {
   BadRequestException,
   InternalServerErrorException,
@@ -20,16 +19,16 @@ describe('Auth0Client', () => {
     managementClientMock = createMock<ManagementClient>();
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [useUnitTestModule()],
-      providers: [Auth0Client],
-    })
-      .overrideProvider(ConfigService)
-      .useValue(
-        createMock<ConfigService>({
-          get: jest.fn().mockReturnValue('test-env'),
-        }),
-      )
-      .compile();
+      providers: [
+        Auth0Client,
+        {
+          provide: ConfigService,
+          useValue: createMock<ConfigService>({
+            get: jest.fn().mockReturnValue('test-env'),
+          }),
+        },
+      ],
+    }).compile();
 
     configService = module.get(ConfigService);
     client = module.get<Auth0Client>(Auth0Client);
@@ -54,7 +53,7 @@ describe('Auth0Client', () => {
 
       const expectedUser = createMock<ApiResponse<GetUsers200ResponseOneOfInner>>({
         data: {
-          id: 'user-id',
+          user_id: 'user-id',
           email,
         },
       });
@@ -63,7 +62,7 @@ describe('Auth0Client', () => {
 
       const result = await client.createUser(email, password);
 
-      expect(result).toBe(expectedUser);
+      expect(result).toEqual(Auth0UserMapper.toDto(expectedUser.data));
       expect(managementClientMock.users.create).toHaveBeenCalledWith({
         email,
         password,
@@ -115,7 +114,7 @@ describe('Auth0Client', () => {
 
       const result = await client.disableUser(userId);
 
-      expect(result).toBe(expectedUser);
+      expect(result).toEqual(Auth0UserMapper.toDto(expectedUser.data));
       expect(managementClientMock.users.update).toHaveBeenCalledWith({ id: userId }, { blocked: true });
     });
 

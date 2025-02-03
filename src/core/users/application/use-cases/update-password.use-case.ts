@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
-import { Auth0Client } from '@/infra/auth/auth0.client';
+import { AuthPort } from '@/infra/auth/ports/auth.port';
 import { UserDbPort } from '../ports/users-db.port';
 import { UpdatePasswordDto } from '../dtos/update-password.dto';
 
@@ -14,7 +14,7 @@ export class UpdatePasswordUseCase {
   constructor(
     private readonly userDb: UserDbPort,
     private readonly logger: PinoLogger,
-    private readonly auth0Client: Auth0Client,
+    private readonly authPort: AuthPort,
   ) {}
 
   async execute({ id, data }: UpdatePasswordCommand): Promise<boolean> {
@@ -25,7 +25,7 @@ export class UpdatePasswordUseCase {
       }
 
       // Update password in Auth0
-      await this.auth0Client.updatePassword(user.auth0Id, data.newPassword);
+      await this.authPort.updatePassword(user.auth0Id, data.newPassword);
 
       return true;
     } catch (error) {
