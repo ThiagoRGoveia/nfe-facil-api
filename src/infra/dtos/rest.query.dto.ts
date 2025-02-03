@@ -47,14 +47,20 @@ export class RestQueryDto {
   @Max(100)
   pageSize: number = 10;
 
-  toPagination(): Pagination {
+  toPagination(): Pagination | undefined {
+    if (!this.page || !this.pageSize) {
+      return undefined;
+    }
     return {
       page: this.page,
       pageSize: this.pageSize,
     };
   }
 
-  toSort(): Sort {
+  toSort(): Sort | undefined {
+    if (!this.sortField || !this.sortDirection) {
+      return undefined;
+    }
     return {
       field: this.sortField,
       direction: this.sortDirection,

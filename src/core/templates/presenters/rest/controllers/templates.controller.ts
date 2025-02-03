@@ -20,7 +20,7 @@ import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
-import { SortDirection } from '@/infra/dtos/sort.dto';
+import { Sort, SortDirection } from '@/infra/dtos/sort.dto';
 
 const PaginatedTemplateResponse = PaginatedRestResponse(Template);
 
@@ -79,11 +79,11 @@ export class TemplateController {
   async findAll(@Req() req: Request, @Query() query: RestQueryDto): Promise<PaginatedResponse<Template>> {
     const pagination = query.toPagination();
     const sort = query.toSort();
+    const defaultSort: Sort = { field: 'createdAt', direction: SortDirection.DESC };
     if (req.user.role === UserRole.ADMIN) {
-      const defaultSort = { field: 'createdAt', direction: SortDirection.DESC };
       return await this.templateDbPort.findAll(undefined, pagination, { ...defaultSort, ...sort });
     } else {
-      return await this.templateDbPort.findByOwner(req.user.id, undefined, pagination, sort);
+      return await this.templateDbPort.findByOwner(req.user.id, undefined, pagination, { ...defaultSort, ...sort });
     }
   }
 

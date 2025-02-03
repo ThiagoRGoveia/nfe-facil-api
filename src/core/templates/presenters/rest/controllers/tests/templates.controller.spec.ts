@@ -98,13 +98,31 @@ describe('TemplateController', () => {
         items: [useTemplateFactory({}, em)],
       });
 
-      query.toPagination = jest.fn().mockReturnValue({ page: 1, limit: 10 });
-      query.toSort = jest.fn().mockReturnValue({ sortBy: 'id', order: 'asc' });
+      query.toPagination = jest.fn().mockReturnValue({ page: 1, pageSize: 10 });
+      query.toSort = jest.fn().mockReturnValue({ field: 'id', direction: SortDirection.ASC });
       templateDbPort.findAll.mockResolvedValue(paginatedResponse);
 
       const result = await controller.findAll(mockReq, query);
       expect(result).toEqual(paginatedResponse);
       expect(templateDbPort.findAll).toHaveBeenCalledWith(undefined, query.toPagination(), query.toSort());
+    });
+
+    it('should handle admin user query with default sort', async () => {
+      const mockReq = createMock<Request>({ user: createMock<{ role: UserRole }>({ role: UserRole.ADMIN }) });
+      const query = createMock<RestQueryDto>();
+      const paginatedResponse = createMock<PaginatedResponse<Template>>({
+        items: [useTemplateFactory({}, em)],
+      });
+
+      query.toPagination = jest.fn().mockReturnValue({ page: 1, pageSize: 10 });
+      query.toSort = jest.fn().mockReturnValue(undefined);
+      templateDbPort.findAll.mockResolvedValue(paginatedResponse);
+      const result = await controller.findAll(mockReq, query);
+      expect(result).toEqual(paginatedResponse);
+      expect(templateDbPort.findAll).toHaveBeenCalledWith(undefined, query.toPagination(), {
+        field: 'createdAt',
+        direction: SortDirection.DESC,
+      });
     });
 
     it('should handle regular user query', async () => {
