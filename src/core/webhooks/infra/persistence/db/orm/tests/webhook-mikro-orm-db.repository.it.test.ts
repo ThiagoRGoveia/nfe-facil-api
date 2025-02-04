@@ -59,27 +59,31 @@ describe('WebhookMikroOrmDbRepository (integration)', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('findActiveByEvent', () => {
-    it('should find active webhooks by event', async () => {
-      // Create inactive webhook with same event
+  describe('findActiveByEventAndUser', () => {
+    it('should find active webhooks by event and user', async () => {
+      // Create webhook from different user
+      const otherUser = await useDbUser({ email: 'other@example.com' }, em);
       await useDbWebhook(
         {
-          status: WebhookStatus.INACTIVE,
+          status: WebhookStatus.ACTIVE,
           events: [WebhookEvent.DOCUMENT_PROCESSED],
-          user: testUser,
+          user: otherUser,
         },
         em,
       );
 
-      const results = await repository.findActiveByEvent(WebhookEvent.DOCUMENT_PROCESSED);
+      const results = await repository.findActiveByEventAndUser(WebhookEvent.DOCUMENT_PROCESSED, testUser);
 
       expect(results).toHaveLength(1);
       expect(results[0].id).toBe(testWebhook.id);
-      expect(results[0].status).toBe(WebhookStatus.ACTIVE);
+      expect(results[0].user.id).toBe(testUser.id);
     });
 
-    it('should return empty array when no active webhooks for event', async () => {
-      const results = await repository.findActiveByEvent(WebhookEvent.DOCUMENT_FAILED);
+    it('should return empty array when no active webhooks for event/user combo', async () => {
+      const results = await repository.findActiveByEventAndUser(
+        WebhookEvent.DOCUMENT_PROCESSED,
+        await useDbUser({ email: 'other@example.com' }, em),
+      );
       expect(results).toHaveLength(0);
     });
   });

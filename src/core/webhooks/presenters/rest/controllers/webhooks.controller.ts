@@ -109,7 +109,10 @@ export class WebhooksController {
   @ApiOkResponse({ description: 'Notifications dispatched successfully' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input data' })
   @HttpCode(HttpStatus.OK)
-  async notify(@Body() notifyDto: NotifyWebhookDto): Promise<void> {
-    return this.notifyWebhookUseCase.execute(notifyDto);
+  async notify(@Req() req: Request, @Body() notifyDto: NotifyWebhookDto): Promise<void> {
+    return this.notifyWebhookUseCase.execute({
+      user: req.user,
+      ...notifyDto,
+    });
   }
 }

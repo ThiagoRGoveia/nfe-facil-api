@@ -77,7 +77,7 @@ export class ProcessDocumentUseCase {
       if (params.webhookUrl) {
         await this.webhookNotifierPort.notifyFailure(documentProcess);
       }
-      throw new Error('Failed to store document');
+      throw new BadRequestException('Failed to store document');
     }
 
     // 4. Update the process record with the S3 file key and persist the change

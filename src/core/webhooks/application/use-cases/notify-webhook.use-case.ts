@@ -5,8 +5,10 @@ import { WebhookDispatcherPort } from '../ports/webhook-dispatcher.port';
 import { WebhookEvent } from '../../domain/entities/webhook.entity';
 import { WebhookDeliveryStatus } from '../../domain/entities/webhook-delivery.entity';
 import { PinoLogger } from 'nestjs-pino';
+import { User } from '@/core/users/domain/entities/user.entity';
 
 export interface NotifyWebhookParams {
+  user: User;
   event: WebhookEvent;
   payload: unknown;
 }
@@ -21,7 +23,7 @@ export class NotifyWebhookUseCase {
   ) {}
 
   async execute(params: NotifyWebhookParams): Promise<void> {
-    const webhooks = await this.webhookRepository.findActiveByEvent(params.event);
+    const webhooks = await this.webhookRepository.findActiveByEventAndUser(params.event, params.user);
 
     await Promise.all(
       webhooks.map(async (webhook) => {

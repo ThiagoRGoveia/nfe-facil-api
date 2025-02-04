@@ -28,19 +28,21 @@ describe('WebhookMikroOrmDbRepository (unit)', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('findActiveByEvent', () => {
-    it('should find active webhooks by event', async () => {
+  describe('findActiveByEventAndUser', () => {
+    it('should find active webhooks by event and user', async () => {
       // Arrange
       const event = WebhookEvent.DOCUMENT_PROCESSED;
+      const user = useUserFactory({ email: 'test@example.com' }, em);
       const findSpy = jest.spyOn(em, 'find').mockResolvedValue([new Webhook()]);
 
       // Act
-      const result = await repository.findActiveByEvent(event);
+      const result = await repository.findActiveByEventAndUser(event, user);
 
       // Assert
       expect(findSpy).toHaveBeenCalledWith(Webhook, {
         events: { $contains: [event] },
         status: WebhookStatus.ACTIVE,
+        user,
       });
       expect(result).toBeInstanceOf(Array);
     });

@@ -7,13 +7,15 @@ import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
+import { User } from '@/core/users/domain/entities/user.entity';
 
 @Injectable()
 export class WebhookMikroOrmDbRepository extends EntityRepository(Webhook) implements WebhookDbPort {
-  async findActiveByEvent(event: WebhookEvent): Promise<Webhook[]> {
+  async findActiveByEventAndUser(event: WebhookEvent, user: User): Promise<Webhook[]> {
     return this.em.find(Webhook, {
       events: { $contains: [event] },
       status: WebhookStatus.ACTIVE,
+      user,
     });
   }
 

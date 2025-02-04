@@ -7,10 +7,11 @@ import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
+import { User } from '@/core/users/domain/entities/user.entity';
 
 @Injectable()
 export abstract class WebhookDbPort extends BaseDbPort<Webhook> {
-  abstract findActiveByEvent(event: WebhookEvent): Promise<Webhook[]>;
+  abstract findActiveByEventAndUser(event: WebhookEvent, user: User): Promise<Webhook[]>;
   abstract create(data: RequiredEntityData<Webhook>): Webhook;
   abstract update(id: Webhook['id'], data: Partial<RequiredEntityData<Webhook>>): Webhook;
   abstract findByUser(

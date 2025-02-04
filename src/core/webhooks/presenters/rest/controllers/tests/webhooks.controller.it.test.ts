@@ -186,7 +186,11 @@ describe('WebhooksController (REST Integration)', () => {
 
       expect(result.status).toBe(HttpStatus.OK);
 
-      expect(spy).toHaveBeenCalledWith(notifyData);
+      expect(spy).toHaveBeenCalledWith({
+        user,
+        event: WebhookEvent.DOCUMENT_PROCESSED,
+        payload: { data: 'test' },
+      });
       expect(httpClient.request).toHaveBeenCalledWith({
         method: 'POST',
         url: webhook.url,
