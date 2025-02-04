@@ -37,7 +37,7 @@ describe('TemplateController', () => {
           useValue: createMock<TemplateDbPort>({
             findById: jest.fn(),
             findAll: jest.fn(),
-            findByOwner: jest.fn(),
+            findByUser: jest.fn(),
           }),
         },
       ],
@@ -135,12 +135,12 @@ describe('TemplateController', () => {
       });
 
       query.toPagination = jest.fn().mockReturnValue({ page: 1, limit: 10 });
-      query.toSort = jest.fn().mockReturnValue({ sortBy: 'id', order: 'asc' });
-      templateDbPort.findByOwner.mockResolvedValue(paginatedResponse);
+      query.toSort = jest.fn().mockReturnValue({ field: 'id', direction: SortDirection.ASC });
+      templateDbPort.findByUser.mockResolvedValue(paginatedResponse);
 
       const result = await controller.findAll(mockReq, query);
       expect(result).toEqual(paginatedResponse);
-      expect(templateDbPort.findByOwner).toHaveBeenCalledWith(
+      expect(templateDbPort.findByUser).toHaveBeenCalledWith(
         mockReq.user.id,
         undefined,
         query.toPagination(),

@@ -20,9 +20,10 @@ Ports define interfaces that abstract external dependencies from the core busine
 ```typescript
 @Injectable()
 export abstract class ThreadDbPort extends BasePort<Thread> {
-  abstract findById(id: string): Promise<Thread>;
   abstract save(thread: Thread): Promise<void>;
-  abstract update(thread: Thread): Promise<void>;
+  // create and update are not promises, the data is persisted when the save method is called
+  abstract update(thread: Partial<RequiredEntityData<Thread>>): Thread;
+  abstract create(thread: RequiredEntityData<Thread>): Thread;
   abstract delete(id: string): Promise<void>;
 }
 ```

@@ -40,7 +40,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
         name: 'Test Template',
         processCode: 'test-process',
         outputFormat: 'json',
-        owner: testUser,
+        user: testUser,
       },
       em,
     );
@@ -63,7 +63,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
         outputFormat: 'xml',
         metadata: { fields: ['test'] },
         isPublic: false,
-        owner: testUser,
+        user: testUser,
       };
 
       const template = repository.create(templateData);
@@ -73,7 +73,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
       expect(template.name).toBe(templateData.name);
       expect(template.processCode).toBe(templateData.processCode);
       expect(template.outputFormat).toBe(templateData.outputFormat);
-      expect(template.owner?.unwrap()).toBe(testUser);
+      expect(template.user?.unwrap()).toBe(testUser);
     });
   });
 
@@ -91,7 +91,7 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
       expect(updatedTemplate.name).toBe(updateData.name);
       expect(updatedTemplate.metadata).toEqual(updateData.metadata);
       expect(updatedTemplate.processCode).toBe(testTemplate.processCode);
-      expect(updatedTemplate.owner?.unwrap()).toBe(testUser);
+      expect(updatedTemplate.user?.unwrap()).toBe(testUser);
     });
   });
 

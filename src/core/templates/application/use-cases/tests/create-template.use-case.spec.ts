@@ -58,7 +58,7 @@ describe('CreateTemplateUseCase', () => {
 
     expect(templateDbPort.create).toHaveBeenCalledWith({
       ...validDto,
-      owner: testUser,
+      user: testUser,
     });
     expect(templateDbPort.save).toHaveBeenCalled();
     expect(result).toEqual(expect.objectContaining(validDto));

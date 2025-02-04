@@ -11,18 +11,18 @@ import { User } from '@/core/users/domain/entities/user.entity';
 
 @Injectable()
 export class TemplateMikroOrmDbRepository extends EntityRepository(Template) implements TemplateDbPort {
-  findByOwner(
-    ownerId: User['id'],
+  findByUser(
+    userId: User['id'],
     filters?: Filter[],
     pagination?: Pagination,
     sort?: Sort,
   ): Promise<PaginatedResponse<Template>> {
     const allFilters = [...(filters || [])];
-    const ownerFilter = allFilters.find((filter) => filter.field === 'owner.id');
+    const ownerFilter = allFilters.find((filter) => filter.field === 'user.id');
     if (ownerFilter) {
-      ownerFilter.value = ownerId.toString();
+      ownerFilter.value = userId.toString();
     } else {
-      allFilters.push({ field: 'owner.id', value: ownerId.toString() });
+      allFilters.push({ field: 'user.id', value: userId.toString() });
     }
     return super.findAll(allFilters, pagination, sort);
   }

@@ -38,7 +38,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
         metadata: { fields: ['test'] },
         outputFormat: 'json',
         isPublic: false,
-        owner: user,
+        user: user,
       };
 
       const createSpy = jest.spyOn(em, 'create');
@@ -56,7 +56,7 @@ describe('TemplateMikroOrmDbRepository (unit)', () => {
       expect(result.metadata).toEqual(templateData.metadata);
       expect(result.outputFormat).toBe(templateData.outputFormat);
       expect(result.isPublic).toBe(templateData.isPublic);
-      expect(result.owner?.unwrap()).toBe(user);
+      expect(result.user?.unwrap()).toBe(user);
     });
   });
 

@@ -33,6 +33,7 @@ describe('TemplatesResolver', () => {
           useValue: createMock<TemplateDbPort>({
             findById: jest.fn(),
             findAll: jest.fn(),
+            findByUser: jest.fn(),
           }),
         },
         {
@@ -78,7 +79,12 @@ describe('TemplatesResolver', () => {
   });
 
   describe('findAllTemplates', () => {
-    it('should return paginated templates', async () => {
+    it('should return all templates for admin users', async () => {
+      const mockCtx = createMock<GraphqlExpressContext>({
+        req: createMock<Request>({
+          user: createMock<User>({ id: '1', role: UserRole.ADMIN }),
+        }),
+      });
       const paginatedResponse = createMock<PaginatedResponse<Template>>({
         items: [useTemplateFactory({}, em)],
       });
@@ -87,10 +93,30 @@ describe('TemplatesResolver', () => {
       const sort = { field: 'id', direction: SortDirection.ASC };
 
       templateDbPort.findAll.mockResolvedValue(paginatedResponse);
-      const result = await resolver.findAllTemplates(filters, pagination, sort);
+      const result = await resolver.findAllTemplates(mockCtx, filters, pagination, sort);
 
       expect(result).toEqual(paginatedResponse);
       expect(templateDbPort.findAll).toHaveBeenCalledWith(filters.filters, pagination, sort);
+    });
+
+    it('should return only owned templates for customer users', async () => {
+      const mockCtx = createMock<GraphqlExpressContext>({
+        req: createMock<Request>({
+          user: createMock<User>({ id: '1', role: UserRole.CUSTOMER }),
+        }),
+      });
+      const paginatedResponse = createMock<PaginatedResponse<Template>>({
+        items: [useTemplateFactory({}, em)],
+      });
+      const filters = { filters: [] };
+      const pagination = { page: 1, pageSize: 10 };
+      const sort = { field: 'id', direction: SortDirection.ASC };
+
+      templateDbPort.findByUser.mockResolvedValue(paginatedResponse);
+      const result = await resolver.findAllTemplates(mockCtx, filters, pagination, sort);
+
+      expect(result).toEqual(paginatedResponse);
+      expect(templateDbPort.findByUser).toHaveBeenCalledWith('1', filters.filters, pagination, sort);
     });
   });
 

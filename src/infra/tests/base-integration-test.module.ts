@@ -7,7 +7,8 @@ import { createMock } from '@golevelup/ts-jest';
 import { UuidAdapter } from '../adapters/uuid.adapter';
 import { SecretAdapter } from '../adapters/secret.adapter';
 import { AuthPort } from '../auth/ports/auth.port';
-
+import { EncryptionPort } from '../encryption/ports/encryption.port';
+import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
 @Global()
 @Module({
   imports: [
@@ -42,7 +43,11 @@ import { AuthPort } from '../auth/ports/auth.port';
       provide: AuthPort,
       useValue: createMock<AuthPort>(),
     },
+    {
+      provide: EncryptionPort,
+      useClass: EncryptionAdapter,
+    },
   ],
-  exports: [PinoLogger, UuidAdapter, SecretAdapter, AuthPort],
+  exports: [PinoLogger, UuidAdapter, SecretAdapter, AuthPort, EncryptionPort],
 })
 export class BaseIntegrationTestModule {}

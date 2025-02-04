@@ -39,7 +39,7 @@ describe('UpdateTemplateUseCase', () => {
     em = module.get(EntityManager);
 
     testUser = useUserFactory({ id: '1' }, em);
-    testTemplate = useTemplateFactory({ id: '1', owner: testUser }, em);
+    testTemplate = useTemplateFactory({ id: '1', user: testUser }, em);
   });
 
   const validUpdate: UpdateTemplateDto = {

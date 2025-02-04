@@ -24,7 +24,7 @@ export class DeleteTemplateUseCase {
         throw new NotFoundException('Template not found');
       }
 
-      const owner = await template.owner?.load();
+      const owner = await template.user?.load();
 
       // Corrected permission check
       if (user.role !== UserRole.ADMIN && (!owner || owner.id !== user.id)) {

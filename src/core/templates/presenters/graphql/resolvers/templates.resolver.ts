@@ -11,7 +11,7 @@ import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-re
 import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 
 const PaginatedTemplates = PaginatedGraphqlResponse(Template);
@@ -32,11 +32,16 @@ export class TemplatesResolver {
 
   @Query(() => PaginatedTemplates)
   async findAllTemplates(
+    @Context() context: GraphqlExpressContext,
     @Args('filters', { nullable: true }) filters?: Filters,
     @Args('pagination', { nullable: true }) pagination?: Pagination,
     @Args('sort', { nullable: true }) sort?: Sort,
   ): Promise<PaginatedResponse<Template>> {
-    return this.templateDbPort.findAll(filters?.filters, pagination, sort);
+    if (context.req.user.role === UserRole.ADMIN) {
+      return this.templateDbPort.findAll(filters?.filters, pagination, sort);
+    } else {
+      return this.templateDbPort.findByUser(context.req.user.id, filters?.filters, pagination, sort);
+    }
   }
 
   @Mutation(() => Template)
@@ -76,7 +81,7 @@ export class TemplatesResolver {
   }
 
   @ResolveField(() => User, { nullable: true })
-  async owner(@Parent() template: Template): Promise<User | null> {
-    return template.owner?.load() ?? null;
+  async user(@Parent() template: Template): Promise<User | null> {
+    return template.user?.load() ?? null;
   }
 }

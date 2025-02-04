@@ -28,7 +28,7 @@ export class CreateTemplateUseCase {
       // Create template with owner
       const template = this.templateDbPort.create({
         ...data,
-        owner: user,
+        user: user,
       });
 
       await this.templateDbPort.save();

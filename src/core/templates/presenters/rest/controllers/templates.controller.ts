@@ -83,7 +83,7 @@ export class TemplateController {
     if (req.user.role === UserRole.ADMIN) {
       return await this.templateDbPort.findAll(undefined, pagination, { ...defaultSort, ...sort });
     } else {
-      return await this.templateDbPort.findByOwner(req.user.id, undefined, pagination, { ...defaultSort, ...sort });
+      return await this.templateDbPort.findByUser(req.user.id, undefined, pagination, { ...defaultSort, ...sort });
     }
   }
 

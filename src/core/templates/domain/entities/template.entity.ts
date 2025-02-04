@@ -64,5 +64,9 @@ export class Template extends BaseEntity {
     description: 'Template owner',
   })
   @ManyToOne(() => User, { ref: true, eager: false, nullable: true })
-  owner?: Ref<User>;
+  user?: Ref<User>;
+
+  public isAccessibleByUser(user: User): boolean {
+    return this.isPublic || this.user?.id === user.id;
+  }
 }

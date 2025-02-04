@@ -28,7 +28,7 @@ export class UpdateTemplateUseCase {
       }
 
       // Check ownership
-      if (template.owner?.id !== user.id && user.role !== UserRole.ADMIN) {
+      if (template.user?.id !== user.id && user.role !== UserRole.ADMIN) {
         throw new BadRequestException("You don't have permission to update this template");
       }
 

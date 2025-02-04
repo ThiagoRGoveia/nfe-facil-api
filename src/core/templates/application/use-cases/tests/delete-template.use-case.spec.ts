@@ -38,11 +38,11 @@ describe('DeleteTemplateUseCase', () => {
     em = module.get(EntityManager);
 
     testUser = useUserFactory({ id: '1', role: UserRole.ADMIN }, em);
-    testTemplate = useTemplateFactory({ id: '1', owner: testUser }, em);
+    testTemplate = useTemplateFactory({ id: '1', user: testUser }, em);
   });
 
   it('should delete owned template', async () => {
-    templateDbPort.findById.mockResolvedValue(useTemplateFactory({ id: '1', owner: testUser, isPublic: false }, em));
+    templateDbPort.findById.mockResolvedValue(useTemplateFactory({ id: '1', user: testUser, isPublic: false }, em));
 
     await useCase.execute({
       user: testUser,

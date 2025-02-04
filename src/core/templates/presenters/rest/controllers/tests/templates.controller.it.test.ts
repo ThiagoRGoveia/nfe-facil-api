@@ -35,7 +35,7 @@ describe('TemplateController (REST Integration)', () => {
 
     // Create test user and template
     user = await useDbUser({ role: UserRole.ADMIN }, em);
-    template = await useDbTemplate({ owner: user }, em);
+    template = await useDbTemplate({ user: user }, em);
   });
 
   afterEach(async () => {
@@ -60,7 +60,7 @@ describe('TemplateController (REST Integration)', () => {
       expect(body).toMatchObject({
         name: createDto.name,
         processCode: createDto.processCode,
-        owner: { id: user.id },
+        user: { id: user.id },
       });
 
       // Verify database entry

@@ -8,8 +8,8 @@ import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { User } from '@/core/users/domain/entities/user.entity';
 
 export abstract class TemplateDbPort extends BaseDbPort<Template> {
-  abstract findByOwner(
-    ownerId: User['id'],
+  abstract findByUser(
+    userId: User['id'],
     filters?: Filter[],
     pagination?: Pagination,
     sort?: Sort,
