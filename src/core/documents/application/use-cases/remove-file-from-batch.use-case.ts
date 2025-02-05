@@ -1,31 +1,29 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BatchDbPort } from '../ports/batch-db.port';
-import { BatchFileDbPort } from '../ports/batch-file-db.port';
+import { DocumentProcessDbPort } from '../ports/document-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { BatchFile } from '../../domain/entities/batch-file.entity';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
+import { DocumentProcess } from '../../domain/entities/document-process.entity';
 
 @Injectable()
 export class RemoveFileFromBatchUseCase {
   constructor(
-    private readonly batchRepository: BatchDbPort,
-    private readonly fileRepository: BatchFileDbPort,
+    private readonly documentProcessRepository: DocumentProcessDbPort,
     private readonly fileStoragePort: FileStoragePort,
   ) {}
 
-  async execute(params: { batchId: BatchProcess['id']; fileId: BatchFile['id'] }) {
-    const batch = await this.batchRepository.findByIdWithFiles(params.batchId);
-    const file = batch.files.find((f) => f.id === params.fileId);
+  async execute(params: { batchId: BatchProcess['id']; documentId: DocumentProcess['id'] }) {
+    const document = await this.documentProcessRepository.findById(params.documentId);
 
-    if (!file) {
-      throw new BadRequestException('File not found in batch');
+    if (!document || document.batchProcess?.id !== params.batchId) {
+      throw new BadRequestException('Document not found in batch');
     }
 
     // Remove from storage
-    await this.fileStoragePort.delete(file.storagePath);
+    if (document.filePath) {
+      await this.fileStoragePort.delete(document.filePath);
+    }
 
     // Remove from database
-    await this.fileRepository.delete(params.fileId);
-    await this.batchRepository.removeFileFromBatch(params.batchId, params.fileId);
+    await this.documentProcessRepository.delete(params.documentId);
   }
 }

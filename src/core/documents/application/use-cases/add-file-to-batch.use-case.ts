@@ -1,17 +1,17 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
-import { BatchFileDbPort } from '../ports/batch-file-db.port';
-import { FileStatus } from '../../domain/entities/batch-file.entity';
+import { DocumentProcessDbPort } from '../ports/document-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { Readable } from 'stream';
+import { DocumentProcessStatus } from '../../domain/entities/document-process.entity';
 
 @Injectable()
 export class AddFileToBatchUseCase {
   constructor(
     private readonly batchRepository: BatchDbPort,
-    private readonly fileRepository: BatchFileDbPort,
+    private readonly documentProcessRepository: DocumentProcessDbPort,
     private readonly fileStoragePort: FileStoragePort,
     private readonly uuidAdapter: UuidAdapter,
   ) {}
@@ -37,17 +37,16 @@ export class AddFileToBatchUseCase {
       throw new BadRequestException('Failed to store document');
     }
 
-    const file = this.fileRepository.create({
-      filename: params.filename,
-      status: FileStatus.PENDING,
-      storagePath: filePath,
+    const documentProcess = this.documentProcessRepository.create({
+      fileName: params.filename,
+      status: DocumentProcessStatus.PENDING,
+      filePath: filePath,
+      template: batch.template,
       batchProcess: batch,
     });
 
-    // Add to batch
     try {
-      await this.batchRepository.addFileToBatch(params.batchId, file);
-      await this.batchRepository.save();
+      await this.documentProcessRepository.save();
     } catch (error) {
       await this.fileStoragePort.delete(filePath);
       if (error instanceof HttpException) {
@@ -55,6 +54,7 @@ export class AddFileToBatchUseCase {
       }
       throw new BadRequestException('Failed to add file to batch');
     }
-    return file;
+
+    return documentProcess;
   }
 }

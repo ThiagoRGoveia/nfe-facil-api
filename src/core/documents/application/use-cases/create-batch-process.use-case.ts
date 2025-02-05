@@ -6,8 +6,8 @@ import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { BadRequestException } from '@nestjs/common';
 import { ZipPort } from '../ports/zip.port';
 import { BatchDbPort } from '../ports/batch-db.port';
-import { FileStatus } from '../../domain/entities/batch-file.entity';
-import { BatchFileDbPort } from '../ports/batch-file-db.port';
+import { DocumentProcessStatus } from '../../domain/entities/document-process.entity';
+import { DocumentProcessDbPort } from '../ports/document-process-db.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 
@@ -16,7 +16,7 @@ export class CreateBatchProcessUseCase {
   constructor(
     private readonly batchProcessRepository: BatchDbPort,
     private readonly templateRepository: TemplateDbPort,
-    private readonly fileRepository: BatchFileDbPort,
+    private readonly documentProcessRepository: DocumentProcessDbPort,
     private readonly fileStorage: FileStoragePort,
     private readonly zipService: ZipPort,
     private readonly uuidAdapter: UuidAdapter,
@@ -56,15 +56,16 @@ export class CreateBatchProcessUseCase {
           files.map(async (file) => {
             const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
             await this.fileStorage.uploadFromBuffer(path, file.content);
-            const fileEntity = this.fileRepository.create({
-              filename: file.name,
-              status: FileStatus.PENDING,
-              storagePath: path,
+            this.documentProcessRepository.create({
+              fileName: file.name,
+              status: DocumentProcessStatus.PENDING,
+              filePath: path,
+              template,
               batchProcess: batch,
             });
-            batch.addFile(fileEntity);
           }),
         );
+        await this.documentProcessRepository.save();
       } catch (error) {
         if (error instanceof BadRequestException) {
           throw error;

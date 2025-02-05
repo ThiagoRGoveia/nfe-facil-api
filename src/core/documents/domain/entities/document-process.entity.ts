@@ -2,9 +2,11 @@ import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity'
 import { Entity, Index, ManyToOne, PrimaryKey, Property, Ref } from '@mikro-orm/core';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
+import { BatchProcess } from './batch-process.entity';
 
 export enum DocumentProcessStatus {
   PENDING = 'pending',
+  PROCESSING = 'processing',
   COMPLETED = 'completed',
   FAILED = 'failed',
 }
@@ -33,12 +35,20 @@ export class DocumentProcess extends BaseEntity {
   @Property({ nullable: true })
   error?: string;
 
+  @Index()
+  @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
+  batchProcess?: Ref<BatchProcess>;
+
   public setFilePath(filePath: string): void {
     this.filePath = filePath;
   }
 
   public setPayload(payload: unknown): void {
     this.payload = payload;
+  }
+
+  public markProcessing(): void {
+    this.status = DocumentProcessStatus.PROCESSING;
   }
 
   public markCompleted(): void {

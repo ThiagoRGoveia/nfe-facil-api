@@ -40,9 +40,14 @@ export class ProcessDocumentUseCase {
     const documentProcess = this.documentProcessDbPort.create({
       template: template,
       fileName: params.file.fileName,
+      filePath: params.file.filePath,
       status: DocumentProcessStatus.PENDING,
+      batchProcess: params.batchId ? this.batchRepository.ref(params.batchId) : undefined,
     });
 
+    await this.documentProcessDbPort.save();
+
+    documentProcess.markProcessing();
     await this.documentProcessDbPort.save();
 
     const result = await this.documentProcessorPort.process(documentProcess.id, params.file.filePath, template);
@@ -56,10 +61,6 @@ export class ProcessDocumentUseCase {
       await this.webhookNotifierPort.notifyFailure(documentProcess);
     } else {
       throw new InternalServerErrorException('Invalid document process result');
-    }
-
-    if (params.batchId) {
-      await this.batchRepository.incrementProcessedFilesCount(params.batchId);
     }
 
     await this.documentProcessDbPort.save();

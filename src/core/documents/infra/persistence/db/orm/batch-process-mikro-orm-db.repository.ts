@@ -14,13 +14,6 @@ export class BatchMikroOrmRepository extends EntityRepository(BatchProcess) impl
     return batch;
   }
 
-  async addFileToBatch(id: BatchProcess['id'], file: BatchFile): Promise<void> {
-    const batch = await this.findByIdWithFiles(id);
-    batch.addFile(file);
-    batch.totalFiles++;
-    await this.em.persistAndFlush(batch);
-  }
-
   async removeFileFromBatch(id: BatchProcess['id'], fileId: BatchFile['id']): Promise<void> {
     const batch = await this.findByIdWithFiles(id);
     const fileToRemove = batch.files.find((f) => f.id === fileId);

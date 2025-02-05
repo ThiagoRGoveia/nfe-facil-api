@@ -5,8 +5,8 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { Collection } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
-import { BatchFile } from './batch-file.entity';
 import { BadRequestException } from '@nestjs/common';
+import { DocumentProcess } from './document-process.entity';
 export enum BatchStatus {
   CREATED = 'created',
   PROCESSING = 'processing',
@@ -31,9 +31,9 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   @ManyToOne(() => Template, { eager: false, ref: true })
   template!: Ref<Template>;
 
-  @Field(() => [BatchFile])
-  @OneToMany(() => BatchFile, (file) => file.batchProcess, { eager: false, ref: true })
-  files = new Collection<BatchFile>(this);
+  @Field(() => [DocumentProcess])
+  @OneToMany(() => DocumentProcess, (process) => process.batchProcess, { eager: false, ref: true })
+  files = new Collection<DocumentProcess>(this);
 
   @Field(() => User)
   @ManyToOne(() => User, { eager: false, ref: true })
@@ -46,11 +46,11 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   processedFiles: number = 0;
 
   // Domain logic methods
-  addFile(file: BatchFile) {
+  addFile(process: DocumentProcess) {
     if (this.status !== BatchStatus.CREATED) {
       throw new BadRequestException('Cannot add files to a started batch');
     }
-    this.files.add(file);
+    this.files.add(process);
   }
 
   cancel() {

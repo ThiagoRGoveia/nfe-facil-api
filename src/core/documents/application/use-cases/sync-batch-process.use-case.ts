@@ -3,15 +3,17 @@ import { BatchDbPort } from '../ports/batch-db.port';
 import { ProcessDocumentUseCase } from './process-document.use-case';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { FileStatus } from '../../domain/entities/batch-file.entity';
+import { DocumentProcessStatus } from '../../domain/entities/document-process.entity';
 import { CreateBatchProcessUseCase } from './create-batch-process.use-case';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
+import { DocumentProcessDbPort } from '../ports/document-process-db.port';
 
 @Injectable()
 export class SyncBatchProcessUseCase {
   constructor(
     private readonly batchRepository: BatchDbPort,
+    private readonly documentProcessRepository: DocumentProcessDbPort,
     private readonly processDocumentUseCase: ProcessDocumentUseCase,
     private readonly createBatchUseCase: CreateBatchProcessUseCase,
   ) {}
@@ -20,45 +22,51 @@ export class SyncBatchProcessUseCase {
     // First create the batch process
     const batch = await this.createBatchUseCase.execute(user, dto);
 
-    // Then fetch the full batch with files
-    const fullBatch = await this.batchRepository.findByIdWithFiles(batch.id);
-
-    if (fullBatch.status !== BatchStatus.CREATED) {
+    if (batch.status !== BatchStatus.CREATED) {
       throw new BatchOperationForbiddenError('Batch has already been started');
     }
 
-    this.batchRepository.update(fullBatch.id, { status: BatchStatus.PROCESSING });
+    this.batchRepository.update(batch.id, { status: BatchStatus.PROCESSING });
     await this.batchRepository.save();
+
+    // Get all documents for this batch
+    const documents = await this.documentProcessRepository.findByBatchPaginated(batch.id, 10, 0);
 
     // Process files in parallel
     await Promise.all(
-      fullBatch.files.map(async (file) => {
+      documents.map(async (doc) => {
         try {
           await this.processDocumentUseCase.execute({
             file: {
-              fileName: file.filename,
-              filePath: file.storagePath,
+              fileName: doc.fileName,
+              filePath: doc.filePath!,
             },
-            templateId: fullBatch.template.id,
+            templateId: batch.template.id,
             user,
+            batchId: batch.id,
           });
         } catch (error) {
           // Handle individual file processing errors
-          console.error(`Error processing file ${file.storagePath}:`, error);
+          console.error(`Error processing file ${doc.filePath}:`, error);
         }
       }),
     );
 
     // Update batch status based on results
-    const failedFiles = fullBatch.files.filter((f) => f.status === FileStatus.FAILED);
+    const failedDocs = await this.documentProcessRepository.countByBatchAndStatus(
+      batch.id,
+      DocumentProcessStatus.FAILED,
+    );
+    const totalDocs = documents.length;
+
     const newStatus =
-      failedFiles.length > 0
-        ? failedFiles.length === fullBatch.files.length
+      failedDocs > 0
+        ? failedDocs === totalDocs
           ? BatchStatus.FAILED
           : BatchStatus.PARTIALLY_COMPLETED
         : BatchStatus.COMPLETED;
 
-    this.batchRepository.update(fullBatch.id, { status: newStatus as BatchStatus });
+    this.batchRepository.update(batch.id, { status: newStatus });
     await this.batchRepository.save();
   }
 }
