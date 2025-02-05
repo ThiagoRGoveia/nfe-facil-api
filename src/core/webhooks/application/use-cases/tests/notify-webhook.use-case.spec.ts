@@ -30,9 +30,7 @@ describe('NotifyWebhookUseCase', () => {
         NotifyWebhookUseCase,
         {
           provide: WebhookDbPort,
-          useValue: createMock<WebhookDbPort>({
-            findActiveByEvent: jest.fn(),
-          }),
+          useValue: createMock<WebhookDbPort>({}),
         },
         {
           provide: WebhookDeliveryDbPort,
@@ -76,7 +74,7 @@ describe('NotifyWebhookUseCase', () => {
   const testPayload = { data: 'test' };
 
   it('should process successful webhook delivery', async () => {
-    webhookDbPort.findActiveByEvent.mockResolvedValue([testWebhook]);
+    webhookDbPort.findActiveByEventAndUser.mockResolvedValue([testWebhook]);
     dispatcherPort.dispatch.mockResolvedValue(undefined);
 
     const testDelivery = useWebhookDeliveryFactory(
@@ -89,7 +87,7 @@ describe('NotifyWebhookUseCase', () => {
 
     deliveryDbPort.create.mockReturnValue(testDelivery);
 
-    await useCase.execute({ event: testEvent, payload: testPayload });
+    await useCase.execute({ event: testEvent, payload: testPayload, user: testUser });
 
     expect(deliveryDbPort.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -104,7 +102,7 @@ describe('NotifyWebhookUseCase', () => {
   });
 
   it('should handle failed webhook delivery', async () => {
-    webhookDbPort.findActiveByEvent.mockResolvedValue([testWebhook]);
+    webhookDbPort.findActiveByEventAndUser.mockResolvedValue([testWebhook]);
     const testError = new Error('Dispatch failed');
     dispatcherPort.dispatch.mockRejectedValue(testError);
 
@@ -118,7 +116,7 @@ describe('NotifyWebhookUseCase', () => {
 
     deliveryDbPort.create.mockReturnValue(testDelivery);
 
-    await useCase.execute({ event: testEvent, payload: testPayload });
+    await useCase.execute({ event: testEvent, payload: testPayload, user: testUser });
 
     expect(deliveryDbPort.update).toHaveBeenCalledWith(testDelivery.id, {
       status: WebhookDeliveryStatus.FAILED,
@@ -129,11 +127,12 @@ describe('NotifyWebhookUseCase', () => {
   });
 
   it('should handle no active webhooks', async () => {
-    webhookDbPort.findActiveByEvent.mockResolvedValue([]);
+    webhookDbPort.findActiveByEventAndUser.mockResolvedValue([]);
 
     await useCase.execute({
       event: testEvent,
       payload: testPayload,
+      user: testUser,
     });
 
     expect(deliveryDbPort.create).not.toHaveBeenCalled();
@@ -142,7 +141,7 @@ describe('NotifyWebhookUseCase', () => {
 
   it('should handle multiple webhooks', async () => {
     const secondWebhook = useWebhookFactory({ user: testUser, events: [testEvent] }, em);
-    webhookDbPort.findActiveByEvent.mockResolvedValue([testWebhook, secondWebhook]);
+    webhookDbPort.findActiveByEventAndUser.mockResolvedValue([testWebhook, secondWebhook]);
     dispatcherPort.dispatch.mockResolvedValue(undefined);
 
     const delivery1 = useWebhookDeliveryFactory({ webhook: testWebhook }, em);
@@ -150,7 +149,7 @@ describe('NotifyWebhookUseCase', () => {
 
     deliveryDbPort.create.mockImplementationOnce(() => delivery1).mockImplementationOnce(() => delivery2);
 
-    await useCase.execute({ event: testEvent, payload: testPayload });
+    await useCase.execute({ event: testEvent, payload: testPayload, user: testUser });
 
     expect(deliveryDbPort.create).toHaveBeenCalledTimes(2);
     expect(dispatcherPort.dispatch).toHaveBeenCalledWith(delivery1);
@@ -158,7 +157,7 @@ describe('NotifyWebhookUseCase', () => {
   });
 
   it('should handle database errors', async () => {
-    webhookDbPort.findActiveByEvent.mockResolvedValue([testWebhook]);
+    webhookDbPort.findActiveByEventAndUser.mockResolvedValue([testWebhook]);
     const testDelivery = useWebhookDeliveryFactory(
       {
         webhook: testWebhook,
@@ -175,6 +174,7 @@ describe('NotifyWebhookUseCase', () => {
       useCase.execute({
         event: testEvent,
         payload: testPayload,
+        user: testUser,
       }),
     ).rejects.toThrow(BadRequestException);
   });

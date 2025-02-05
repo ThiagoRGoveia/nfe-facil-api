@@ -14,6 +14,7 @@ import { BatchProcess } from '@/core/documents/domain/entities/batch-process.ent
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
 
 describe('AddFileToBatchUseCase', () => {
   let useCase: AddFileToBatchUseCase;
@@ -92,7 +93,7 @@ describe('AddFileToBatchUseCase', () => {
     );
     expect(fileProcessDbPort.create).toHaveBeenCalledWith({
       fileName: 'test.pdf',
-      status: 'pending',
+      status: FileProcessStatus.PENDING,
       filePath: 's3://path/to/file',
       template: batch.template,
       batchProcess: batch,
