@@ -65,6 +65,7 @@ export class CreateBatchProcessUseCase {
             });
           }),
         );
+        this.batchProcessRepository.update(batch.id, { totalFiles: files.length });
         await this.fileProcessRepository.save();
       } catch (error) {
         if (error instanceof BadRequestException) {

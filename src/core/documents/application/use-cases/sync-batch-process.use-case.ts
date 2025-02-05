@@ -9,6 +9,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { CancelBatchProcessUseCase } from './cancel-batch-process.use-case';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class SyncBatchProcessUseCase {
@@ -19,6 +20,7 @@ export class SyncBatchProcessUseCase {
     private readonly processFileUseCase: ProcessFileUseCase,
     private readonly createBatchUseCase: CreateBatchProcessUseCase,
     private readonly cancelBatchUseCase: CancelBatchProcessUseCase,
+    private readonly logger: PinoLogger,
   ) {}
 
   async execute(user: User, dto: CreateBatchDto) {
@@ -49,8 +51,7 @@ export class SyncBatchProcessUseCase {
             user,
           });
         } catch (error) {
-          // Handle individual file processing errors
-          console.error(`Error processing file ${doc.filePath}:`, error);
+          this.logger.error(`Error processing file ${doc.filePath}:`, error);
         }
       }),
     );

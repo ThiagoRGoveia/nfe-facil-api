@@ -5,10 +5,10 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
 
 export enum FileProcessStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
 }
 
 @Entity({ tableName: 'document_processes' })

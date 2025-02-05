@@ -1,0 +1,117 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { createMock } from '@golevelup/ts-jest';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { ProcessFileUseCase } from '../process-file.use-case';
+import { FileProcessDbPort } from '../../ports/file-process-db.port';
+import { DocumentProcessorPort } from '../../ports/document-processor.port';
+import { WebhookNotifierPort } from '../../ports/webhook-notifier.port';
+import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
+
+describe('ProcessFileUseCase', () => {
+  let useCase: ProcessFileUseCase;
+  let fileProcessDbPort: jest.Mocked<FileProcessDbPort>;
+  let documentProcessor: jest.Mocked<DocumentProcessorPort>;
+  let webhookNotifier: jest.Mocked<WebhookNotifierPort>;
+  let em: EntityManager;
+  let mockUser: ReturnType<typeof useUserFactory>;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [useUnitTestModule()],
+      providers: [
+        ProcessFileUseCase,
+        {
+          provide: FileProcessDbPort,
+          useValue: createMock<FileProcessDbPort>({
+            save: jest.fn().mockResolvedValue(undefined),
+          }),
+        },
+        {
+          provide: DocumentProcessorPort,
+          useValue: createMock<DocumentProcessorPort>({
+            process: jest.fn().mockResolvedValue({ isSuccess: () => true, payload: {} }),
+          }),
+        },
+        {
+          provide: WebhookNotifierPort,
+          useValue: createMock<WebhookNotifierPort>(),
+        },
+      ],
+    }).compile();
+
+    useCase = module.get<ProcessFileUseCase>(ProcessFileUseCase);
+    fileProcessDbPort = module.get(FileProcessDbPort);
+    documentProcessor = module.get(DocumentProcessorPort);
+    webhookNotifier = module.get(WebhookNotifierPort);
+    em = module.get(EntityManager);
+    mockUser = useUserFactory({}, em);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('should process file successfully with webhook', async () => {
+    const template = useTemplateFactory({ user: mockUser }, em);
+    const fileProcess = useFileProcessFactory(
+      {
+        status: FileProcessStatus.PENDING,
+        template,
+        filePath: 's3://valid/path.pdf',
+      },
+      em,
+    );
+
+    const result = await useCase.execute({
+      user: mockUser,
+      file: fileProcess,
+    });
+
+    expect(documentProcessor.process).toHaveBeenCalledWith(fileProcess.id, 's3://valid/path.pdf', template);
+    expect(webhookNotifier.notifySuccess).toHaveBeenCalled();
+    expect(result.status).toBe(FileProcessStatus.COMPLETED);
+    expect(fileProcessDbPort.save).toHaveBeenCalledTimes(2);
+  });
+
+  it('should handle processing failure', async () => {
+    const template = useTemplateFactory({ user: mockUser }, em);
+    const fileProcess = useFileProcessFactory({ template }, em);
+    documentProcessor.process.mockResolvedValueOnce(
+      createMock<DocumentProcessResult>({
+        isError: () => true,
+        errorMessage: 'Invalid format',
+        isSuccess: () => false,
+      }),
+    );
+
+    const result = await useCase.execute({ user: mockUser, file: fileProcess });
+
+    expect(result.status).toBe(FileProcessStatus.FAILED);
+    expect(webhookNotifier.notifyFailure).toHaveBeenCalled();
+  });
+
+  it('should reject inaccessible template', async () => {
+    const otherUserTemplate = useTemplateFactory({ user: useUserFactory({}, em), isPublic: false }, em);
+    const otherFileProcess = useFileProcessFactory({ template: otherUserTemplate }, em);
+
+    await expect(useCase.execute({ user: mockUser, file: otherFileProcess })).rejects.toThrow(
+      "You don't have access to this template",
+    );
+  });
+
+  it('should handle missing file path', async () => {
+    const fileProcess = useFileProcessFactory(
+      { filePath: null, template: useTemplateFactory({ user: mockUser }, em) },
+      em,
+    );
+
+    await expect(useCase.execute({ user: mockUser, file: fileProcess })).rejects.toThrow(
+      'Missing file for file processing',
+    );
+  });
+});

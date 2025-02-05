@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { FileToProcess, FileProcessStatus } from '../../domain/entities/file-process.entity';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { FileToProcess } from '../../domain/entities/file-process.entity';
 import { DocumentProcessorPort } from '../ports/document-processor.port';
 import { WebhookNotifierPort } from '../ports/webhook-notifier.port';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
@@ -19,46 +19,34 @@ export class ProcessFileUseCase {
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
-    const template = await params.file.template.load();
+    const { file, user } = params;
+    const template = await file.template.load();
     if (!template) {
       throw new BadRequestException('Template not found');
     }
 
-    if (!template.isAccessibleByUser(params.user)) {
+    if (!template.isAccessibleByUser(user)) {
       throw new BadRequestException("You don't have access to this template");
     }
 
-    const fileProcess = this.fileProcessDbPort.create({
-      template: template,
-      fileName: params.file.fileName,
-      filePath: params.file.filePath,
-      status: FileProcessStatus.PENDING,
-      batchProcess: params.file.batchProcess,
-    });
-
+    file.markProcessing();
     await this.fileProcessDbPort.save();
 
-    fileProcess.markProcessing();
-    await this.fileProcessDbPort.save();
-
-    if (!params.file.filePath) {
+    if (!file.filePath) {
       throw new BadRequestException('Missing file for file processing');
     }
 
-    const result = await this.documentProcessorPort.process(fileProcess.id, params.file.filePath, template);
+    const result = await this.documentProcessorPort.process(file.id, file.filePath, template);
 
     if (result.isSuccess()) {
-      fileProcess.setPayload(result.payload);
-      fileProcess.markCompleted();
-      await this.webhookNotifierPort.notifySuccess(fileProcess);
+      file.setPayload(result.payload);
+      file.markCompleted();
+      await this.webhookNotifierPort.notifySuccess(file);
     } else if (result.isError()) {
-      fileProcess.markFailed(result.errorMessage);
-      await this.webhookNotifierPort.notifyFailure(fileProcess);
-    } else {
-      throw new InternalServerErrorException('Invalid file process result');
+      file.markFailed(result.errorMessage);
+      await this.webhookNotifierPort.notifyFailure(file);
     }
-
     await this.fileProcessDbPort.save();
-    return fileProcess;
+    return file;
   }
 }

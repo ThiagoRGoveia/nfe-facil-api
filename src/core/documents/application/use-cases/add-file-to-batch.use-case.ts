@@ -6,6 +6,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { Readable } from 'stream';
 import { FileProcessStatus } from '../../domain/entities/file-process.entity';
+import { BatchStatus } from '../../domain/entities/batch-process.entity';
 
 @Injectable()
 export class AddFileToBatchUseCase {
@@ -21,6 +22,10 @@ export class AddFileToBatchUseCase {
 
     if (!batch) {
       throw new BadRequestException('Batch not found');
+    }
+
+    if (batch.status !== BatchStatus.CREATED) {
+      throw new BadRequestException('Batch is not in CREATED status');
     }
 
     let filePath: string;

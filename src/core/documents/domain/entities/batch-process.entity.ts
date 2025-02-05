@@ -1,4 +1,4 @@
-import { Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Ref } from '@mikro-orm/core';
+import { Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Property, Ref } from '@mikro-orm/core';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
@@ -7,13 +7,14 @@ import { Collection } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { BadRequestException } from '@nestjs/common';
 import { FileToProcess } from './file-process.entity';
+
 export enum BatchStatus {
-  CREATED = 'created',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  PARTIALLY_COMPLETED = 'partially_completed',
-  CANCELLED = 'cancelled',
-  FAILED = 'failed',
+  CREATED = 'CREATED',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  PARTIALLY_COMPLETED = 'PARTIALLY_COMPLETED',
+  CANCELLED = 'CANCELLED',
+  FAILED = 'FAILED',
 }
 
 @ObjectType()
@@ -25,7 +26,7 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
 
   @Field(() => BatchStatus)
   @Enum(() => BatchStatus)
-  status: BatchStatus = BatchStatus.CREATED;
+  status: BatchStatus;
 
   @Field(() => Template)
   @ManyToOne(() => Template, { eager: false, ref: true })
@@ -40,9 +41,11 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   user!: Ref<User>;
 
   @Field(() => Number)
+  @Property()
   totalFiles: number = 0;
 
   @Field(() => Number)
+  @Property()
   processedFiles: number = 0;
 
   // Domain logic methods

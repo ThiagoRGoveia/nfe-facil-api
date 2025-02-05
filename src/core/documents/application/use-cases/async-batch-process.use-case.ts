@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
-import { BatchStatus } from '../../domain/entities/batch-process.entity';
+import { BatchProcess, BatchStatus } from '../../domain/entities/batch-process.entity';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
@@ -47,26 +47,28 @@ export class AsyncBatchProcessUseCase {
 
     do {
       files = await this.fileProcessRepository.findByBatchPaginated(batchId, limit, offset);
-
-      await Promise.all(
-        files.map(async (doc) => {
-          try {
-            await this.queuePort.sendMessage(this.queueName, {
-              user: batch.user,
-              templateId: batch.template.id,
-              file: {
-                fileName: doc.fileName,
-                filePath: doc.filePath,
-              },
-              batchId,
-            });
-          } catch (error) {
-            this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
-          }
-        }),
-      );
-
+      await this.processFiles(files, batch);
       offset += limit;
     } while (files.length === limit);
+  }
+
+  private async processFiles(files: FileToProcess[], batch: BatchProcess) {
+    await Promise.all(
+      files.map(async (doc) => {
+        try {
+          await this.queuePort.sendMessage(this.queueName, {
+            user: batch.user,
+            templateId: batch.template.id,
+            file: {
+              fileName: doc.fileName,
+              filePath: doc.filePath,
+            },
+            batchId: batch.id,
+          });
+        } catch (error) {
+          this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
+        }
+      }),
+    );
   }
 }
