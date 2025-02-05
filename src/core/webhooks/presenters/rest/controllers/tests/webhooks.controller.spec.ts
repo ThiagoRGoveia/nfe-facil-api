@@ -181,8 +181,15 @@ describe('WebhooksController', () => {
         payload: { data: 'test' },
       });
 
-      await controller.notify(notifyDto);
-      expect(notifyWebhookUseCase.execute).toHaveBeenCalledWith(notifyDto);
+      const mockReq = createMock<Request>({
+        user: createMock<{ id: string; role: UserRole }>({ id: '1', role: UserRole.CUSTOMER }),
+      });
+
+      await controller.notify(mockReq, notifyDto);
+      expect(notifyWebhookUseCase.execute).toHaveBeenCalledWith({
+        user: mockReq.user,
+        ...notifyDto,
+      });
     });
   });
 });
