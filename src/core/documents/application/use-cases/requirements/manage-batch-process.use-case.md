@@ -4,7 +4,7 @@
 
 As a user  
 I want to manage my batch process by adding/removing files and controlling its execution  
-So that I can process multiple documents in a controlled manner
+So that I can process multiple files in a controlled manner
 
 ## Background
 
@@ -23,7 +23,7 @@ So that I can process multiple documents in a controlled manner
 | field       | value                         |
 | ----------- | ----------------------------- |
 | batch_id    | batch-123                     |
-| file        | document-1.pdf                |
+| file        | file-1.pdf                    |
 | webhook_url | https://my-webhook.com/file-1 |
 
 **Then** the file should be uploaded to S3  
@@ -32,7 +32,7 @@ So that I can process multiple documents in a controlled manner
 | field       | value                         |
 | ----------- | ----------------------------- |
 | id          | {uuid}                        |
-| filename    | document-1.pdf                |
+| filename    | file-1.pdf                    |
 | status      | pending                       |
 | webhook_url | https://my-webhook.com/file-1 |
 
@@ -58,7 +58,7 @@ So that I can process multiple documents in a controlled manner
 **And** the batch has multiple files added  
 **When** I execute the start batch command for "batch-123"  
 **Then** the batch status should be updated to "processing"  
-**And** parallel processing should be initiated for each file using the process-document feature  
+**And** parallel processing should be initiated for each file using the process-file feature  
 **And** each file should be processed with its configured webhook URL
 
 ### Successfully cancel batch process
@@ -90,10 +90,10 @@ So that I can process multiple documents in a controlled manner
 **And** I own a batch process with ID "batch-123" in "processing" status  
 **When** I execute the add file command with:
 
-| field    | value        |
-| -------- | ------------ |
-| batch_id | batch-123    |
-| file     | document.pdf |
+| field    | value     |
+| -------- | --------- |
+| batch_id | batch-123 |
+| file     | file.pdf  |
 
 **Then** the operation should fail  
 **And** I should receive an error message "Cannot add files to a batch that has already started"

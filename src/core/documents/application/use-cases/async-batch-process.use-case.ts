@@ -4,16 +4,19 @@ import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
-import { DocumentProcessDbPort } from '../ports/document-process-db.port';
+import { FileProcessDbPort } from '../ports/file-process-db.port';
+import { FileToProcess } from '../../domain/entities/file-process.entity';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AsyncBatchProcessUseCase {
   private readonly queueName: string;
   constructor(
     private readonly batchRepository: BatchDbPort,
-    private readonly documentProcessRepository: DocumentProcessDbPort,
+    private readonly fileProcessRepository: FileProcessDbPort,
     private readonly queuePort: QueuePort,
     private readonly configService: ConfigService,
+    private readonly logger: PinoLogger,
   ) {
     const queueName = this.configService.get<string>('DOCUMENT_PROCESSING_QUEUE');
 
@@ -40,13 +43,13 @@ export class AsyncBatchProcessUseCase {
 
     const limit = 100;
     let offset = 0;
-    let documents;
+    let files: FileToProcess[];
 
     do {
-      documents = await this.documentProcessRepository.findByBatchPaginated(batchId, limit, offset);
+      files = await this.fileProcessRepository.findByBatchPaginated(batchId, limit, offset);
 
       await Promise.all(
-        documents.map(async (doc) => {
+        files.map(async (doc) => {
           try {
             await this.queuePort.sendMessage(this.queueName, {
               user: batch.user,
@@ -58,12 +61,12 @@ export class AsyncBatchProcessUseCase {
               batchId,
             });
           } catch (error) {
-            console.error(`Failed to queue file ${doc.fileName}:`, error);
+            this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
           }
         }),
       );
 
       offset += limit;
-    } while (documents.length === limit);
+    } while (files.length === limit);
   }
 }

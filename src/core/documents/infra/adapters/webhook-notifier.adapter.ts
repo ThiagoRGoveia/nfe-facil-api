@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
-import { DocumentProcess } from '../../domain/entities/document-process.entity';
+import { FileToProcess } from '../../domain/entities/file-process.entity';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
@@ -9,7 +9,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 export class WebhookNotifierAdapter implements WebhookNotifierPort {
   constructor(private readonly notifyWebhookUseCase: NotifyWebhookUseCase) {}
 
-  async notifySuccess(process: DocumentProcess): Promise<void> {
+  async notifySuccess(process: FileToProcess): Promise<void> {
     const user = await this.getUserFromProcess(process);
     await this.notifyWebhookUseCase.execute({
       user,
@@ -24,7 +24,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     });
   }
 
-  async notifyFailure(process: DocumentProcess): Promise<void> {
+  async notifyFailure(process: FileToProcess): Promise<void> {
     const user = await this.getUserFromProcess(process);
     await this.notifyWebhookUseCase.execute({
       user,
@@ -38,7 +38,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     });
   }
 
-  private async getUserFromProcess(process: DocumentProcess): Promise<User> {
+  private async getUserFromProcess(process: FileToProcess): Promise<User> {
     const template = await process.template.load({ populate: ['user'] });
     if (!template) {
       throw new InternalServerErrorException(`Template not found for process ${process.id}`);

@@ -3,7 +3,7 @@
 ## Feature
 
 As a user  
-I want to create a batch process for multiple PDF documents  
+I want to create a batch process for multiple PDF files  
 So that I can process multiple files using the same template configuration
 
 ## Background
@@ -92,7 +92,7 @@ So that I can process multiple files using the same template configuration
 **And** I have access to template ID "template-123"  
 **And** I have a zip file containing mixed files:
 
-- document.pdf
+- file.pdf
 - image.jpg
 - text.txt  
   **When** I execute the create batch process command with:

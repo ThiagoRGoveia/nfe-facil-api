@@ -4,7 +4,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
 
-export enum DocumentProcessStatus {
+export enum FileProcessStatus {
   PENDING = 'pending',
   PROCESSING = 'processing',
   COMPLETED = 'completed',
@@ -12,7 +12,7 @@ export enum DocumentProcessStatus {
 }
 
 @Entity({ tableName: 'document_processes' })
-export class DocumentProcess extends BaseEntity {
+export class FileToProcess extends BaseEntity {
   @PrimaryKey()
   id: string = new UuidAdapter().generate();
 
@@ -30,7 +30,7 @@ export class DocumentProcess extends BaseEntity {
   payload?: unknown;
 
   @Property()
-  status: DocumentProcessStatus;
+  status: FileProcessStatus;
 
   @Property({ nullable: true })
   error?: string;
@@ -48,15 +48,15 @@ export class DocumentProcess extends BaseEntity {
   }
 
   public markProcessing(): void {
-    this.status = DocumentProcessStatus.PROCESSING;
+    this.status = FileProcessStatus.PROCESSING;
   }
 
   public markCompleted(): void {
-    this.status = DocumentProcessStatus.COMPLETED;
+    this.status = FileProcessStatus.COMPLETED;
   }
 
   public markFailed(error: string): void {
-    this.status = DocumentProcessStatus.FAILED;
+    this.status = FileProcessStatus.FAILED;
     this.error = error;
   }
 }
