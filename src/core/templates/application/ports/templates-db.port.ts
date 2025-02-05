@@ -1,4 +1,3 @@
-import { RequiredEntityData } from '@mikro-orm/core';
 import { Template } from '../../domain/entities/template.entity';
 import { BaseDbPort } from '@/infra/ports/_base-db-port';
 import { Filter } from '@/infra/dtos/filter.dto';
@@ -14,7 +13,4 @@ export abstract class TemplateDbPort extends BaseDbPort<Template> {
     pagination?: Pagination,
     sort?: Sort,
   ): Promise<PaginatedResponse<Template>>;
-  abstract delete(id: Template['id']): Promise<void>;
-  abstract create(template: RequiredEntityData<Template>): Template;
-  abstract update(id: Template['id'], template: Partial<RequiredEntityData<Template>>): Template;
 }

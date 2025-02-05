@@ -2,6 +2,7 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { RequiredEntityData } from '@mikro-orm/core';
 
 export abstract class BaseDbPort<T extends { id: string | number }> {
   /**
@@ -59,4 +60,19 @@ export abstract class BaseDbPort<T extends { id: string | number }> {
    * @param ids - The ID of the entity to be marked for deletion
    */
   abstract setToBeDeleted(ids: T['id']): void;
+
+  /**
+   * Creates a new entity
+   * @param data - The data to create the entity with
+   * @returns The created entity
+   */
+  abstract create(data: RequiredEntityData<T>): T;
+
+  /**
+   * Updates an existing entity
+   * @param id - The unique identifier of the entity to update
+   * @param data - The data to update the entity with
+   * @returns The updated entity
+   */
+  abstract update(id: T['id'], data: Partial<RequiredEntityData<T>>): T;
 }

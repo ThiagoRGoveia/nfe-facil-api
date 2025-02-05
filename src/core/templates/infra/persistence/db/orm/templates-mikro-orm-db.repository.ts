@@ -1,4 +1,3 @@
-import { RequiredEntityData } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
 import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
@@ -25,17 +24,5 @@ export class TemplateMikroOrmDbRepository extends EntityRepository(Template) imp
       allFilters.push({ field: 'user.id', value: userId.toString() });
     }
     return super.findAll(allFilters, pagination, sort);
-  }
-
-  create(template: RequiredEntityData<Template>): Template {
-    const newTemplate = this.em.create(Template, template);
-    this.em.persist(newTemplate);
-    return newTemplate;
-  }
-
-  update(id: Template['id'], template: Partial<RequiredEntityData<Template>>): Template {
-    const existingTemplate = this.em.getReference(Template, id);
-    this.em.assign(existingTemplate, template);
-    return existingTemplate;
   }
 }

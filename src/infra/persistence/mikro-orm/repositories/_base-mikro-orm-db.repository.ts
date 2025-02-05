@@ -7,6 +7,7 @@ import {
   OrderDefinition,
   QueryOrder,
   ReferenceKind,
+  RequiredEntityData,
 } from '@mikro-orm/postgresql';
 import { BaseDbPort } from '@/infra/ports/_base-db-port';
 import { Sort } from '@/infra/dtos/sort.dto';
@@ -106,6 +107,16 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
 
   async delete(id: T['id']): Promise<void> {
     await this.em.removeAndFlush(this.em.getReference(this.entity, id));
+  }
+
+  create(data: RequiredEntityData<T>): T {
+    return this.em.create(this.entity, data);
+  }
+
+  update(id: T['id'], data: Partial<RequiredEntityData<T>>): T {
+    const existingFile = this.em.getReference(this.entity, id);
+    this.em.assign(existingFile, data as any);
+    return existingFile;
   }
 
   isSortValid(sort?: Sort): sort is Sort {

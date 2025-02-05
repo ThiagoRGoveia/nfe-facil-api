@@ -1,4 +1,4 @@
-import { DocumentProcess } from '../domain/entities/document-process.entity';
+import { DocumentProcess } from '../../domain/entities/document-process.entity';
 
 export abstract class WebhookNotifierPort {
   /**

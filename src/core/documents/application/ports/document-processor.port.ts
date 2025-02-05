@@ -1,3 +1,4 @@
+import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 
 export abstract class DocumentProcessorPort {
@@ -7,5 +8,5 @@ export abstract class DocumentProcessorPort {
    * @param filePath Storage path key for the document
    * @param template The template to use for processing
    */
-  abstract process(processId: string, filePath: string, template: Template): Promise<void>;
+  abstract process(processId: string, filePath: string, template: Template): Promise<DocumentProcessResult>;
 }

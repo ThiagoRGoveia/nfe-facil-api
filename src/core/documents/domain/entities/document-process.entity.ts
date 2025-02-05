@@ -24,17 +24,21 @@ export class DocumentProcess extends BaseEntity {
   @Property({ nullable: true })
   filePath?: string;
 
+  @Property({ nullable: true })
+  payload?: unknown;
+
   @Property()
   status: DocumentProcessStatus;
-
-  @Property({ nullable: true })
-  webhookUrl?: string;
 
   @Property({ nullable: true })
   error?: string;
 
   public setFilePath(filePath: string): void {
     this.filePath = filePath;
+  }
+
+  public setPayload(payload: unknown): void {
+    this.payload = payload;
   }
 
   public markCompleted(): void {

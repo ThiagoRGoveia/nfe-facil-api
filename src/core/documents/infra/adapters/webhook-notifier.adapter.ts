@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { WebhookNotifierPort } from '../../ports/webhook-notifier.port';
+import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
 import { DocumentProcess } from '../../domain/entities/document-process.entity';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
@@ -19,6 +19,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
         status: process.status,
         fileName: process.fileName,
         processedAt: new Date(),
+        payload: process.payload,
       },
     });
   }
