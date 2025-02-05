@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { MikroORM, EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 import { RetryWebhooksCron } from '../retry-webhooks.cron';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
@@ -38,12 +38,11 @@ describe('RetryWebhooksCron (Integration)', () => {
     cron = module.get<RetryWebhooksCron>(RetryWebhooksCron);
 
     app = module.createNestApplication();
-    await useDbSchema(orm);
+
     await app.init();
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

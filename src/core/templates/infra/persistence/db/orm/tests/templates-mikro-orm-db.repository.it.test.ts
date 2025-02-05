@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TemplateMikroOrmDbRepository } from '../templates-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
-import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
+
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
@@ -31,7 +31,6 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
     app = module.createNestApplication();
 
     await app.init();
-    await useDbSchema(orm);
 
     testUser = await useDbUser({ id: '1' }, em);
 
@@ -47,7 +46,6 @@ describe('TemplateMikroOrmDbRepository (integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

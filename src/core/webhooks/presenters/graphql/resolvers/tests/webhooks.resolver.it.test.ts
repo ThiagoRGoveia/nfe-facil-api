@@ -7,7 +7,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { WebhooksResolver } from '../webhooks.resolver';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
@@ -29,7 +29,7 @@ describe('WebhooksResolver (Integration)', () => {
     orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
-    await useDbSchema(orm);
+
     await app.init();
 
     // Create test user and webhook
@@ -37,7 +37,6 @@ describe('WebhooksResolver (Integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

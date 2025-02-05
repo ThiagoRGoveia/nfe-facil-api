@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookDeliveryMikroOrmDbRepository } from '../webhook-delivery-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
-import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
+
 import { WebhookDelivery, WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
@@ -30,7 +30,6 @@ describe('WebhookDeliveryMikroOrmDbRepository (integration)', () => {
     app = module.createNestApplication();
 
     await app.init();
-    await useDbSchema(orm);
 
     testWebhook = await useDbWebhook({ user: useUserFactory({}, em) }, em);
     testDelivery = await useDbWebhookDelivery(
@@ -45,7 +44,6 @@ describe('WebhookDeliveryMikroOrmDbRepository (integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

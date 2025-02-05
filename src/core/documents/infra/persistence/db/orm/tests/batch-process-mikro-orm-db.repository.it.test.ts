@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchMikroOrmRepository } from '../batch-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
-import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
+
 import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
@@ -36,7 +36,6 @@ describe('BatchMikroOrmRepository (integration)', () => {
     app = module.createNestApplication();
 
     await app.init();
-    await useDbSchema(orm);
 
     // Create test data
     testUser = await useDbUser({}, em);
@@ -49,7 +48,6 @@ describe('BatchMikroOrmRepository (integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

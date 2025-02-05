@@ -3,7 +3,6 @@ import { MikroORM, RequiredEntityData } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
-import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
 import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
@@ -28,11 +27,9 @@ describe('UserMikroOrmDbRepository (integration)', () => {
     app = module.createNestApplication();
 
     await app.init();
-    await useDbSchema(orm);
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

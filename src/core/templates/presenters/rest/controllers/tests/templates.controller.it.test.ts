@@ -6,7 +6,7 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { CreateTemplateDto } from '@/core/templates/application/dtos/create-template.dto';
@@ -30,7 +30,7 @@ describe('TemplateController (REST Integration)', () => {
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
-    await useDbSchema(orm);
+
     await app.init();
 
     // Create test user and template
@@ -39,7 +39,6 @@ describe('TemplateController (REST Integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

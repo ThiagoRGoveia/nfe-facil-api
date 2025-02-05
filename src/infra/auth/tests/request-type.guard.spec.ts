@@ -9,7 +9,7 @@ import { ApiKeyStrategy } from '../api-key.strategy';
 import { JwtStrategy } from '../jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbRefresh, useDbSchema } from '../../tests/db-schema.seed';
+import { useDbDrop, useDbSchema } from '../../tests/db-schema.seed';
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { UsersModule } from '@/core/users/users.module';
 import { Resolver, Query, ObjectType, Field } from '@nestjs/graphql';
@@ -87,7 +87,6 @@ describe('RequestTypeGuard (integration)', () => {
     em = module.get<EntityManager>(EntityManager);
     orm = module.get<MikroORM>(MikroORM);
     await app.init();
-    await useDbSchema(orm);
 
     await useDbUser(
       {
@@ -99,7 +98,6 @@ describe('RequestTypeGuard (integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

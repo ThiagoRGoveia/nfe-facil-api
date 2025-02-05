@@ -9,6 +9,8 @@ import { SecretAdapter } from '../adapters/secret.adapter';
 import { AuthPort } from '../auth/ports/auth.port';
 import { EncryptionPort } from '../encryption/ports/encryption.port';
 import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
+import { DatabaseLifecycleService } from './database-lifecycle.service';
+
 @Global()
 @Module({
   imports: [
@@ -21,11 +23,11 @@ import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
         entities: ['**/*.entity.ts'],
         entitiesTs: ['**/*.entity.ts'],
         allowGlobalContext: true,
-        dbName: process.env.TEST_ORM_DATABASE,
         user: process.env.TEST_ORM_USERNAME,
         password: process.env.TEST_ORM_PASSWORD,
         host: process.env.TEST_ORM_HOST,
         port: Number(process.env.TEST_ORM_PORT),
+        dbName: process.env.TEST_ORM_DATABASE,
         dataloader: DataloaderType.ALL,
         loadStrategy: 'select-in',
       }),
@@ -33,6 +35,7 @@ import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
   ],
   controllers: [],
   providers: [
+    DatabaseLifecycleService,
     UuidAdapter,
     SecretAdapter,
     {
@@ -48,6 +51,6 @@ import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
       useClass: EncryptionAdapter,
     },
   ],
-  exports: [PinoLogger, UuidAdapter, SecretAdapter, AuthPort, EncryptionPort],
+  exports: [DatabaseLifecycleService, PinoLogger, UuidAdapter, SecretAdapter, AuthPort, EncryptionPort],
 })
 export class BaseIntegrationTestModule {}

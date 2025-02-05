@@ -8,7 +8,7 @@ import { TemplatesResolver } from '../templates.resolver';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 
@@ -29,7 +29,7 @@ describe('TemplatesResolver (Integration)', () => {
     orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
-    await useDbSchema(orm);
+
     await app.init();
 
     // Create test user and template
@@ -37,7 +37,6 @@ describe('TemplatesResolver (Integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

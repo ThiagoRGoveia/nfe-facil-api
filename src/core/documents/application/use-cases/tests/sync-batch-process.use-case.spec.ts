@@ -122,7 +122,7 @@ describe('SyncBatchProcessUseCase', () => {
   });
 
   it('should throw if batch already started', async () => {
-    const batch = useBatchProcessFactory({ status: BatchStatus.PROCESSING }, em);
+    const batch = useBatchProcessFactory({ status: BatchStatus.PROCESSING, totalFiles: 1, processedFiles: 0 }, em);
     createBatchProcessUseCase.execute.mockResolvedValue(batch);
 
     await expect(useCase.execute(mockUser, { templateId: 'template-123' })).rejects.toThrow(

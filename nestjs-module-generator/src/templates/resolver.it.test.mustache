@@ -2,7 +2,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { MikroORM, EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { useDbRefresh, useDbSchema } from '@/infra/tests/db-schema.seed';
+
 import { {{featurePascal}}Module } from '@/core/{{featureKebab}}/{{featureKebab}}.module';
 import { UsersModule } from '@/core/users/users.module';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
@@ -26,13 +26,13 @@ describe('{{featurePascal}}Resolver (Integration)', () => {
     orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
-    await useDbSchema(orm);
+    
     await app.init();
     user = await useDbUser({}, em);
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
+    
     await app.close();
   });
 }); 

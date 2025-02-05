@@ -6,7 +6,7 @@ import { Webhook, WebhookEvent, WebhookAuthType, WebhookStatus } from '@/core/we
 import { User } from '@/core/users/domain/entities/user.entity';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
 import { useRestModule } from '@/infra/tests/rest-integration-test.module';
@@ -40,7 +40,7 @@ describe('WebhooksController (REST Integration)', () => {
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
-    await useDbSchema(orm);
+
     await app.init();
 
     // Create test user and webhook
@@ -50,7 +50,6 @@ describe('WebhooksController (REST Integration)', () => {
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 

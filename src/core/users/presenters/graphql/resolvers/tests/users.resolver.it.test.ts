@@ -6,7 +6,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { UsersResolver } from '../users.resolver';
 import { UsersModule } from '@/core/users/users.module';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbRefresh } from '@/infra/tests/db-schema.seed';
+import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { faker } from '@faker-js/faker';
@@ -30,13 +30,12 @@ describe('UsersResolver (Integration)', () => {
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     authPort = module.get<jest.Mocked<AuthPort>>(AuthPort);
-    await useDbSchema(orm);
+
     await app.init();
     user = await useDbUser({}, em);
   });
 
   afterEach(async () => {
-    await useDbRefresh(orm);
     await app.close();
   });
 
