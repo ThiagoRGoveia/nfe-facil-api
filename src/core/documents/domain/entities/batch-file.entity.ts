@@ -4,6 +4,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { BatchProcess } from './batch-process.entity';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { Ref } from '@mikro-orm/core/entity';
+import { GraphQLJSON } from 'graphql-scalars';
 
 export enum FileStatus {
   PENDING = 'pending',
@@ -35,6 +36,14 @@ export class BatchFile extends BaseEntity {
   @Field(() => BatchProcess)
   @ManyToOne(() => BatchProcess, { eager: false, ref: true })
   batchProcess!: Ref<BatchProcess>;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  @Property({ nullable: true })
+  payload?: unknown;
+
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
+  error?: string;
 
   // Status transition methods
   markProcessing() {

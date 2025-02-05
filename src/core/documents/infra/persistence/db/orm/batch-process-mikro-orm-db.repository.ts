@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { BatchProcess } from '../../../../domain/entities/batch-process.entity';
 import { BatchDbPort } from '../../../../application/ports/batch-db.port';
 import { BatchFile } from '../../../../domain/entities/batch-file.entity';
-import { Template } from '@/core/templates/domain/entities/template.entity';
-import { UpdateBatchProcessDto } from '../../../../domain/dtos/update-batch-process.dto';
 import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
 
 @Injectable()
@@ -30,19 +28,6 @@ export class BatchMikroOrmRepository extends EntityRepository(BatchProcess) impl
       batch.files.remove(fileToRemove);
     }
     await this.em.persistAndFlush(batch);
-  }
-
-  update(id: BatchProcess['id'], dto: UpdateBatchProcessDto): BatchProcess {
-    const batch = this.em.getReference(BatchProcess, id);
-    const { templateId, status } = dto;
-    if (templateId) {
-      this.em.assign(batch, { template: this.em.getReference(Template, templateId) });
-    }
-    if (status) {
-      this.em.assign(batch, { status });
-    }
-    this.em.persist(batch);
-    return batch;
   }
 
   async incrementProcessedFilesCount(id: BatchProcess['id']): Promise<void> {

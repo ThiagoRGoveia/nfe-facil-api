@@ -15,6 +15,7 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { Ref } from '@mikro-orm/core';
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
   class Repository extends BaseMikroOrmDbRepository<T extends { id: string | number } ? T : never, typeof entity> {
@@ -117,6 +118,10 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
     const existingFile = this.em.getReference(this.entity, id);
     this.em.assign(existingFile, data as any);
     return existingFile;
+  }
+
+  ref(id: T['id']): Ref<T> {
+    return this.em.getReference(this.entity, id);
   }
 
   isSortValid(sort?: Sort): sort is Sort {

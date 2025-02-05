@@ -24,7 +24,7 @@ export class CreateBatchProcessUseCase {
 
   async execute(user: User, dto: CreateBatchDto): Promise<BatchProcess> {
     // Validate template
-    const template = await this.templateRepository.findById(dto.template_id);
+    const template = await this.templateRepository.findById(dto.templateId);
     if (!template) {
       throw new BadRequestException('Template not found');
     }

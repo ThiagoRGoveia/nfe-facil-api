@@ -9,13 +9,14 @@ import {
   DeleteObjectsCommand,
   _Object,
 } from '@aws-sdk/client-s3';
-import type { Readable } from 'stream';
+import { Readable } from 'stream';
 import { FileStoragePort } from '../ports/file-storage.port';
 
 @Injectable()
 export class S3Client implements FileStoragePort {
   private readonly s3Client: AWSS3Client;
   private readonly bucketName: string;
+  private readonly bufferCache = new Map<string, Buffer>();
 
   constructor(private configService: ConfigService) {
     const region = this.configService.get<string>('AWS_REGION');
@@ -61,6 +62,7 @@ export class S3Client implements FileStoragePort {
   }
 
   async uploadFromBuffer(key: string, buffer: Buffer, contentType?: string): Promise<string> {
+    const path = `${this.bucketName}/${key}`;
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
@@ -70,13 +72,22 @@ export class S3Client implements FileStoragePort {
 
     try {
       await this.s3Client.send(command);
-      return `${this.bucketName}/${key}`;
+      this.bufferCache.set(path, buffer);
+      return path;
     } catch (error) {
       throw new InternalServerErrorException(`Failed to upload: ${error.message}`);
     }
   }
 
   async get(path: string): Promise<Readable> {
+    const cachedBuffer = this.bufferCache.get(path);
+    if (cachedBuffer) {
+      const stream = new Readable();
+      stream.push(cachedBuffer);
+      stream.push(null);
+      return stream;
+    }
+
     const { bucket, key } = this.parsePath(path);
     const command = new GetObjectCommand({ Bucket: bucket, Key: key });
 
@@ -101,6 +112,7 @@ export class S3Client implements FileStoragePort {
 
     try {
       await this.s3Client.send(command);
+      this.bufferCache.delete(path);
     } catch (error) {
       throw new InternalServerErrorException(`Failed to delete: ${error.message}`);
     }

@@ -2,7 +2,7 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { RequiredEntityData } from '@mikro-orm/core';
+import { Ref, RequiredEntityData } from '@mikro-orm/core';
 
 export abstract class BaseDbPort<T extends { id: string | number }> {
   /**
@@ -75,4 +75,11 @@ export abstract class BaseDbPort<T extends { id: string | number }> {
    * @returns The updated entity
    */
   abstract update(id: T['id'], data: Partial<RequiredEntityData<T>>): T;
+
+  /**
+   * Retrieves a reference to an entity by its ID
+   * @param id - The unique identifier of the entity
+   * @returns A reference to the entity
+   */
+  abstract ref(id: T['id']): Ref<T>;
 }

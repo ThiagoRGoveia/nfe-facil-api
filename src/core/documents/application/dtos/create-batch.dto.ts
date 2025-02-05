@@ -6,7 +6,7 @@ export class CreateBatchDto {
   @Field()
   @IsString()
   @IsNotEmpty()
-  template_id: string;
+  templateId: string;
 
   @Field({ nullable: true })
   @IsOptional()
