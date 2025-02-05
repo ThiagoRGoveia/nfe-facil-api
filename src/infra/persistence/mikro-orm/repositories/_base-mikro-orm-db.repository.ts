@@ -116,7 +116,8 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
 
   update(id: T['id'], data: Partial<RequiredEntityData<T>>): T {
     const existingFile = this.em.getReference(this.entity, id);
-    this.em.assign(existingFile, data as any);
+    // @ts-expect-error: data is a partial of the entity
+    this.em.assign(existingFile, data);
     return existingFile;
   }
 
