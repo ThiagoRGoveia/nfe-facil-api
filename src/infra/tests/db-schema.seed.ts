@@ -2,7 +2,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function useDbSchema(orm: MikroORM) {
-  const dbName = uuidv4();
+  const dbName = `test_db_${uuidv4()}`;
   const generator = orm.getSchemaGenerator();
 
   // Create the database
