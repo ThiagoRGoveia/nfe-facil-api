@@ -105,7 +105,7 @@ describe('SyncBatchProcessUseCase', () => {
   });
 
   it('should handle partial failures', async () => {
-    const batch = useBatchProcessFactory({ status: BatchStatus.CREATED }, em);
+    const batch = useBatchProcessFactory({ status: BatchStatus.CREATED, totalFiles: 2, processedFiles: 0 }, em);
     const files = [
       useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
       useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
