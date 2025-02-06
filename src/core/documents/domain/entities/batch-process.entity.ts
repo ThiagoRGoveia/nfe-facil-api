@@ -1,5 +1,5 @@
 import { Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Property, Ref } from '@mikro-orm/core';
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
@@ -17,6 +17,11 @@ export enum BatchStatus {
   FAILED = 'FAILED',
 }
 
+registerEnumType(BatchStatus, {
+  name: 'BatchStatus',
+  description: 'The status of a batch process',
+});
+
 @ObjectType()
 @Entity({ tableName: 'batch_processes' })
 export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
@@ -32,7 +37,6 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   @ManyToOne(() => Template, { eager: false, ref: true })
   template!: Ref<Template>;
 
-  @Field(() => [FileToProcess])
   @OneToMany(() => FileToProcess, (process) => process.batchProcess, { eager: false, ref: true })
   files = new Collection<FileToProcess>(this);
 

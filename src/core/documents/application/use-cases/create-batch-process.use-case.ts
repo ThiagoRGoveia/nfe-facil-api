@@ -4,7 +4,7 @@ import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.
 import { User } from '@/core/users/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { BadRequestException } from '@nestjs/common';
-import { ZipPort } from '../ports/zip.port';
+import { ZipPort } from '../../../../infra/zip/zip.port';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { FileProcessStatus } from '../../domain/entities/file-process.entity';
 import { FileProcessDbPort } from '../ports/file-process-db.port';

@@ -1,16 +1,4 @@
 import { Template } from '../../domain/entities/template.entity';
 import { BaseDbPort } from '@/infra/ports/_base-db-port';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { User } from '@/core/users/domain/entities/user.entity';
 
-export abstract class TemplateDbPort extends BaseDbPort<Template> {
-  abstract findByUser(
-    userId: User['id'],
-    filters?: Filter[],
-    pagination?: Pagination,
-    sort?: Sort,
-  ): Promise<PaginatedResponse<Template>>;
-}
+export abstract class TemplateDbPort extends BaseDbPort<Template> {}

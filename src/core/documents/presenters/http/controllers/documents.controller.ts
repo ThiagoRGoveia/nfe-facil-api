@@ -3,10 +3,13 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Req,
@@ -14,7 +17,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateBatchDto } from '@/core/documents/application/dtos/create-batch.dto';
 import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
 import { UpdateBatchTemplateUseCase } from '@/core/documents/application/use-cases/update-batch-template.use-case';
 import { AddFileToBatchUseCase } from '@/core/documents/application/use-cases/add-file-to-batch.use-case';
@@ -24,6 +26,7 @@ import { SyncBatchProcessUseCase } from '@/core/documents/application/use-cases/
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
+import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 
 @ApiTags('Documents')
 @Controller('documents')
@@ -39,19 +42,44 @@ export class DocumentsController {
   ) {}
 
   @Post('process/sync')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Process batch synchronously' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Batch processed successfully' })
+  @UseInterceptors(FileInterceptor('file'))
   async processBatchSync(
     @Req() req: Request,
-    @Body() createBatchDto: CreateBatchDto,
+    @Body('templateId') templateId: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES }),
+          new FileTypeValidator({ fileType: 'application/zip' }),
+        ],
+      }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return await this.syncBatchProcessUseCase.execute(req.user, {
+      templateId,
+      file: file?.buffer,
+      fileName: file?.originalname,
+    });
+  }
+
+  @Post('batch')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Create a new batch process' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Batch created successfully' })
+  async createBatch(
+    @Req() req: Request,
+    @Body('templateId') templateId: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    if (file) {
-      createBatchDto.file = file.buffer;
-      createBatchDto.fileName = file.originalname;
-    }
-    await this.syncBatchProcessUseCase.execute(req.user, createBatchDto);
+    return await this.createBatchUseCase.execute(req.user, {
+      templateId,
+      file: file?.buffer,
+      fileName: file?.originalname,
+    });
   }
 
   @Get('batch/:id')
@@ -70,23 +98,6 @@ export class DocumentsController {
     const batch = await this.batchDbPort.findByIdOrFail(batchId);
     await batch.files.load();
     return batch.files;
-  }
-
-  @Post('batch')
-  @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Create a new batch process' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Batch created successfully' })
-  async createBatch(
-    @Req() req: Request,
-    @Body('templateId') templateId: string,
-    @UploadedFile() file?: Express.Multer.File,
-  ) {
-    return await this.createBatchUseCase.execute(req.user, {
-      templateId,
-      file: file?.buffer,
-      fileName: file?.originalname,
-    });
   }
 
   @Patch('batch/:id/template')

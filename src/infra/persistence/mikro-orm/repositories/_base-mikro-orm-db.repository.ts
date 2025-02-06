@@ -16,6 +16,7 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Ref } from '@mikro-orm/core';
+import { User } from '@/core/users/domain/entities/user.entity';
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
   class Repository extends BaseMikroOrmDbRepository<T extends { id: string | number } ? T : never, typeof entity> {
@@ -123,6 +124,22 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
 
   ref(id: T['id']): Ref<T> {
     return this.em.getReference(this.entity, id);
+  }
+
+  findByUser(
+    userId: User['id'],
+    filters?: Filter[],
+    pagination?: Pagination,
+    sort?: Sort,
+  ): Promise<PaginatedResponse<T>> {
+    const allFilters = [...(filters || [])];
+    const ownerFilter = allFilters.find((filter) => filter.field === 'user.id');
+    if (ownerFilter) {
+      ownerFilter.value = userId.toString();
+    } else {
+      allFilters.push({ field: 'user.id', value: userId.toString() });
+    }
+    return this.findAll(allFilters, pagination, sort);
   }
 
   isSortValid(sort?: Sort): sort is Sort {

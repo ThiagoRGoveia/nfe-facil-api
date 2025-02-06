@@ -3,18 +3,20 @@ import { createMock } from '@golevelup/ts-jest';
 import { WebhookNotifierAdapter } from '../webhook-notifier.adapter';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
-import { InternalServerErrorException } from '@nestjs/common';
 import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
 import { useFileProcessFactory } from '../../tests/factories/file-process.factory';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { PinoLogger } from 'nestjs-pino';
+
 describe('WebhookNotifierAdapter', () => {
   let adapter: WebhookNotifierAdapter;
   let notifyWebhookUseCase: jest.Mocked<NotifyWebhookUseCase>;
   let em: EntityManager;
   let mockProcess: FileToProcess;
+  let logger: jest.Mocked<PinoLogger>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -33,6 +35,7 @@ describe('WebhookNotifierAdapter', () => {
     adapter = module.get<WebhookNotifierAdapter>(WebhookNotifierAdapter);
     notifyWebhookUseCase = module.get(NotifyWebhookUseCase);
     em = module.get<EntityManager>(EntityManager);
+    logger = module.get<jest.Mocked<PinoLogger>>(PinoLogger);
   });
 
   describe('notifySuccess', () => {
@@ -85,16 +88,17 @@ describe('WebhookNotifierAdapter', () => {
       );
       jest.spyOn(errorProcess.template, 'load').mockResolvedValue(null);
 
-      await expect(adapter.notifyFailure(errorProcess)).rejects.toThrow(InternalServerErrorException);
+      await expect(adapter.notifyFailure(errorProcess)).resolves.not.toThrow();
+      expect(logger.error).toHaveBeenCalled();
     });
 
     it('should throw when user not found', async () => {
-      const errorProcess = useFileProcessFactory(
-        { error: 'Processing failed', template: useTemplateFactory({}, em) },
-        em,
-      );
+      const template = useTemplateFactory({ user: useUserFactory({}, em) }, em);
+      const errorProcess = useFileProcessFactory({ error: 'Processing failed', template: template }, em);
+      jest.spyOn(template.user!, 'load').mockResolvedValue(null);
 
-      await expect(adapter.notifyFailure(errorProcess)).rejects.toThrow(InternalServerErrorException);
+      await expect(adapter.notifyFailure(errorProcess)).resolves.not.toThrow();
+      expect(logger.error).toHaveBeenCalled();
     });
   });
 });

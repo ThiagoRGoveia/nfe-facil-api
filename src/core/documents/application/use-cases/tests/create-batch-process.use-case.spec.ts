@@ -7,7 +7,7 @@ import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { ZipPort } from '../../ports/zip.port';
+import { ZipPort } from '../../../../../infra/zip/zip.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';

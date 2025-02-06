@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
-import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal';
 
 @InputType()
 export class CreateBatchInput {

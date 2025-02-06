@@ -9,7 +9,7 @@ import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-re
 import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { FileToProcess } from '../../../domain/entities/file-process.entity';
 import { BadRequestException } from '@nestjs/common';
@@ -35,7 +35,11 @@ export class BatchProcessesResolver {
     @Args('pagination', { nullable: true }) pagination?: Pagination,
     @Args('sort', { nullable: true }) sort?: Sort,
   ): Promise<PaginatedResponse<BatchProcess>> {
-    return this.batchDbPort.findByUser(context.req.user.id, filters?.filters, pagination, sort);
+    if (context.req.user.role === UserRole.ADMIN) {
+      return this.batchDbPort.findAll(filters?.filters, pagination, sort);
+    } else {
+      return this.batchDbPort.findByUser(context.req.user.id, filters?.filters, pagination, sort);
+    }
   }
 
   @Mutation(() => BatchProcess)
@@ -57,18 +61,19 @@ export class BatchProcessesResolver {
   }
 
   @ResolveField(() => User, { nullable: true })
-  async user(@Parent() batch: BatchProcess): Promise<User | null> {
+  user(@Parent() batch: BatchProcess): Promise<User | null> {
     return batch.user.load();
   }
 
   @ResolveField(() => Template, { nullable: true })
-  async template(@Parent() batch: BatchProcess): Promise<Template | null> {
+  template(@Parent() batch: BatchProcess): Promise<Template | null> {
     return batch.template.load();
   }
 
   @ResolveField(() => [FileToProcess])
   async files(@Parent() batch: BatchProcess): Promise<FileToProcess[]> {
-    return batch.files.loadItems();
+    const a = await batch.files.loadItems();
+    return a;
   }
 
   private async streamToBuffer(stream: () => NodeJS.ReadableStream): Promise<Buffer> {

@@ -1,9 +1,10 @@
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
-import { Entity, Index, ManyToOne, PrimaryKey, Property, Ref } from '@mikro-orm/core';
+import { Entity, Enum, Index, ManyToOne, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
-
+import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
+import { GraphQLJSON } from 'graphql-scalars';
 export enum FileProcessStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
@@ -11,33 +12,48 @@ export enum FileProcessStatus {
   FAILED = 'FAILED',
 }
 
+registerEnumType(FileProcessStatus, {
+  name: 'FileProcessStatus',
+  description: 'The status of a file process',
+});
+
+@ObjectType()
 @Entity({ tableName: 'document_processes' })
 export class FileToProcess extends BaseEntity {
+  @Field(() => String)
   @PrimaryKey()
   id: string = new UuidAdapter().generate();
 
+  @Field(() => Template)
   @Index()
   @ManyToOne(() => Template, { ref: true, eager: false })
   template: Ref<Template>;
 
+  @Field(() => String)
   @Property()
   fileName: string;
 
+  @Field(() => String, { nullable: true })
   @Property({ nullable: true })
   filePath?: string;
 
-  @Property({ nullable: true })
+  @Field(() => GraphQLJSON, { nullable: true })
+  @Property({ nullable: true, type: types.json })
   result?: unknown;
 
-  @Property()
+  @Field(() => FileProcessStatus)
+  @Enum(() => FileProcessStatus)
   status: FileProcessStatus;
 
+  @Field(() => String, { nullable: true })
   @Property({ nullable: true })
   error?: string;
 
+  @Field(() => Date, { nullable: true })
   @Property({ nullable: true })
   notifiedAt?: Date;
 
+  @Field(() => BatchProcess, { nullable: true })
   @Index()
   @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
   batchProcess?: Ref<BatchProcess>;

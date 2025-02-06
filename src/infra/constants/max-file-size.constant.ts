@@ -1,0 +1,1 @@
+export const MAX_FILE_SIZE_BYTES = 10000000;

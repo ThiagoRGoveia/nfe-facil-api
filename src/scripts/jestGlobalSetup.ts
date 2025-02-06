@@ -1,7 +1,7 @@
-const { MikroORM } = require('@mikro-orm/core');
-const dotenv = require('dotenv');
-const path = require('path');
-const { defineConfig } = require('@mikro-orm/postgresql');
+import { MikroORM } from '@mikro-orm/core';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import { defineConfig } from '@mikro-orm/postgresql';
 
 module.exports = async () => {
   // Load test environment variables
@@ -12,7 +12,7 @@ module.exports = async () => {
     defineConfig({
       dbName: process.env.TEST_ORM_DATABASE,
       host: process.env.TEST_ORM_HOST,
-      port: process.env.TEST_ORM_PORT,
+      port: parseInt(process.env.TEST_ORM_PORT!),
       user: process.env.TEST_ORM_USERNAME,
       password: process.env.TEST_ORM_PASSWORD,
       discovery: { warnWhenNoEntities: false },

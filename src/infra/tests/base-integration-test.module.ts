@@ -10,7 +10,9 @@ import { AuthPort } from '../auth/ports/auth.port';
 import { EncryptionPort } from '../encryption/ports/encryption.port';
 import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
 import { DatabaseLifecycleService } from './database-lifecycle.service';
-
+import { FileStoragePort } from '../aws/s3/ports/file-storage.port';
+import { QueuePort } from '../aws/sqs/ports/queue.port';
+import { ZipPort } from '@/infra/zip/zip.port';
 @Global()
 @Module({
   imports: [
@@ -50,7 +52,24 @@ import { DatabaseLifecycleService } from './database-lifecycle.service';
       provide: EncryptionPort,
       useClass: EncryptionAdapter,
     },
+    {
+      provide: FileStoragePort,
+      useValue: createMock<FileStoragePort>(),
+    },
+    {
+      provide: QueuePort,
+      useValue: createMock<QueuePort>(),
+    },
   ],
-  exports: [DatabaseLifecycleService, PinoLogger, UuidAdapter, SecretAdapter, AuthPort, EncryptionPort],
+  exports: [
+    DatabaseLifecycleService,
+    PinoLogger,
+    UuidAdapter,
+    SecretAdapter,
+    AuthPort,
+    EncryptionPort,
+    FileStoragePort,
+    QueuePort,
+  ],
 })
 export class BaseIntegrationTestModule {}

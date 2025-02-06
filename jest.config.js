@@ -22,5 +22,5 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   maxWorkers: 5,
-  globalSetup: './scripts/jestGlobalSetup.js',
+  globalSetup: '<rootDir>/scripts/jestGlobalSetup.ts',
 };

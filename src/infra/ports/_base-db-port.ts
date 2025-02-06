@@ -1,3 +1,4 @@
+import { User } from '@/core/users/domain/entities/user.entity';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
@@ -82,4 +83,18 @@ export abstract class BaseDbPort<T extends { id: string | number }> {
    * @returns A reference to the entity
    */
   abstract ref(id: T['id']): Ref<T>;
+
+  /**
+   * Retrieves entities by user ID
+   * @param userId - The ID of the user to filter by
+   * @param filters - Optional filters to apply to the query
+   * @param pagination - Optional pagination parameters
+   * @param sort - Optional sorting criteria
+   */
+  abstract findByUser(
+    userId: User['id'],
+    filters?: Filter[],
+    pagination?: Pagination,
+    sort?: Sort,
+  ): Promise<PaginatedResponse<T>>;
 }
