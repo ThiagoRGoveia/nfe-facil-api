@@ -27,13 +27,16 @@ export class FileToProcess extends BaseEntity {
   filePath?: string;
 
   @Property({ nullable: true })
-  payload?: unknown;
+  result?: unknown;
 
   @Property()
   status: FileProcessStatus;
 
   @Property({ nullable: true })
   error?: string;
+
+  @Property({ nullable: true })
+  notifiedAt?: Date;
 
   @Index()
   @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
@@ -43,8 +46,8 @@ export class FileToProcess extends BaseEntity {
     this.filePath = filePath;
   }
 
-  public setPayload(payload: unknown): void {
-    this.payload = payload;
+  public setResult(result: unknown): void {
+    this.result = result;
   }
 
   public markProcessing(): void {
@@ -58,5 +61,9 @@ export class FileToProcess extends BaseEntity {
   public markFailed(error: string): void {
     this.status = FileProcessStatus.FAILED;
     this.error = error;
+  }
+
+  public markNotified(): void {
+    this.notifiedAt = new Date();
   }
 }

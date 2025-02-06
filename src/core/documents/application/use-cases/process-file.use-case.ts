@@ -39,12 +39,14 @@ export class ProcessFileUseCase {
     const result = await this.documentProcessorPort.process(file.id, file.filePath, template);
 
     if (result.isSuccess()) {
-      file.setPayload(result.payload);
+      file.setResult(result.payload);
       file.markCompleted();
       await this.webhookNotifierPort.notifySuccess(file);
+      file.markNotified();
     } else if (result.isError()) {
       file.markFailed(result.errorMessage);
       await this.webhookNotifierPort.notifyFailure(file);
+      file.markNotified();
     }
     await this.fileProcessDbPort.save();
     return file;

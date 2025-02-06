@@ -10,7 +10,7 @@ export class FileProcessFactory extends Factory<FileToProcess> {
       id: faker.string.uuid(),
       fileName: faker.system.fileName(),
       filePath: faker.system.filePath(),
-      payload: {},
+      result: {},
       status: faker.helpers.arrayElement(Object.values(FileProcessStatus)),
       error: faker.datatype.boolean() ? faker.lorem.sentence() : undefined,
       createdAt: faker.date.past(),

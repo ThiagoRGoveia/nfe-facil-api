@@ -69,5 +69,6 @@ export class SyncBatchProcessUseCase {
 
     this.batchRepository.update(batch.id, { status: newStatus });
     await this.batchRepository.save();
+    return batch;
   }
 }
