@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
 
-export abstract class BaseWorkflow<T extends Record<string, unknown>> {
+export abstract class BaseWorkflow<T extends Record<string, unknown> = Record<string, unknown>> {
   constructor(
     protected readonly fileStoragePort: FileStoragePort,
     protected readonly logger: PinoLogger,

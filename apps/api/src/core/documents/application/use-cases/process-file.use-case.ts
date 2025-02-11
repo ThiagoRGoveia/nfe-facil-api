@@ -39,7 +39,7 @@ export class ProcessFileUseCase {
       throw new BadRequestException('Missing file for file processing');
     }
 
-    const result = await this.documentProcessorPort.process(file.id, file.filePath, template);
+    const result = await this.documentProcessorPort.process(file, template);
 
     if (result.isSuccess()) {
       file.setResult(result.payload);
