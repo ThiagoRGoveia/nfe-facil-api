@@ -1,4 +1,4 @@
-export type ProcessStatus = 'SUCCESS' | 'ERROR';
+export type ProcessStatus = 'SUCCESS' | 'ERROR' | 'UNDETERMINED_OUTPUT';
 
 export class DocumentProcessResult {
   private constructor(
@@ -14,6 +14,10 @@ export class DocumentProcessResult {
 
   public static fromError(error: { code: string; message: string }): DocumentProcessResult {
     return new DocumentProcessResult(null, 'ERROR', error.code, error.message);
+  }
+
+  public static fromUndetermined(payload: unknown): DocumentProcessResult {
+    return new DocumentProcessResult(payload, 'UNDETERMINED_OUTPUT');
   }
 
   public isSuccess(): this is IsSuccessResponse {

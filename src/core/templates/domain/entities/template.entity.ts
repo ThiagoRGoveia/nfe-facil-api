@@ -8,7 +8,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 @ObjectType()
 @Entity({ tableName: 'template' })
-export class Template extends BaseEntity {
+export class Template<T = Record<string, unknown>> extends BaseEntity {
   @Field(() => String)
   @ApiProperty({
     description: 'Template unique identifier',
@@ -39,7 +39,7 @@ export class Template extends BaseEntity {
     example: { fields: ['invoice_number', 'total_amount'] },
   })
   @Property({ type: 'json' })
-  metadata: Record<string, unknown>;
+  metadata: T;
 
   @Field(() => String)
   @ApiProperty({

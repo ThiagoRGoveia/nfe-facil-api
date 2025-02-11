@@ -17,6 +17,8 @@ Ports define interfaces that abstract external dependencies from the core busine
 
 ### Examples
 
+#### Database Port Example
+
 ```typescript
 @Injectable()
 export abstract class ThreadDbPort extends BasePort<Thread> {
@@ -28,6 +30,16 @@ export abstract class ThreadDbPort extends BasePort<Thread> {
 }
 ```
 
+#### PDF Processing Port Example
+
+```typescript
+@Injectable()
+export abstract class PdfTextExtractorPort extends BasePort<Buffer> {
+  abstract extract(pdfBuffer: Buffer): Promise<string>;
+}
+```
+
 ### Libraries Used
 
 - @nestjs/common - For dependency injection decorators
+- child_process - For native PDF processing (in adapter implementation)
