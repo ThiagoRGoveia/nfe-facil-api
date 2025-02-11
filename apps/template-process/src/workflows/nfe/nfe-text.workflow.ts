@@ -4,12 +4,12 @@ import { validateOrReject } from 'class-validator';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
-import { Readable } from 'stream';
 import { PinoLogger } from 'nestjs-pino';
 import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
 import { NfeDto } from './dto/nfe.dto';
+import { BaseWorkflow } from '../_base.workflow';
 
 type TemplateMetadata = {
   prompt: string;
@@ -22,13 +22,15 @@ const buildPrompt = (template: Template<TemplateMetadata>, nfeText: string) => {
 };
 
 @Injectable()
-export class NfeTextWorkflow {
+export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
   constructor(
-    private readonly fileStoragePort: FileStoragePort,
+    fileStoragePort: FileStoragePort,
     private readonly pdfExtractor: PdfPort,
     private readonly ollamaClient: OllamaClient,
-    private readonly logger: PinoLogger,
-  ) {}
+    logger: PinoLogger,
+  ) {
+    super(fileStoragePort, logger);
+  }
 
   async execute(fileToProcess: FileToProcess): Promise<DocumentProcessResult> {
     try {
@@ -41,7 +43,7 @@ export class NfeTextWorkflow {
         throw new Error(`Template ${fileToProcess.template.id} not found`);
       }
 
-      if (!this.isTemplateMetadata(template)) {
+      if (!this.isTemplateMetadata(template, ['prompt'])) {
         throw new Error(`Template ${fileToProcess.template.id} is not a valid template for NFE text extraction`);
       }
 
@@ -124,21 +126,5 @@ export class NfeTextWorkflow {
       this.logger.error(errors);
       throw new Error('Could not validate document');
     }
-  }
-
-  private deepEqual(a: unknown, b: unknown): boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
-  }
-
-  private streamToBuffer(stream: Readable): Promise<Buffer> {
-    return new Promise((resolve) => {
-      const chunks: Buffer[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-    });
-  }
-
-  private isTemplateMetadata(template: Template): template is Template<TemplateMetadata> {
-    return 'prompt' in template.metadata;
   }
 }
