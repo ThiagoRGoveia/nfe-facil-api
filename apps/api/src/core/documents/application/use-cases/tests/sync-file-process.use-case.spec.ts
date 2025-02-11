@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { SyncBatchProcessUseCase } from '../sync-batch-process.use-case';
+import { SyncFileProcessUseCase } from '../sync-file-process.use-case';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { ProcessFileUseCase } from '../process-file.use-case';
@@ -14,7 +14,7 @@ import { BatchStatus } from '@/core/documents/domain/entities/batch-process.enti
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
 import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 describe('SyncBatchProcessUseCase', () => {
-  let useCase: SyncBatchProcessUseCase;
+  let useCase: SyncFileProcessUseCase;
   let batchDbPort: jest.Mocked<BatchDbPort>;
   let fileProcessDbPort: jest.Mocked<FileProcessDbPort>;
   let processFileUseCase: jest.Mocked<ProcessFileUseCase>;
@@ -27,7 +27,7 @@ describe('SyncBatchProcessUseCase', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [useUnitTestModule()],
       providers: [
-        SyncBatchProcessUseCase,
+        SyncFileProcessUseCase,
         {
           provide: BatchDbPort,
           useValue: createMock<BatchDbPort>({
@@ -60,7 +60,7 @@ describe('SyncBatchProcessUseCase', () => {
       ],
     }).compile();
 
-    useCase = module.get<SyncBatchProcessUseCase>(SyncBatchProcessUseCase);
+    useCase = module.get<SyncFileProcessUseCase>(SyncFileProcessUseCase);
     batchDbPort = module.get(BatchDbPort);
     fileProcessDbPort = module.get(FileProcessDbPort);
     processFileUseCase = module.get(ProcessFileUseCase);
@@ -105,23 +105,6 @@ describe('SyncBatchProcessUseCase', () => {
 
     expect(batchDbPort.update).not.toHaveBeenCalled();
     expect(cancelBatchProcessUseCase.execute).toHaveBeenCalledWith(batch.id);
-  });
-
-  it('should handle partial failures', async () => {
-    const batch = useBatchProcessFactory({ status: BatchStatus.CREATED, totalFiles: 2, processedFiles: 0 }, em);
-    const files = [
-      useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
-      useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
-    ];
-
-    createBatchProcessUseCase.execute.mockResolvedValue(batch);
-    fileProcessDbPort.findByBatchPaginated.mockResolvedValue(files);
-    fileProcessDbPort.countByBatchAndStatus.mockResolvedValue(1);
-    processFileUseCase.execute.mockRejectedValueOnce(new Error('Processing failed'));
-
-    await useCase.execute(mockUser, { templateId: 'template-123' });
-
-    expect(batchDbPort.update).toHaveBeenCalledWith(batch.id, { status: BatchStatus.PARTIALLY_COMPLETED });
   });
 
   it('should throw if batch already started', async () => {

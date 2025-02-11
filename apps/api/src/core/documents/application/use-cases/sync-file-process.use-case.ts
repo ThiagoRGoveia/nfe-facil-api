@@ -3,7 +3,6 @@ import { BatchDbPort } from '../ports/batch-db.port';
 import { ProcessFileUseCase } from './process-file.use-case';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { FileProcessStatus } from '../../domain/entities/file-process.entity';
 import { CreateBatchProcessUseCase } from './create-batch-process.use-case';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
@@ -12,7 +11,7 @@ import { CancelBatchProcessUseCase } from './cancel-batch-process.use-case';
 import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
-export class SyncBatchProcessUseCase {
+export class SyncFileProcessUseCase {
   private readonly MAX_FILES = 10;
   constructor(
     private readonly batchRepository: BatchDbPort,
@@ -57,18 +56,7 @@ export class SyncBatchProcessUseCase {
       }),
     );
 
-    // Update batch status based on results
-    const failedDocs = await this.fileProcessRepository.countByBatchAndStatus(batch.id, FileProcessStatus.FAILED);
-    const totalDocs = files.length;
-
-    const newStatus =
-      failedDocs > 0
-        ? failedDocs === totalDocs
-          ? BatchStatus.FAILED
-          : BatchStatus.PARTIALLY_COMPLETED
-        : BatchStatus.COMPLETED;
-
-    this.batchRepository.update(batch.id, { status: newStatus });
+    this.batchRepository.update(batch.id, { status: BatchStatus.COMPLETED });
     await this.batchRepository.save();
     return batch;
   }

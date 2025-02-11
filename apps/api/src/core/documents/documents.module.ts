@@ -5,7 +5,7 @@ import { UpdateBatchTemplateUseCase } from './application/use-cases/update-batch
 import { AddFileToBatchUseCase } from './application/use-cases/add-file-to-batch.use-case';
 import { CancelBatchProcessUseCase } from './application/use-cases/cancel-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from './application/use-cases/async-batch-process.use-case';
-import { SyncBatchProcessUseCase } from './application/use-cases/sync-batch-process.use-case';
+import { SyncFileProcessUseCase } from './application/use-cases/sync-file-process.use-case';
 
 // Ports
 import { BatchDbPort } from './application/ports/batch-db.port';
@@ -32,7 +32,7 @@ import { BatchProcessesResolver } from './presenters/graphql/resolvers/batch-pro
     AddFileToBatchUseCase,
     CancelBatchProcessUseCase,
     AsyncBatchProcessUseCase,
-    SyncBatchProcessUseCase,
+    SyncFileProcessUseCase,
     ProcessFileUseCase,
     {
       provide: BatchDbPort,

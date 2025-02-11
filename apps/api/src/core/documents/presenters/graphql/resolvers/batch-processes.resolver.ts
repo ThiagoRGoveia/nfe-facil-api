@@ -1,6 +1,6 @@
 import { Args, Context, Mutation, Query, Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { BatchProcess } from '../../../domain/entities/batch-process.entity';
-import { SyncBatchProcessUseCase } from '../../../application/use-cases/sync-batch-process.use-case';
+import { SyncFileProcessUseCase } from '../../../application/use-cases/sync-file-process.use-case';
 import { BatchDbPort } from '../../../application/ports/batch-db.port';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 import { CreateBatchInput } from '../dtos/create-batch.input';
@@ -20,7 +20,7 @@ const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 export class BatchProcessesResolver {
   constructor(
     private readonly batchDbPort: BatchDbPort,
-    private readonly syncBatchProcessUseCase: SyncBatchProcessUseCase,
+    private readonly syncBatchProcessUseCase: SyncFileProcessUseCase,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })

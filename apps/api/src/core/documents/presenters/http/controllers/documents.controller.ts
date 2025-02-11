@@ -23,7 +23,7 @@ import { UpdateBatchTemplateUseCase } from '@/core/documents/application/use-cas
 import { AddFileToBatchUseCase } from '@/core/documents/application/use-cases/add-file-to-batch.use-case';
 import { CancelBatchProcessUseCase } from '@/core/documents/application/use-cases/cancel-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
-import { SyncBatchProcessUseCase } from '@/core/documents/application/use-cases/sync-batch-process.use-case';
+import { SyncFileProcessUseCase } from '@/core/documents/application/use-cases/sync-file-process.use-case';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
@@ -38,7 +38,7 @@ export class DocumentsController {
     private readonly addFileToBatchUseCase: AddFileToBatchUseCase,
     private readonly cancelBatchUseCase: CancelBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
-    private readonly syncBatchProcessUseCase: SyncBatchProcessUseCase,
+    private readonly syncBatchProcessUseCase: SyncFileProcessUseCase,
     private readonly batchDbPort: BatchDbPort,
   ) {}
 
