@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/nfacil-api/src",
+  "sourceRoot": "apps/api/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/nfacil-api/tsconfig.app.json"
+    "tsConfigPath": "apps/api/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/nfacil-api",
+  "root": "apps/api",
   "projects": {
     "api": {
       "type": "application",
@@ -25,16 +25,16 @@
       "entryFile": "main",
       "sourceRoot": "apps/document-process/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/document-process/tsconfig.app.json"
+        "tsConfigPath": "apps/workflow-process/tsconfig.app.json"
       }
     },
-    "nfacil-api": {
+    "api": {
       "type": "application",
-      "root": "apps/nfacil-api",
+      "root": "apps/api",
       "entryFile": "main",
-      "sourceRoot": "apps/nfacil-api/src",
+      "sourceRoot": "apps/api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/nfacil-api/tsconfig.app.json"
+        "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     }
   }
