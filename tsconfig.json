@@ -18,9 +18,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["apps/nfacil-api/src/*"],
+      "@doc/*": ["apps/document-process/src/*"]
     }
   }
 }

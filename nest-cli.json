@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
+    "document-process": {
+      "type": "application",
+      "root": "apps/document-process",
+      "entryFile": "main",
+      "sourceRoot": "apps/document-process/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/document-process/tsconfig.app.json"
+      }
+    },
     "nfacil-api": {
       "type": "application",
       "root": "apps/nfacil-api",

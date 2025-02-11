@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OllamaClient } from '../clients/ollama-client';
 import { validateOrReject } from 'class-validator';
-import { DocumentProcessResult } from '../../../core/template-processes/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { PdfTextExtractorPort } from '@/infra/pdf/ports/pdf.port';
 import { Readable } from 'stream';
