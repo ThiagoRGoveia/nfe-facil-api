@@ -66,4 +66,8 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
     }
     this.status = BatchStatus.CANCELLED;
   }
+
+  markCompleted() {
+    this.status = BatchStatus.COMPLETED;
+  }
 }

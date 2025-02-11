@@ -79,7 +79,11 @@ export class NfeTextWorkflow {
 
       // Compare responses
       if (!this.deepEqual(qwenJson, llamaJson)) {
-        return DocumentProcessResult.fromUndetermined({ qwen: qwenJson, llama: llamaJson });
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: 'Could not validate response are not equal',
+          data: { result1: qwenJson, result2: llamaJson },
+        });
       }
 
       return DocumentProcessResult.fromSuccess(qwenJson, warnings);

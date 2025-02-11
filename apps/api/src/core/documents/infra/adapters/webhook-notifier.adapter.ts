@@ -5,6 +5,7 @@ import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/noti
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
+import { BatchProcess } from '../../domain/entities/batch-process.entity';
 
 @Injectable()
 export class WebhookNotifierAdapter implements WebhookNotifierPort {
@@ -15,7 +16,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
 
   async notifySuccess(process: FileToProcess): Promise<void> {
     try {
-      const user = await this.getUserFromProcess(process);
+      const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
         user,
         event: WebhookEvent.DOCUMENT_PROCESSED,
@@ -34,7 +35,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
 
   async notifyFailure(process: FileToProcess): Promise<void> {
     try {
-      const user = await this.getUserFromProcess(process);
+      const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
         user,
         event: WebhookEvent.DOCUMENT_FAILED,
@@ -50,14 +51,28 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     }
   }
 
-  private async getUserFromProcess(process: FileToProcess): Promise<User> {
-    const template = await process.template.load({ populate: ['user'] });
-    if (!template) {
-      throw new InternalServerErrorException(`Template not found for process ${process.id}`);
+  async notifyBatchCompleted(batch: BatchProcess): Promise<void> {
+    try {
+      const user = await batch.user.load();
+      if (!user) {
+        throw new InternalServerErrorException(`User not found for batch ${batch.id}`);
+      }
+      await this.notifyWebhookUseCase.execute({
+        user,
+        event: WebhookEvent.BATCH_FINISHED,
+        payload: {
+          batchId: batch.id,
+        },
+      });
+    } catch (error) {
+      this.logger.error(error);
     }
-    const user = await template.user?.load();
+  }
+
+  private async getUser(process: FileToProcess): Promise<User> {
+    const user = await process.user.load();
     if (!user) {
-      throw new InternalServerErrorException(`User not found for template ${template.id}`);
+      throw new InternalServerErrorException(`User not found for process ${process.id}`);
     }
     return user;
   }

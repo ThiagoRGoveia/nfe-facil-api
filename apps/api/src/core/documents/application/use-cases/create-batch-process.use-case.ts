@@ -68,6 +68,7 @@ export class CreateBatchProcessUseCase {
                     filePath: path,
                     template,
                     batchProcess: batch,
+                    user,
                   });
                 }),
               );
@@ -82,6 +83,7 @@ export class CreateBatchProcessUseCase {
                 filePath: path,
                 template,
                 batchProcess: batch,
+                user,
               });
               totalFiles += 1;
             } else {

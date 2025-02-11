@@ -22,6 +22,8 @@ export class ProcessFileUseCase {
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
     const { file, user } = params;
     const template = await file.template.load();
+    const batchProcess = await file.batchProcess?.load();
+
     if (!template) {
       throw new BadRequestException('Template not found');
     }
@@ -49,9 +51,14 @@ export class ProcessFileUseCase {
       await this.webhookNotifierPort.notifyFailure(file);
       file.markNotified();
     }
-    if (file.batchProcess) {
-      await this.batchDbPort.incrementProcessedFilesCount(file.batchProcess.id);
+    if (batchProcess) {
+      const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
+      if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
+        updatedBatchProcess.markCompleted();
+        await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
+      }
     }
+
     await this.fileProcessDbPort.save();
     return file;
   }

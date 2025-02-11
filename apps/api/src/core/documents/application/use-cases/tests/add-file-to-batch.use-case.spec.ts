@@ -116,6 +116,7 @@ describe('AddFileToBatchUseCase', () => {
       filePath: 's3://path/to/file',
       template: batch.template,
       batchProcess: batch,
+      user: mockUser,
     });
     expect(fileProcessDbPort.save).toHaveBeenCalled();
     expect(result[0]).toMatchObject({ fileName: 'test.pdf' });

@@ -1,3 +1,4 @@
+import { BatchProcess } from '../../domain/entities/batch-process.entity';
 import { FileToProcess } from '../../domain/entities/file-process.entity';
 
 export abstract class WebhookNotifierPort {
@@ -12,4 +13,6 @@ export abstract class WebhookNotifierPort {
    * @param process The failed document process
    */
   abstract notifyFailure(process: FileToProcess): Promise<void>;
+
+  abstract notifyBatchCompleted(batch: BatchProcess): Promise<void>;
 }

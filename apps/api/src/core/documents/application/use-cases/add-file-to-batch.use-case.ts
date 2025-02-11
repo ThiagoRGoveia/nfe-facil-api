@@ -83,6 +83,7 @@ export class AddFileToBatchUseCase {
                 filePath: uploadedPaths[index],
                 template: batch.template,
                 batchProcess: batch,
+                user: params.user,
               });
             });
 
@@ -110,6 +111,7 @@ export class AddFileToBatchUseCase {
               filePath: filePath,
               template: batch.template,
               batchProcess: batch,
+              user: params.user,
             });
 
             allFileProcesses.push(fileProcess);

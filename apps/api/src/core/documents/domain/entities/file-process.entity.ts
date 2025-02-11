@@ -5,6 +5,7 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
+import { User } from '@/core/users/domain/entities/user.entity';
 export enum FileProcessStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
@@ -53,10 +54,15 @@ export class FileToProcess extends BaseEntity {
   @Property({ nullable: true })
   notifiedAt?: Date;
 
-  @Field(() => BatchProcess, { nullable: true })
+  @Field(() => BatchProcess)
   @Index()
   @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
   batchProcess?: Ref<BatchProcess>;
+
+  @Field(() => User)
+  @Index()
+  @ManyToOne(() => User, { ref: true, eager: false })
+  user: Ref<User>;
 
   public setFilePath(filePath: string): void {
     this.filePath = filePath;
