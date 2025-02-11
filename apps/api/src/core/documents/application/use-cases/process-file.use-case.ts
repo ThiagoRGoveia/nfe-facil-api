@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FileToProcess } from '../../domain/entities/file-process.entity';
-import { DocumentProcessorPort } from '../ports/document-processor.port';
-import { WebhookNotifierPort } from '../ports/webhook-notifier.port';
-import { FileProcessDbPort } from '../ports/file-process-db.port';
+import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
+import { DocumentProcessorPort } from '@/core/documents/application/ports/document-processor.port';
+import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-notifier.port';
+import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { User } from '@/core/users/domain/entities/user.entity';
 
 export interface ProcessFileParams {
