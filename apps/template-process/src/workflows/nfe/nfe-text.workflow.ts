@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OllamaClient } from '../clients/ollama-client';
 import { validateOrReject } from 'class-validator';
-import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { PdfTextExtractorPort } from '@doc/infra/pdf/ports/pdf.port';
+import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
 import { Readable } from 'stream';
 import { PinoLogger } from 'nestjs-pino';
 import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
@@ -25,7 +25,7 @@ const buildPrompt = (template: Template<TemplateMetadata>, nfeText: string) => {
 export class NfeTextWorkflow {
   constructor(
     private readonly fileStoragePort: FileStoragePort,
-    private readonly pdfExtractor: PdfTextExtractorPort,
+    private readonly pdfExtractor: PdfPort,
     private readonly ollamaClient: OllamaClient,
     private readonly logger: PinoLogger,
   ) {}
@@ -53,11 +53,15 @@ export class NfeTextWorkflow {
         throw new Error(`File ${fileToProcess.id} is too Big)`);
       }
 
-      // Extract text from PDF
-      const pdfText = await this.pdfExtractor.extract(pdfBuffer);
+      const { text, numPages } = await this.pdfExtractor.extractFirstPage(pdfBuffer);
+
+      let warnings: string[] | undefined;
+      if (numPages > 1) {
+        warnings = [`File ${fileToProcess.fileName} has ${numPages} pages. Only the first page will be used.`];
+      }
 
       // Create prompt with PDF text
-      const prompt = buildPrompt(template, pdfText);
+      const prompt = buildPrompt(template, text);
 
       // Parallel requests to both models
       const [qwenResponse, llamaResponse] = await Promise.all([
@@ -78,7 +82,7 @@ export class NfeTextWorkflow {
         return DocumentProcessResult.fromUndetermined({ qwen: qwenJson, llama: llamaJson });
       }
 
-      return DocumentProcessResult.fromSuccess(qwenJson);
+      return DocumentProcessResult.fromSuccess(qwenJson, warnings);
     } catch (error) {
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',

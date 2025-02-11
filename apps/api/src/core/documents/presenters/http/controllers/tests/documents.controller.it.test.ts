@@ -19,7 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { ZipPort } from '@/infra/zip/zip.port';
 import { ZipAdapter } from '@/infra/zip/zip.adapter';
-import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
 import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';

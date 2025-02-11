@@ -23,7 +23,7 @@ import { DocumentProcessorPort } from '@/core/documents/application/ports/docume
 import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 
 @Global()
 @Module({

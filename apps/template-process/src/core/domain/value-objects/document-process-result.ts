@@ -6,10 +6,11 @@ export class DocumentProcessResult {
     public readonly status: ProcessStatus,
     public readonly errorCode?: string,
     public readonly errorMessage?: string,
+    public readonly warnings?: string[],
   ) {}
 
-  public static fromSuccess(payload: unknown): DocumentProcessResult {
-    return new DocumentProcessResult(payload, 'SUCCESS');
+  public static fromSuccess(payload: unknown, warnings?: string[]): DocumentProcessResult {
+    return new DocumentProcessResult(payload, 'SUCCESS', undefined, undefined, warnings);
   }
 
   public static fromError(error: { code: string; message: string }): DocumentProcessResult {

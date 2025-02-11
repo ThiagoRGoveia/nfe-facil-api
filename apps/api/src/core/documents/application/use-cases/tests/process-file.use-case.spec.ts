@@ -10,7 +10,7 @@ import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/fi
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 
 describe('ProcessFileUseCase', () => {
   let useCase: ProcessFileUseCase;
