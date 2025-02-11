@@ -19,6 +19,7 @@ describe('SyncBatchProcessUseCase', () => {
   let fileProcessDbPort: jest.Mocked<FileProcessDbPort>;
   let processFileUseCase: jest.Mocked<ProcessFileUseCase>;
   let createBatchProcessUseCase: jest.Mocked<CreateBatchProcessUseCase>;
+  let cancelBatchProcessUseCase: jest.Mocked<CancelBatchProcessUseCase>;
   let em: EntityManager;
   let mockUser: ReturnType<typeof useUserFactory>;
 
@@ -64,6 +65,7 @@ describe('SyncBatchProcessUseCase', () => {
     fileProcessDbPort = module.get(FileProcessDbPort);
     processFileUseCase = module.get(ProcessFileUseCase);
     createBatchProcessUseCase = module.get(CreateBatchProcessUseCase);
+    cancelBatchProcessUseCase = module.get(CancelBatchProcessUseCase);
     em = module.get(EntityManager);
     mockUser = useUserFactory({}, em);
   });
@@ -102,6 +104,7 @@ describe('SyncBatchProcessUseCase', () => {
     );
 
     expect(batchDbPort.update).not.toHaveBeenCalled();
+    expect(cancelBatchProcessUseCase.execute).toHaveBeenCalledWith(batch.id);
   });
 
   it('should handle partial failures', async () => {

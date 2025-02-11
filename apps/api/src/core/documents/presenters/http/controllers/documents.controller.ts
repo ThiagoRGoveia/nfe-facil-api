@@ -12,11 +12,12 @@ import {
   ParseFilePipe,
   Patch,
   Post,
+  Put,
   Req,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
 import { UpdateBatchTemplateUseCase } from '@/core/documents/application/use-cases/update-batch-template.use-case';
 import { AddFileToBatchUseCase } from '@/core/documents/application/use-cases/add-file-to-batch.use-case';
@@ -44,41 +45,59 @@ export class DocumentsController {
   @Post('process/sync')
   @ApiOperation({ summary: 'Process batch synchronously' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Batch processed successfully' })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   async processBatchSync(
     @Req() req: Request,
     @Body('templateId') templateId: string,
-    @UploadedFile(
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES }),
-          new FileTypeValidator({ fileType: 'application/zip' }),
+          new FileTypeValidator({
+            fileType: /^(application\/zip|application\/pdf|application\/octet-stream)$/,
+          }),
         ],
+        fileIsRequired: true,
       }),
     )
-    file?: Express.Multer.File,
+    files?: Express.Multer.File[],
   ) {
     return await this.syncBatchProcessUseCase.execute(req.user, {
       templateId,
-      file: file?.buffer,
-      fileName: file?.originalname,
+      files: files?.map((f) => ({
+        data: f.buffer,
+        fileName: f.originalname,
+      })),
     });
   }
 
   @Post('batch')
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Create a new batch process' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Batch created successfully' })
+  @UseInterceptors(FilesInterceptor('files'))
   async createBatch(
     @Req() req: Request,
     @Body('templateId') templateId: string,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES }),
+          new FileTypeValidator({
+            fileType: /^(application\/zip|application\/pdf|application\/octet-stream)$/,
+          }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    files?: Express.Multer.File[],
   ) {
     return await this.createBatchUseCase.execute(req.user, {
       templateId,
-      file: file?.buffer,
-      fileName: file?.originalname,
+      files: files?.map((f) => ({
+        data: f.buffer,
+        fileName: f.originalname,
+      })),
     });
   }
 
@@ -112,20 +131,31 @@ export class DocumentsController {
     });
   }
 
-  @Post('batch/:id/files')
-  @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
+  @Put('batch/:id/files')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Add file to batch' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'File added successfully' })
-  async addFileToBatch(@Req() req: Request, @Param('id') batchId: string, @UploadedFile() file: Express.Multer.File) {
-    if (!file) {
+  @ApiResponse({ status: HttpStatus.OK, description: 'File added successfully' })
+  @UseInterceptors(FilesInterceptor('files'))
+  async addFileToBatch(
+    @Req() req: Request,
+    @Param('id') batchId: string,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES })],
+      }),
+    )
+    files: Express.Multer.File[],
+  ) {
+    if (!files) {
       throw new BadRequestException('File is required');
     }
     return await this.addFileToBatchUseCase.execute({
       batchId,
-      file: file.stream,
-      filename: file.originalname,
-      mimetype: file.mimetype,
+      files: files.map((f) => ({
+        file: f.buffer,
+        filename: f.originalname,
+        mimetype: f.mimetype,
+      })),
       user: req.user,
     });
   }

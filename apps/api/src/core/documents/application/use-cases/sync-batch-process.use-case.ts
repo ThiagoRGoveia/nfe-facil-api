@@ -28,7 +28,8 @@ export class SyncBatchProcessUseCase {
     const batch = await this.createBatchUseCase.execute(user, dto);
 
     if (batch.totalFiles > this.MAX_FILES) {
-      throw new BadRequestException('Up to 10 files are allowed to be processed at once');
+      await this.cancelBatchUseCase.execute(batch.id);
+      throw new BadRequestException(`Up to ${this.MAX_FILES} files are allowed to be processed at once`);
     }
 
     if (batch.status !== BatchStatus.CREATED) {

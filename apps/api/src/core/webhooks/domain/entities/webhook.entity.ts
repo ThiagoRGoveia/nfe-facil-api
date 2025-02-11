@@ -12,8 +12,7 @@ export enum WebhookStatus {
 export enum WebhookEvent {
   DOCUMENT_PROCESSED = 'DOCUMENT_PROCESSED',
   DOCUMENT_FAILED = 'DOCUMENT_FAILED',
-  BATCH_COMPLETED = 'BATCH_COMPLETED',
-  BATCH_FAILED = 'BATCH_FAILED',
+  BATCH_FINISHED = 'BATCH_FINISHED',
 }
 
 export enum WebhookAuthType {

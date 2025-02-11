@@ -104,11 +104,12 @@ describe('BatchMikroOrmRepository (integration)', () => {
     it('should increment processed files count', async () => {
       const initialCount = testBatch.processedFiles;
 
-      await repository.incrementProcessedFilesCount(testBatch.id);
+      const response = await repository.incrementProcessedFilesCount(testBatch.id);
 
       em.clear();
       const updatedBatch = await em.findOne(BatchProcess, { id: testBatch.id });
       expect(updatedBatch?.processedFiles).toBe(initialCount + 1);
+      expect(response.processedFiles).toBe(updatedBatch?.processedFiles);
     });
   });
 });

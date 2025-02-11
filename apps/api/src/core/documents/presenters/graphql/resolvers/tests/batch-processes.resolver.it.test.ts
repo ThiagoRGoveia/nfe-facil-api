@@ -66,7 +66,7 @@ describe('BatchProcesses Resolver (integration)', () => {
     app = module.createNestApplication();
     batchDbPort = module.get(BatchDbPort);
     documentProcessor = module.get<jest.Mocked<DocumentProcessorPort>>(DocumentProcessorPort);
-    app.use(graphqlUploadExpress({ maxFileSize: MAX_FILE_SIZE_BYTES, maxFiles: 1 }));
+    app.use(graphqlUploadExpress({ maxFileSize: MAX_FILE_SIZE_BYTES, maxFiles: 10 }));
     await app.init();
 
     // Create test user and template
@@ -114,10 +114,13 @@ describe('BatchProcesses Resolver (integration)', () => {
       }),
     );
 
-    const testZipPath = path.join(__dirname, '../../../../../../infra/zip/tests/test-files/test.zip');
+    const testZipPath = path.join(__dirname, './test.zip');
     const testZipBuffer = await fs.readFile(testZipPath);
 
-    // Send the request using Supertest
+    const testPdfPath = path.join(__dirname, './test.pdf');
+    const testPdfBuffer = await fs.readFile(testPdfPath);
+
+    // Modified file upload handling for multiple files
     const response = await request(app.getHttpServer())
       .post('/graphql')
       .field(
@@ -127,24 +130,31 @@ describe('BatchProcesses Resolver (integration)', () => {
           variables: {
             input: {
               templateId: template.id,
-              file: null,
+              files: [null, null], // Now accepts array of files
             },
           },
         }),
       )
-      .field('map', JSON.stringify({ '0': ['variables.input.file'] }))
+      .field(
+        'map',
+        JSON.stringify({
+          '0': ['variables.input.files.0'],
+          '1': ['variables.input.files.1'],
+        }),
+      )
       .attach('0', testZipBuffer, 'test.zip')
+      .attach('1', testPdfBuffer, 'test.pdf')
       .expect(({ body }) => {
         expect(body.errors).toBeUndefined();
         expect(body.data.processBatchSync).toBeDefined();
         expect(body.data.processBatchSync.status).toBe(BatchStatus.COMPLETED);
         expect(body.data.processBatchSync.template.id).toBe(template.id);
         expect(body.data.processBatchSync.user.id).toBe(user.id);
-        expect(body.data.processBatchSync.files).toHaveLength(2);
-        expect(body.data.processBatchSync.files[0].fileName).toBe('Test 1.pdf');
-        expect(body.data.processBatchSync.files[0].status).toBe(FileProcessStatus.COMPLETED);
-        expect(body.data.processBatchSync.files[1].fileName).toBe('Test 2.pdf');
-        expect(body.data.processBatchSync.files[1].status).toBe(FileProcessStatus.COMPLETED);
+        // Updated assertion for 3 files (2 from zip and 1 from pdf)
+        expect(body.data.processBatchSync.files).toHaveLength(3);
+        expect(body.data.processBatchSync.files[0].fileName).toBe('test.pdf');
+        expect(body.data.processBatchSync.files[1].fileName).toBe('Test 1.pdf');
+        expect(body.data.processBatchSync.files[2].fileName).toBe('Test 2.pdf');
       })
       .expect(200);
 
@@ -157,7 +167,7 @@ describe('BatchProcesses Resolver (integration)', () => {
     await batch?.files.loadItems();
     // Verify file was processed correctly
     expect(batch?.files).toBeDefined();
-    expect(batch?.files.length).toBe(2); // Since we know test.zip contains 2 files
+    expect(batch?.files.length).toBe(3); // Since we know test.zip contains 4 files
 
     expect(batch?.files[0].status).toBe(FileProcessStatus.COMPLETED);
     expect(batch?.files[0].result).toEqual({

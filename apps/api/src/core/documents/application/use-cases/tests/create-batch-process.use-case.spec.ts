@@ -89,7 +89,16 @@ describe('CreateBatchProcessUseCase', () => {
 
   const validDto = {
     templateId: 'template-123',
-    file: Buffer.from('test'),
+    files: [
+      {
+        fileName: 'test.pdf',
+        data: Buffer.from('test'),
+      },
+      {
+        fileName: 'test.zip',
+        data: Buffer.from('test'),
+      },
+    ],
   };
 
   it('should create empty batch successfully', async () => {
@@ -125,9 +134,9 @@ describe('CreateBatchProcessUseCase', () => {
 
     const result = await useCase.execute(mockUser, validDto);
 
-    expect(zipService.extractFiles).toHaveBeenCalledWith(validDto.file);
-    expect(fileStoragePort.uploadFromBuffer).toHaveBeenCalledTimes(2);
-    expect(batchDbPort.update).toHaveBeenCalledWith(result.id, { totalFiles: 2 });
+    expect(zipService.extractFiles).toHaveBeenCalledWith(validDto.files[0].data);
+    expect(fileStoragePort.uploadFromBuffer).toHaveBeenCalledTimes(3);
+    expect(batchDbPort.update).toHaveBeenCalledWith(result.id, { totalFiles: 3 });
   });
 
   it('should reject zip with non-PDF files', async () => {
@@ -135,7 +144,7 @@ describe('CreateBatchProcessUseCase', () => {
     templateDbPort.findById.mockResolvedValue(template);
     zipService.extractFiles.mockResolvedValue([{ name: 'file.jpg', content: Buffer.from('image'), path: 'file.jpg' }]);
 
-    await expect(useCase.execute(mockUser, validDto)).rejects.toThrow('Zip file contains non-PDF files');
+    await expect(useCase.execute(mockUser, validDto)).rejects.toThrow('Zip file test.zip contains non-PDF files');
   });
 
   it('should rollback on database failure', async () => {

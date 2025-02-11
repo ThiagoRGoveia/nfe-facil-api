@@ -7,7 +7,7 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 @Injectable()
 export abstract class BatchDbPort extends BaseDbPort<BatchProcess> {
-  abstract incrementProcessedFilesCount(id: BatchProcess['id']): Promise<void>;
+  abstract incrementProcessedFilesCount(id: BatchProcess['id']): Promise<BatchProcess>;
   abstract findByUser(
     userId: string,
     filters?: Filter[],

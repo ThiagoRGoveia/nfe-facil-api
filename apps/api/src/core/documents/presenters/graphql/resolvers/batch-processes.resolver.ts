@@ -47,16 +47,27 @@ export class BatchProcessesResolver {
     @Context() context: GraphqlExpressContext,
     @Args('input') input: CreateBatchInput,
   ): Promise<BatchProcess> {
-    const file = await input.file;
-    if (!file) {
-      throw new BadRequestException('File is required');
-    }
-    const buffer = await this.streamToBuffer(file.createReadStream);
+    const uploadedFiles = input.files ? await Promise.all(input.files) : [];
+
+    const fileBuffers = await Promise.all(
+      uploadedFiles.map(async (file) => {
+        const fileName = file.filename.toLowerCase();
+        if (!fileName.endsWith('.zip') && !fileName.endsWith('.pdf')) {
+          throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
+        }
+        return {
+          buffer: await this.streamToBuffer(file.createReadStream),
+          fileName: file.filename,
+        };
+      }),
+    );
 
     return this.syncBatchProcessUseCase.execute(context.req.user, {
       templateId: input.templateId,
-      file: buffer,
-      fileName: file.filename,
+      files: fileBuffers.map((f) => ({
+        data: f.buffer,
+        fileName: f.fileName,
+      })),
     });
   }
 

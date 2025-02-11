@@ -40,38 +40,63 @@ export class CreateBatchProcessUseCase {
       status: BatchStatus.CREATED,
     });
 
-    // Handle file upload if present
-    if (dto.file) {
+    // Handle file uploads if present
+    const { files } = dto;
+    if (files && files.length > 0) {
       try {
-        const files = await this.zipService.extractFiles(dto.file);
+        let totalFiles = 0;
 
-        // Validate all files are PDF
-        const invalidFiles = files.filter((file) => !file.name.endsWith('.pdf'));
-        if (invalidFiles.length > 0) {
-          throw new BadRequestException('Zip file contains non-PDF files');
-        }
-
-        // Add files to batch process
+        // Process each file in parallel
         await Promise.all(
           files.map(async (file) => {
-            const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
-            await this.fileStorage.uploadFromBuffer(path, file.content);
-            this.fileProcessRepository.create({
-              fileName: file.name,
-              status: FileProcessStatus.PENDING,
-              filePath: path,
-              template,
-              batchProcess: batch,
-            });
+            const fileName = file.fileName.toLowerCase();
+
+            if (fileName.endsWith('.zip')) {
+              const files = await this.zipService.extractFiles(file.data);
+              const invalidFiles = files.filter((file) => !file.name.endsWith('.pdf'));
+              if (invalidFiles.length > 0) {
+                throw new BadRequestException(`Zip file ${fileName} contains non-PDF files`);
+              }
+
+              await Promise.all(
+                files.map(async (file) => {
+                  const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
+                  await this.fileStorage.uploadFromBuffer(path, file.content);
+                  this.fileProcessRepository.create({
+                    fileName: file.name,
+                    status: FileProcessStatus.PENDING,
+                    filePath: path,
+                    template,
+                    batchProcess: batch,
+                  });
+                }),
+              );
+
+              totalFiles += files.length;
+            } else if (fileName.endsWith('.pdf')) {
+              const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
+              await this.fileStorage.uploadFromBuffer(path, file.data);
+              this.fileProcessRepository.create({
+                fileName: file.fileName,
+                status: FileProcessStatus.PENDING,
+                filePath: path,
+                template,
+                batchProcess: batch,
+              });
+              totalFiles += 1;
+            } else {
+              throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
+            }
           }),
         );
-        this.batchProcessRepository.update(batch.id, { totalFiles: files.length });
+
+        this.batchProcessRepository.update(batch.id, { totalFiles });
         await this.fileProcessRepository.save();
       } catch (error) {
         if (error instanceof BadRequestException) {
           throw error;
         }
-        throw new BadRequestException('Invalid zip file');
+        throw new BadRequestException('Invalid file(s)');
       }
     }
 

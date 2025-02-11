@@ -4,7 +4,7 @@ import { DocumentProcessorPort } from '@/core/documents/application/ports/docume
 import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-notifier.port';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { User } from '@/core/users/domain/entities/user.entity';
-
+import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 export interface ProcessFileParams {
   user: User;
   file: FileToProcess;
@@ -16,6 +16,7 @@ export class ProcessFileUseCase {
     private readonly fileProcessDbPort: FileProcessDbPort,
     private readonly documentProcessorPort: DocumentProcessorPort,
     private readonly webhookNotifierPort: WebhookNotifierPort,
+    private readonly batchDbPort: BatchDbPort,
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
@@ -47,6 +48,9 @@ export class ProcessFileUseCase {
       file.markFailed(result.errorMessage);
       await this.webhookNotifierPort.notifyFailure(file);
       file.markNotified();
+    }
+    if (file.batchProcess) {
+      await this.batchDbPort.incrementProcessedFilesCount(file.batchProcess.id);
     }
     await this.fileProcessDbPort.save();
     return file;

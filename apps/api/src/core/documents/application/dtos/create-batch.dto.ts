@@ -1,18 +1,20 @@
-import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-@InputType()
+export class FileDto {
+  @IsString()
+  @IsNotEmpty()
+  data: Buffer;
+
+  @IsString()
+  @IsNotEmpty()
+  fileName: string;
+}
+
 export class CreateBatchDto {
-  @Field()
   @IsString()
   @IsNotEmpty()
   templateId: string;
 
-  @Field({ nullable: true })
   @IsOptional()
-  file?: Buffer;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  fileName?: string;
+  files?: FileDto[];
 }

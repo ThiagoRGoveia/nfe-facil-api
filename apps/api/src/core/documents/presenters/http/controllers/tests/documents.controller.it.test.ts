@@ -32,6 +32,7 @@ describe('DocumentsController (REST Integration)', () => {
   let user: User;
   let documentProcessor: jest.Mocked<DocumentProcessorPort>;
   let testZipBuffer: Buffer;
+  let testPdfBuffer: Buffer;
   let queuePort: jest.Mocked<QueuePort>;
 
   @Global()
@@ -72,9 +73,12 @@ describe('DocumentsController (REST Integration)', () => {
 
     user = await useDbUser({ role: UserRole.ADMIN }, em);
 
-    // Load the test zip file
-    const testZipPath = path.join(__dirname, '../../../../../../infra/zip/tests/test-files/test.zip');
+    // Load the test files
+    const testZipPath = path.join(__dirname, './test.zip');
     testZipBuffer = await fs.readFile(testZipPath);
+
+    const testPdfPath = path.join(__dirname, './test.pdf');
+    testPdfBuffer = await fs.readFile(testPdfPath);
   });
 
   afterEach(async () => {
@@ -97,12 +101,13 @@ describe('DocumentsController (REST Integration)', () => {
       const response = await request(app.getHttpServer())
         .post('/documents/process/sync')
         .field('templateId', template.id)
-        .attach('file', testZipBuffer, 'test.zip');
+        .attach('files', testZipBuffer, 'test.zip')
+        .attach('files', testPdfBuffer, 'test.pdf');
 
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toMatchObject({
         template: { id: template.id },
-        user: { id: user.id },
+        user: user.id,
       });
 
       em.clear();
@@ -112,15 +117,14 @@ describe('DocumentsController (REST Integration)', () => {
       expect(batch?.template.id).toBe(template.id);
 
       await batch?.files.loadItems();
-      // Verify file was processed correctly
+      // Verify files were processed correctly
       expect(batch?.files).toBeDefined();
-      expect(batch?.files.length).toBe(2); // Since we know test.zip contains 2 files
+      expect(batch?.files.length).toBe(3); // 2 from zip + 1 PDF
 
       expect(batch?.files[0].status).toBe(FileProcessStatus.COMPLETED);
-      expect(batch?.files[0].result).toEqual({
-        id: '123',
-        name: 'test',
-      });
+      expect(batch?.files[0].fileName).toBe('test.pdf');
+      expect(batch?.files[1].fileName).toBe('Test 1.pdf');
+      expect(batch?.files[2].fileName).toBe('Test 2.pdf');
     });
   });
 
@@ -148,7 +152,8 @@ describe('DocumentsController (REST Integration)', () => {
       const response = await request(app.getHttpServer())
         .post('/documents/batch')
         .field('templateId', template.id)
-        .attach('file', testZipBuffer, 'test.zip');
+        .attach('files', testZipBuffer, 'test.zip')
+        .attach('files', testPdfBuffer, 'test.pdf');
 
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toMatchObject({
@@ -163,7 +168,7 @@ describe('DocumentsController (REST Integration)', () => {
 
       await batch?.files.loadItems();
       expect(batch?.files).toBeDefined();
-      expect(batch?.files.length).toBe(2);
+      expect(batch?.files.length).toBe(3);
     });
 
     it('should return 400 when no templateId is provided', async () => {
@@ -196,28 +201,28 @@ describe('DocumentsController (REST Integration)', () => {
     });
   });
 
-  describe('POST /documents/batch/:id/files', () => {
+  describe('PUT /documents/batch/:id/files', () => {
     it('should add file to existing batch', async () => {
       const template = await useDbTemplate({ user }, em);
       const batch = await useDbBatchProcess({ user, template, status: BatchStatus.CREATED, files: [] }, em);
 
       const response = await request(app.getHttpServer())
-        .post(`/documents/batch/${batch.id}/files`)
-        .attach('file', testZipBuffer, 'test.zip');
+        .put(`/documents/batch/${batch.id}/files`)
+        .attach('files', testZipBuffer, 'test.zip');
 
-      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.status).toBe(HttpStatus.OK);
       em.clear();
       const dbBatch = await em.findOne(BatchProcess, { id: batch.id });
       await dbBatch?.files.loadItems();
       expect(dbBatch?.files).toBeDefined();
-      expect(dbBatch?.files.length).toBe(1);
+      expect(dbBatch?.files.length).toBe(2);
     });
 
     it('should return 400 when no file is provided', async () => {
       const template = await useDbTemplate({ user }, em);
       const batch = await useDbBatchProcess({ user, template }, em);
 
-      await request(app.getHttpServer()).post(`/documents/batch/${batch.id}/files`).expect(HttpStatus.BAD_REQUEST);
+      await request(app.getHttpServer()).put(`/documents/batch/${batch.id}/files`).expect(HttpStatus.BAD_REQUEST);
     });
   });
 

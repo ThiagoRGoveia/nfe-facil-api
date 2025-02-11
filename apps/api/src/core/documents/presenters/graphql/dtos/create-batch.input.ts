@@ -9,7 +9,7 @@ export class CreateBatchInput {
   @IsNotEmpty()
   templateId: string;
 
-  @Field(() => GraphQLUpload, { nullable: true })
+  @Field(() => [GraphQLUpload], { nullable: true })
   @IsOptional()
-  file?: Promise<FileUpload>;
+  files?: Promise<FileUpload>[];
 }
