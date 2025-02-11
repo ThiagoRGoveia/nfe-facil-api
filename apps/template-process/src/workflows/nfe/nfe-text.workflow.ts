@@ -3,7 +3,7 @@ import { OllamaClient } from '../clients/ollama-client';
 import { validateOrReject } from 'class-validator';
 import { DocumentProcessResult } from '@/core/template-processes/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { PdfTextExtractorPort } from '@/infra/pdf/ports/pdf.port';
+import { PdfTextExtractorPort } from '@doc/infra/pdf/ports/pdf.port';
 import { Readable } from 'stream';
 import { PinoLogger } from 'nestjs-pino';
 import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
