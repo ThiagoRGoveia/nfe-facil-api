@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["apps/api/src/*"],
-      "@doc/*": ["apps/workflow-process/src/*"]
+      "@doc/*": ["apps/template-process/src/*"]
     }
   }
 }
