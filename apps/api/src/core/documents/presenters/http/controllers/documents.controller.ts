@@ -28,6 +28,8 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
+import { PublicSyncFileProcessUseCase } from '@/core/documents/application/use-cases/public-sync-file-process.use-case';
+import { Public } from '@/infra/auth/public.decorator';
 
 @ApiTags('Documents')
 @Controller('documents')
@@ -39,6 +41,7 @@ export class DocumentsController {
     private readonly cancelBatchUseCase: CancelBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
     private readonly syncBatchProcessUseCase: SyncFileProcessUseCase,
+    private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
     private readonly batchDbPort: BatchDbPort,
   ) {}
 
@@ -60,11 +63,41 @@ export class DocumentsController {
         fileIsRequired: true,
       }),
     )
-    files?: Express.Multer.File[],
+    files: Express.Multer.File[],
   ) {
     return await this.syncBatchProcessUseCase.execute(req.user, {
       templateId,
-      files: files?.map((f) => ({
+      files: files.map((f) => ({
+        data: f.buffer,
+        fileName: f.originalname,
+      })),
+    });
+  }
+
+  @Public()
+  @Post('/public/process/sync')
+  @ApiOperation({ summary: 'Process batch synchronously' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Batch processed successfully' })
+  @UseInterceptors(FilesInterceptor('files'))
+  async publicProcessBatchSync(
+    @Req() req: Request,
+    @Body('templateId') templateId: string,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES }),
+          new FileTypeValidator({
+            fileType: /^(application\/zip|application\/pdf|application\/octet-stream)$/,
+          }),
+        ],
+        fileIsRequired: true,
+      }),
+    )
+    files: Express.Multer.File[],
+  ) {
+    return await this.publicSyncBatchProcessUseCase.execute({
+      templateId,
+      files: files.map((f) => ({
         data: f.buffer,
         fileName: f.originalname,
       })),
