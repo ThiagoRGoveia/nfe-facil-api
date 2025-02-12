@@ -5,6 +5,11 @@ import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { Readable } from 'stream';
+
+const MAX_FILE_SIZE = 300 * 1024; // 300KB in bytes
+
 export interface ProcessFileParams {
   user: User;
   file: FileToProcess;
@@ -17,6 +22,7 @@ export class ProcessFileUseCase {
     private readonly documentProcessorPort: DocumentProcessorPort,
     private readonly webhookNotifierPort: WebhookNotifierPort,
     private readonly batchDbPort: BatchDbPort,
+    private readonly fileStoragePort: FileStoragePort,
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
@@ -39,7 +45,14 @@ export class ProcessFileUseCase {
       throw new BadRequestException('Missing file for file processing');
     }
 
-    const result = await this.documentProcessorPort.process(file, template);
+    const pdfBuffer = await this.streamToBuffer(await this.fileStoragePort.get(file.filePath));
+    const fileSize = pdfBuffer.length;
+
+    if (fileSize > MAX_FILE_SIZE) {
+      throw new BadRequestException(`File ${file.id} is too large (max ${MAX_FILE_SIZE / 1024}KB)`);
+    }
+
+    const result = await this.documentProcessorPort.process(pdfBuffer, template);
 
     if (result.isSuccess()) {
       file.setResult(result.payload);
@@ -61,5 +74,13 @@ export class ProcessFileUseCase {
 
     await this.fileProcessDbPort.save();
     return file;
+  }
+
+  private streamToBuffer(stream: Readable): Promise<Buffer> {
+    return new Promise((resolve) => {
+      const chunks: Buffer[] = [];
+      stream.on('data', (chunk) => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+    });
   }
 }

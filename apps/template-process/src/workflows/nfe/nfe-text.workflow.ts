@@ -5,7 +5,6 @@ import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-p
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
 import { PinoLogger } from 'nestjs-pino';
-import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
 import { NfeDto } from './dto/nfe.dto';
@@ -32,34 +31,21 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
     super(fileStoragePort, logger);
   }
 
-  async execute(fileToProcess: FileToProcess): Promise<DocumentProcessResult> {
+  async execute(fileBuffer: Buffer, template: Template): Promise<DocumentProcessResult> {
     try {
-      if (!fileToProcess.filePath) {
-        throw new Error(`File ${fileToProcess.id} has no file path`);
-      }
-
-      const template = await fileToProcess.template.load();
-      if (!template) {
-        throw new Error(`Template ${fileToProcess.template.id} not found`);
+      if (fileBuffer.length > MAX_FILE_SIZE) {
+        throw new Error(`File is too Big)`);
       }
 
       if (!this.isTemplateMetadata(template, ['prompt'])) {
-        throw new Error(`Template ${fileToProcess.template.id} is not a valid template for NFE text extraction`);
+        throw new Error(`Template is not a valid template for NFE text extraction`);
       }
 
-      // Get PDF from S3
-      const pdfBuffer = await this.streamToBuffer(await this.fileStoragePort.get(fileToProcess.filePath));
-
-      const fileSize = pdfBuffer.length;
-      if (fileSize > MAX_FILE_SIZE) {
-        throw new Error(`File ${fileToProcess.id} is too Big)`);
-      }
-
-      const { text, numPages } = await this.pdfExtractor.extractFirstPage(pdfBuffer);
+      const { text, numPages } = await this.pdfExtractor.extractFirstPage(fileBuffer);
 
       let warnings: string[] | undefined;
       if (numPages > 1) {
-        warnings = [`File ${fileToProcess.fileName} has ${numPages} pages. Only the first page will be used.`];
+        warnings = [`File has ${numPages} pages. Only the first page will be used.`];
       }
 
       // Create prompt with PDF text
