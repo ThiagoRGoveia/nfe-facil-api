@@ -23,4 +23,5 @@ module.exports = {
     '^@doc/(.*)$': '<rootDir>/template-process/src/$1',
   },
   maxWorkers: 3,
+  globalSetup: '<rootDir>/_scripts/jestGlobalSetup.ts',
 };
