@@ -23,6 +23,8 @@ import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-p
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
 import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { Readable } from 'stream';
 
 jest.setTimeout(100000);
 
@@ -59,6 +61,19 @@ describe('DocumentsController (REST Integration)', () => {
       .useValue(
         createMock<ConfigService>({
           get: jest.fn().mockReturnValue('test-queue'),
+        }),
+      )
+      .overrideProvider(FileStoragePort)
+      .useValue(
+        createMock<FileStoragePort>({
+          get: jest.fn().mockResolvedValue(
+            new Readable({
+              read() {
+                this.push('test');
+                this.push(null);
+              },
+            }),
+          ),
         }),
       )
       .compile();
@@ -107,7 +122,7 @@ describe('DocumentsController (REST Integration)', () => {
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toMatchObject({
         template: { id: template.id },
-        user: user.id,
+        user: { id: user.id },
       });
 
       em.clear();
@@ -192,7 +207,7 @@ describe('DocumentsController (REST Integration)', () => {
 
       expect(response.body).toMatchObject({
         id: batch.id,
-        template: batch.template.id,
+        template: { id: batch.template.id },
       });
     });
 
@@ -230,8 +245,8 @@ describe('DocumentsController (REST Integration)', () => {
     it('should start async batch processing', async () => {
       const template = await useDbTemplate({ user }, em);
       const batchProcess = await useDbBatchProcess({ user, template, status: BatchStatus.CREATED, files: [] }, em);
-      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template }, em);
-      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template }, em);
+      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
+      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
 
       await request(app.getHttpServer())
         .post(`/documents/batch/${batchProcess.id}/process`)

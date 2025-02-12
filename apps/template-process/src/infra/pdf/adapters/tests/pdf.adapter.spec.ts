@@ -18,7 +18,8 @@ describe('PdfLibAdapter', () => {
   describe('extractFirstPage', () => {
     it('should extract text from the first page', async () => {
       const result = await extractor.extractFirstPage(pdfBuffer);
-      expect(result).toBe('Test  Page 1');
+      expect(result.text).toBe('Test  Page 1');
+      expect(result.numPages).toBe(2);
     });
   });
 });

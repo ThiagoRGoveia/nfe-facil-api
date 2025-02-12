@@ -41,7 +41,7 @@ describe('BatchMikroOrmRepository (integration)', () => {
     testUser = await useDbUser({}, em);
     testTemplate = await useDbTemplate({}, em);
     testBatch = await useDbBatchProcess({ user: testUser, template: testTemplate }, em);
-    testFile = await useDbFileProcess({ batchProcess: testBatch, template: testTemplate }, em);
+    testFile = await useDbFileProcess({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
     testBatch.files.add(testFile);
 
     await em.persistAndFlush([testBatch, testFile]);

@@ -42,7 +42,7 @@ describe('WebhookNotifierAdapter', () => {
     it('should send document processed event with correct payload', async () => {
       const user = useUserFactory({}, em);
       const template = useTemplateFactory({ user }, em);
-      mockProcess = useFileProcessFactory({ template: template }, em);
+      mockProcess = useFileProcessFactory({ template: template, user }, em);
 
       await adapter.notifySuccess(mockProcess);
 
@@ -54,6 +54,7 @@ describe('WebhookNotifierAdapter', () => {
           fileName: mockProcess.fileName,
           status: mockProcess.status,
           processedAt: expect.any(Date),
+          result: mockProcess.result,
         }),
       });
     });
@@ -63,7 +64,7 @@ describe('WebhookNotifierAdapter', () => {
     it('should send document failed event with error details', async () => {
       const user = useUserFactory({}, em);
       const template = useTemplateFactory({ user }, em);
-      const errorProcess = useFileProcessFactory({ error: 'Processing failed', template: template }, em);
+      const errorProcess = useFileProcessFactory({ error: 'Processing failed', template: template, user }, em);
 
       await adapter.notifyFailure(errorProcess);
 
@@ -81,17 +82,6 @@ describe('WebhookNotifierAdapter', () => {
   });
 
   describe('getUserFromProcess', () => {
-    it('should throw when template not found', async () => {
-      const errorProcess = useFileProcessFactory(
-        { error: 'Processing failed', template: useTemplateFactory({}, em) },
-        em,
-      );
-      jest.spyOn(errorProcess.template, 'load').mockResolvedValue(null);
-
-      await expect(adapter.notifyFailure(errorProcess)).resolves.not.toThrow();
-      expect(logger.error).toHaveBeenCalled();
-    });
-
     it('should throw when user not found', async () => {
       const template = useTemplateFactory({ user: useUserFactory({}, em) }, em);
       const errorProcess = useFileProcessFactory({ error: 'Processing failed', template: template }, em);

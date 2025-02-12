@@ -24,6 +24,7 @@ export function useUnitTestModule() {
           entitiesTs: ['**/*.entity.ts'],
           dbName: 'test',
           allowGlobalContext: true,
+          serialization: { forceObject: true },
         }),
       ),
     ],

@@ -24,6 +24,8 @@ import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { Readable } from 'stream';
 
 @Global()
 @Module({
@@ -58,6 +60,19 @@ describe('BatchProcesses Resolver (integration)', () => {
       .useValue(
         createMock<ConfigService>({
           get: jest.fn().mockReturnValue('test-queue'),
+        }),
+      )
+      .overrideProvider(FileStoragePort)
+      .useValue(
+        createMock<FileStoragePort>({
+          get: jest.fn().mockResolvedValue(
+            new Readable({
+              read() {
+                this.push('test');
+                this.push(null);
+              },
+            }),
+          ),
         }),
       )
       .compile();

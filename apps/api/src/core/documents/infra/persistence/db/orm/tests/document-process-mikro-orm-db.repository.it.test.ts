@@ -42,7 +42,7 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
     testTemplate = await useDbTemplate({}, em);
     testBatch = await useDbBatchProcess({ user: testUser, template: testTemplate }, em);
     testFile = await useDbFileProcess(
-      { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED },
+      { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
       em,
     );
 
@@ -60,8 +60,14 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   describe('findByBatchPaginated', () => {
     it('should find files by batch with pagination', async () => {
       // Create additional test files
-      const file2 = await useDbFileProcess({ batchProcess: testBatch, template: testTemplate }, em);
-      const file3 = await useDbFileProcess({ batchProcess: testBatch, template: testTemplate }, em);
+      const file2 = await useDbFileProcess(
+        { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
+        em,
+      );
+      const file3 = await useDbFileProcess(
+        { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
+        em,
+      );
       await em.flush();
 
       const results = await repository.findByBatchPaginated(testBatch.id, 2, 1);
@@ -75,7 +81,7 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   describe('deleteByBatchId', () => {
     it('should delete all files for a batch', async () => {
       // Create another file in same batch
-      await useDbFileProcess({ batchProcess: testBatch, template: testTemplate }, em);
+      await useDbFileProcess({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
       await em.flush();
 
       await repository.deleteByBatchId(testBatch.id);
@@ -89,15 +95,15 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
     it('should count files by batch and status', async () => {
       // Create files with different statuses
       await useDbFileProcess(
-        { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate },
+        { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate, user: testUser },
         em,
       );
       await useDbFileProcess(
-        { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate },
+        { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate, user: testUser },
         em,
       );
       await useDbFileProcess(
-        { batchProcess: testBatch, status: FileProcessStatus.PENDING, template: testTemplate },
+        { batchProcess: testBatch, status: FileProcessStatus.PENDING, template: testTemplate, user: testUser },
         em,
       );
       await em.flush();

@@ -2,6 +2,9 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchMikroOrmRepository } from '../batch-process-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
+import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 
 describe('BatchMikroOrmRepository (unit)', () => {
   let em: EntityManager;
@@ -29,14 +32,31 @@ describe('BatchMikroOrmRepository (unit)', () => {
     it('should execute raw SQL update query', async () => {
       // Arrange
       const batchId = '1';
-      const executeSpy = jest.spyOn(em, 'execute').mockImplementationOnce(() => Promise.resolve({ id: 1 }));
+      const mockUser = useUserFactory({}, em);
+      const template = useTemplateFactory({ user: mockUser }, em);
+      const batchProcess = useBatchProcessFactory({ user: mockUser, template }, em);
+      const executeSpy = jest.spyOn(em, 'execute').mockImplementationOnce(() =>
+        Promise.resolve([
+          {
+            id: batchProcess.id,
+            status: batchProcess.status,
+            template: batchProcess.template,
+            files: batchProcess.files,
+            user: batchProcess.user,
+            total_files: batchProcess.totalFiles,
+            processed_files: batchProcess.processedFiles,
+            created_at: batchProcess.createdAt,
+            updated_at: batchProcess.updatedAt,
+          },
+        ]),
+      );
 
       // Act
       await repository.incrementProcessedFilesCount(batchId);
 
       // Assert
       expect(executeSpy).toHaveBeenCalledWith(
-        `UPDATE batch_processes SET processed_files = processed_files + 1 WHERE id = ?`,
+        `UPDATE batch_processes SET processed_files = processed_files + 1 WHERE id = ? RETURNING *`,
         [batchId],
       );
     });

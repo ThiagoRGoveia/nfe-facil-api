@@ -36,6 +36,7 @@ import { GraphQLModule } from '@nestjs/graphql';
           port: Number(configService.get('DB_PORT')),
           extensions: [Migrator],
           dataloader: DataloaderType.ALL,
+          serialization: { forceObject: true },
           loadStrategy: 'select-in',
           resultCache: {
             expiration: 1000,

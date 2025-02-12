@@ -12,7 +12,6 @@ import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
 import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { FileStoragePort } from '../aws/s3/ports/file-storage.port';
 import { QueuePort } from '../aws/sqs/ports/queue.port';
-import { ZipPort } from '@/infra/zip/zip.port';
 @Global()
 @Module({
   imports: [
@@ -32,6 +31,7 @@ import { ZipPort } from '@/infra/zip/zip.port';
         dbName: process.env.TEST_ORM_DATABASE,
         dataloader: DataloaderType.ALL,
         loadStrategy: 'select-in',
+        serialization: { forceObject: true },
       }),
     ),
   ],

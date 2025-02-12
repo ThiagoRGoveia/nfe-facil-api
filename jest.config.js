@@ -1,13 +1,13 @@
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: 'src',
+  rootDir: 'apps',
   testRegex: '.*\\.(spec|test)\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
   collectCoverageFrom: [
-    '**/*.ts', // Include all JavaScript and TypeScript files
-    '!**/infra/**', // Exclude all files in the infra folder
+    '**/*.ts',
+    '!**/infra/**',
     '!**/*.enum.ts',
     '!**/graphql/models/**',
     '!**/graphql/inputs/**',
@@ -19,7 +19,9 @@ module.exports = {
   testEnvironment: 'node',
   moduleDirectories: ['node_modules', __dirname],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    '^@/(.*)$': '<rootDir>/api/src/$1',
+    '^@doc/(.*)$': '<rootDir>/template-process/src/$1',
   },
-  maxWorkers: 5,
+  maxWorkers: 3,
+  globalSetup: '<rootDir>/_scripts/jestGlobalSetup.ts',
 };
