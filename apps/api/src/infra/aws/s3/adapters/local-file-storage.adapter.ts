@@ -13,7 +13,9 @@ export class LocalFileStorageAdapter extends FileStoragePort {
     stream.pipe(writeStream);
 
     await new Promise((resolve, reject) => {
-      writeStream.on('finish', resolve);
+      writeStream.on('finish', () => {
+        resolve(filePath);
+      });
       writeStream.on('error', reject);
     });
 

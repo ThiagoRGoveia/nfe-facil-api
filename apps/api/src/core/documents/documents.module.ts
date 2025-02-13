@@ -23,6 +23,7 @@ import { DocumentProcessorPort } from './application/ports/document-processor.po
 import { DocumentProcessorAdapter } from './infra/adapters/document-processor.adapter';
 import { BatchProcessesResolver } from './presenters/graphql/resolvers/batch-processes.resolver';
 import { PublicSyncFileProcessUseCase } from './application/use-cases/public-sync-file-process.use-case';
+import { HandleOutputFormatUseCase } from './application/use-cases/handle-output-format.use-case';
 @Global()
 @Module({
   controllers: [DocumentsController],
@@ -36,6 +37,7 @@ import { PublicSyncFileProcessUseCase } from './application/use-cases/public-syn
     SyncFileProcessUseCase,
     ProcessFileUseCase,
     PublicSyncFileProcessUseCase,
+    HandleOutputFormatUseCase,
     {
       provide: BatchDbPort,
       useClass: BatchMikroOrmRepository,

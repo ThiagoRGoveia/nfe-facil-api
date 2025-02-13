@@ -1,4 +1,4 @@
-import { Entity, Enum, Index, ManyToOne, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
+import { Entity, Enum, Index, ManyToOne, OptionalProps, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
@@ -21,6 +21,8 @@ registerEnumType(FileProcessStatus, {
 @Index({ properties: ['createdAt', 'batchProcess'] })
 @Entity({ tableName: 'document_processes' })
 export class FileToProcess {
+  [OptionalProps]?: 'createdAt' | 'updatedAt';
+
   @Field(() => String)
   @PrimaryKey()
   id: string = new UuidAdapter().generate();

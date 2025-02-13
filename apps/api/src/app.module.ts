@@ -1,17 +1,40 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AuthzModule } from './infra/auth/auth.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { DataloaderType, defineConfig } from '@mikro-orm/core';
+import { DataloaderType } from '@mikro-orm/core';
 import { Migrator } from '@mikro-orm/migrations';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { YogaDriver } from '@graphql-yoga/nestjs';
 import { GraphQLModule } from '@nestjs/graphql';
+import { FeatureModule } from './core/feature.module';
+import { ToolingModule } from './infra/tooling.module';
+import { LoggerModule } from 'nestjs-pino';
+import { defineConfig } from '@mikro-orm/postgresql';
+import { User } from './core/users/domain/entities/user.entity';
+import { FileToProcess } from './core/documents/domain/entities/file-process.entity';
+import { BatchProcess } from './core/documents/domain/entities/batch-process.entity';
+import { Template } from './core/templates/domain/entities/template.entity';
 
 @Module({
   imports: [
-    AuthzModule,
+    LoggerModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        forRoutes: ['*'],
+        pinoHttp:
+          configService.get('NODE_ENV') !== 'production'
+            ? {
+                transport: {
+                  target: 'pino-pretty',
+                  options: {
+                    colorize: true,
+                  },
+                },
+              }
+            : undefined,
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -27,8 +50,8 @@ import { GraphQLModule } from '@nestjs/graphql';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return defineConfig({
-          entities: ['**/*.entity.ts'],
-          entitiesTs: ['**/*.entity.ts'],
+          entities: [User, Template, BatchProcess, FileToProcess],
+          entitiesTs: [User, Template, BatchProcess, FileToProcess],
           dbName: configService.get('DB_DATABASE'),
           user: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
@@ -56,6 +79,8 @@ import { GraphQLModule } from '@nestjs/graphql';
         });
       },
     }),
+    FeatureModule,
+    ToolingModule,
   ],
   controllers: [AppController],
   providers: [],

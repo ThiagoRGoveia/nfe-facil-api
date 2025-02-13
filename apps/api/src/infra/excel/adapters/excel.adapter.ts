@@ -4,7 +4,7 @@ import { ExcelPort } from '../ports/excel.port';
 import { Readable, PassThrough } from 'stream';
 
 @Injectable()
-export class ExcelAdapter implements ExcelPort {
+export class ExcelJsAdapter implements ExcelPort {
   convertToExcel(
     data: Record<string, unknown>[],
     options: {

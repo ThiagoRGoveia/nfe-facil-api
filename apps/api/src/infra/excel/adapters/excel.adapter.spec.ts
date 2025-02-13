@@ -1,12 +1,12 @@
-import { ExcelAdapter } from './excel.adapter';
+import { ExcelJsAdapter } from './excel.adapter';
 import { Workbook } from 'exceljs';
 import { Readable } from 'stream';
 
 describe('ExcelAdapter', () => {
-  let adapter: ExcelAdapter;
+  let adapter: ExcelJsAdapter;
 
   beforeEach(() => {
-    adapter = new ExcelAdapter();
+    adapter = new ExcelJsAdapter();
   });
 
   describe('convertToExcel', () => {

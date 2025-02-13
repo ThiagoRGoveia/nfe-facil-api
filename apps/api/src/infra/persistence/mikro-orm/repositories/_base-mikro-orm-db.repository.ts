@@ -3,7 +3,6 @@ import {
   EntityClass,
   EntityManager,
   FilterQuery,
-  MikroORM,
   OrderDefinition,
   QueryOrder,
   ReferenceKind,
@@ -15,7 +14,7 @@ import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { Ref } from '@mikro-orm/core';
+import { MikroORM, Ref } from '@mikro-orm/core';
 import { User } from '@/core/users/domain/entities/user.entity';
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()

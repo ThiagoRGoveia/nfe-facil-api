@@ -19,7 +19,7 @@ import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Json2CsvAdapter } from '@/infra/json-to-csv/adapters/json-2-csv.adapter';
-import { ExcelAdapter } from '@/infra/excel/adapters/excel.adapter';
+import { ExcelJsAdapter } from '@/infra/excel/adapters/excel.adapter';
 import { FileProcessMikroOrmDbRepository } from '@/core/documents/infra/persistence/db/orm/file-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
@@ -46,7 +46,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
         },
         {
           provide: ExcelPort,
-          useClass: ExcelAdapter,
+          useClass: ExcelJsAdapter,
         },
         {
           provide: BatchDbPort,
