@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 
 export class FileDto {
   @IsString()
@@ -17,4 +18,8 @@ export class CreateBatchDto {
 
   @IsOptional()
   files?: FileDto[];
+
+  @IsArray()
+  @IsOptional()
+  outputFormats?: OutputFormat[];
 }

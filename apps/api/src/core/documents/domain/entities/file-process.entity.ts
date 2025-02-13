@@ -1,4 +1,3 @@
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { Entity, Enum, Index, ManyToOne, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
@@ -19,8 +18,9 @@ registerEnumType(FileProcessStatus, {
 });
 
 @ObjectType()
+@Index({ properties: ['createdAt', 'batchProcess'] })
 @Entity({ tableName: 'document_processes' })
-export class FileToProcess extends BaseEntity {
+export class FileToProcess {
   @Field(() => String)
   @PrimaryKey()
   id: string = new UuidAdapter().generate();
@@ -55,7 +55,6 @@ export class FileToProcess extends BaseEntity {
   notifiedAt?: Date;
 
   @Field(() => BatchProcess)
-  @Index()
   @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
   batchProcess?: Ref<BatchProcess>;
 
@@ -63,6 +62,16 @@ export class FileToProcess extends BaseEntity {
   @Index()
   @ManyToOne(() => User, { ref: true, eager: false })
   user: Ref<User>;
+
+  @Property({ columnType: 'timestamp', defaultRaw: 'now()' })
+  createdAt: Date;
+
+  @Property({
+    columnType: 'timestamp',
+    defaultRaw: 'now()',
+    onUpdate: () => new Date(),
+  })
+  updatedAt: Date;
 
   public setFilePath(filePath: string): void {
     this.filePath = filePath;

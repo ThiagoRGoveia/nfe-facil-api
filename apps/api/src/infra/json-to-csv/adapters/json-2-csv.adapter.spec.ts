@@ -1,4 +1,5 @@
 import { Json2CsvAdapter } from './json-2-csv.adapter';
+import { Readable } from 'stream';
 
 describe('Json2CsvAdapter', () => {
   let adapter: Json2CsvAdapter;
@@ -125,6 +126,89 @@ describe('Json2CsvAdapter', () => {
 
       expect(cleanFirstLine).toBe('name,description');
       expect(lines[1]).toBe('"John, Jr.","Likes ""quotes"" and, commas"');
+    });
+  });
+
+  describe('convertStreamToCsv', () => {
+    it('should handle empty stream', (done) => {
+      const jsonStream = new Readable({
+        objectMode: true,
+        read() {
+          this.push(null);
+        },
+      });
+
+      const csvStream = adapter.convertStreamToCsv(jsonStream);
+      let result = '';
+
+      csvStream.on('data', (chunk) => {
+        result += chunk.toString();
+      });
+
+      csvStream.on('end', () => {
+        expect(result).toBe('');
+        done();
+      });
+    });
+
+    it('should convert streaming data with nested objects and arrays', (done) => {
+      const testData = [
+        {
+          name: 'John',
+          contacts: [
+            { type: 'email', value: 'john@example.com' },
+            { type: 'phone', value: '123-456-7890' },
+          ],
+        },
+        {
+          name: 'Jane',
+          contacts: [{ type: 'email', value: 'jane@example.com' }],
+        },
+      ];
+
+      const jsonStream = new Readable({
+        objectMode: true,
+        read() {
+          const data = testData.shift();
+          this.push(data || null);
+        },
+      });
+
+      const csvStream = adapter.convertStreamToCsv(jsonStream, {
+        expandNestedObjects: true,
+        unwindArrays: true,
+      });
+
+      let result = '';
+
+      csvStream.on('data', (chunk) => {
+        result += chunk.toString();
+      });
+
+      csvStream.on('end', () => {
+        const lines = result.trim().split('\n');
+        expect(lines[0]).toBe('name,contacts.type,contacts.value');
+        expect(lines[1]).toBe('John,email,john@example.com');
+        expect(lines[2]).toBe('John,phone,123-456-7890');
+        expect(lines[3]).toBe('Jane,email,jane@example.com');
+        done();
+      });
+    });
+
+    it('should handle stream errors', (done) => {
+      const jsonStream = new Readable({
+        objectMode: true,
+        read() {
+          this.emit('error', new Error('Test error'));
+        },
+      });
+
+      const csvStream = adapter.convertStreamToCsv(jsonStream);
+
+      csvStream.on('error', (error) => {
+        expect(error.message).toBe('Test error');
+        done();
+      });
     });
   });
 });

@@ -7,12 +7,15 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
+import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
+import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 
 const MAX_FILE_SIZE = 300 * 1024; // 300KB in bytes
 
 export interface ProcessFileParams {
   user: User;
   file: FileToProcess;
+  outputFormats?: OutputFormat[];
 }
 
 @Injectable()
@@ -23,10 +26,11 @@ export class ProcessFileUseCase {
     private readonly webhookNotifierPort: WebhookNotifierPort,
     private readonly batchDbPort: BatchDbPort,
     private readonly fileStoragePort: FileStoragePort,
+    private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
-    const { file, user } = params;
+    const { file, user, outputFormats = ['json'] } = params;
     const template = await file.template.load();
     const batchProcess = await file.batchProcess?.load();
 
@@ -68,6 +72,7 @@ export class ProcessFileUseCase {
       const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
       if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
         updatedBatchProcess.markCompleted();
+        await this.handleOutputFormatUseCase.execute(updatedBatchProcess, outputFormats);
         await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
       }
     }

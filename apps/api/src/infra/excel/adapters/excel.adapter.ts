@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Workbook } from 'exceljs';
+import { Workbook, stream } from 'exceljs';
 import { ExcelPort } from '../ports/excel.port';
+import { Readable, PassThrough } from 'stream';
 
 @Injectable()
 export class ExcelAdapter implements ExcelPort {
@@ -106,5 +107,64 @@ export class ExcelAdapter implements ExcelPort {
     }
 
     return result;
+  }
+
+  convertStreamToExcel(
+    jsonStream: Readable,
+    options: {
+      expandNestedObjects?: boolean;
+      unwindArrays?: boolean;
+    } = {},
+  ): PassThrough {
+    const passThrough = new PassThrough();
+
+    const workbook = new stream.xlsx.WorkbookWriter({
+      stream: passThrough,
+      useStyles: true,
+    });
+
+    const worksheet = workbook.addWorksheet('Sheet1');
+    let headersAdded = false;
+    let headers: string[] = [];
+
+    jsonStream.on('data', (data: Record<string, unknown>) => {
+      // Process the data to handle nested objects and arrays
+      const processedItems = this.flattenObject(data, {
+        expandNestedObjects: options.expandNestedObjects,
+        unwindArrays: options.unwindArrays,
+      });
+
+      processedItems.forEach((processedItem) => {
+        // Add headers if not added yet
+        if (!headersAdded) {
+          headers = Object.keys(processedItem);
+          worksheet.addRow(headers).commit();
+          headersAdded = true;
+        }
+
+        // Transform and add the row
+        const rowData = headers.map((header) => processedItem[header]);
+
+        worksheet.addRow(rowData).commit();
+      });
+    });
+
+    jsonStream.on('end', () => {
+      worksheet.commit();
+      workbook
+        .commit()
+        .catch((error) => {
+          passThrough.emit('error', error);
+        })
+        .finally(() => {
+          passThrough.end();
+        });
+    });
+
+    jsonStream.on('error', (error) => {
+      passThrough.emit('error', error);
+    });
+
+    return passThrough;
   }
 }

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FileProcessMikroOrmDbRepository } from '../document-process-mikro-orm-db.repository';
+import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';

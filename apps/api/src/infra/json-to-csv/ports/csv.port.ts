@@ -1,17 +1,15 @@
-import { Injectable } from '@nestjs/common';
 import { Readable, PassThrough } from 'stream';
 
-@Injectable()
-export abstract class ExcelPort {
-  abstract convertToExcel(
+export abstract class CsvPort {
+  abstract convertToCsv(
     data: Record<string, unknown>[],
     options?: {
       expandNestedObjects?: boolean;
       unwindArrays?: boolean;
     },
-  ): Promise<Buffer>;
+  ): string;
 
-  abstract convertStreamToExcel(
+  abstract convertStreamToCsv(
     jsonStream: Readable,
     options?: {
       expandNestedObjects?: boolean;

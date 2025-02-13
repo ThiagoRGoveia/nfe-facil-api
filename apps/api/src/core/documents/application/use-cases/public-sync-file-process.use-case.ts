@@ -4,9 +4,13 @@ import { PinoLogger } from 'nestjs-pino';
 import { DocumentProcessorPort } from '../ports/document-processor.port';
 import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
+import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
+import { ExcelPort } from '@/infra/excel/ports/excel.port';
 
 type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
   files: FileDto[];
+  outputFormats?: OutputFormat[];
 };
 
 @Injectable()
@@ -16,6 +20,8 @@ export class PublicSyncFileProcessUseCase {
     private readonly templateRepository: TemplateDbPort,
     private readonly documentProcessorPort: DocumentProcessorPort,
     private readonly logger: PinoLogger,
+    private readonly csvConverterPort: CsvPort,
+    private readonly excelPort: ExcelPort,
   ) {}
 
   async execute(dto: SyncProcessDto) {
@@ -50,6 +56,42 @@ export class PublicSyncFileProcessUseCase {
         }
       }),
     );
-    return results;
+
+    const jsonResults = results.filter(({ result }) => result.isSuccess()).map(({ result }) => result.payload);
+
+    // Add new format handling
+    const formatResults: {
+      json?: Buffer;
+      csv?: Buffer;
+      excel?: Buffer;
+    } = {};
+
+    if (dto.outputFormats) {
+      const allResults = jsonResults;
+
+      for (const format of dto.outputFormats) {
+        switch (format) {
+          case 'json':
+            formatResults.json = Buffer.from(JSON.stringify(allResults));
+            break;
+          case 'csv':
+            formatResults.csv = Buffer.from(
+              this.csvConverterPort.convertToCsv(allResults as Record<string, unknown>[], {
+                expandNestedObjects: true,
+                unwindArrays: true,
+              }),
+            );
+            break;
+          case 'excel':
+            formatResults.excel = await this.excelPort.convertToExcel(allResults as Record<string, unknown>[], {
+              expandNestedObjects: true,
+              unwindArrays: true,
+            });
+            break;
+        }
+      }
+    }
+
+    return formatResults;
   }
 }

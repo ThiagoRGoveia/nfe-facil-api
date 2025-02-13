@@ -2,11 +2,11 @@ import { INestApplication } from '@nestjs/common';
 import { MikroORM } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FileProcessMikroOrmDbRepository } from '../document-process-mikro-orm-db.repository';
+import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
 import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useDbFileProcess, useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { Template } from '@/core/templates/domain/entities/template.entity';
@@ -113,6 +113,64 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
 
       expect(processedCount).toBe(2);
       expect(pendingCount).toBe(1);
+    });
+  });
+
+  describe('findCompletedByBatchStream', () => {
+    it('should stream completed files in batches without loading all in memory', async () => {
+      // Create a new batch with completed files
+      const streamBatch = await useDbBatchProcess({ user: testUser, template: testTemplate }, em);
+      const fileCount = 10000;
+
+      // Create 10,000 completed files with unique results
+      for (let i = 0; i < fileCount; i++) {
+        useFileProcessFactory(
+          {
+            batchProcess: streamBatch,
+            template: testTemplate,
+            user: testUser,
+            status: FileProcessStatus.COMPLETED,
+            result: {
+              data: `stream-data-${i}`,
+              filename: `file-${i}.txt`,
+              nested: { value: i },
+            },
+          },
+          em,
+        );
+      }
+      await em.flush();
+
+      let processedCount = 0;
+      let firstChunk: any;
+      let lastChunk: any;
+
+      const stream = repository.findCompletedByBatchStream(streamBatch.id, 1000);
+
+      // Wrap stream processing in a promise
+      await new Promise((resolve, reject) => {
+        stream.on('data', (result) => {
+          if (!firstChunk) firstChunk = result;
+          lastChunk = result;
+
+          // Verify structure without storing all data
+          expect(result).toMatchObject({
+            data: expect.any(String),
+            filename: expect.any(String),
+            nested: { value: expect.any(Number) },
+          });
+
+          processedCount++;
+        });
+
+        stream.on('end', resolve);
+        stream.on('error', reject);
+      });
+
+      // Assertions
+      expect(processedCount).toBe(fileCount);
+      expect(firstChunk.data).toBe('stream-data-0');
+      expect(lastChunk.data).toBe(`stream-data-${fileCount - 1}`);
     });
   });
 });

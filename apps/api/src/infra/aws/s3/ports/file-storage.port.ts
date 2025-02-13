@@ -3,7 +3,6 @@ import { Readable } from 'stream';
 export abstract class FileStoragePort {
   /**
    * Uploads a file from a stream
-   * @param bucket Target bucket name
    * @param key Full path/key for the file
    * @param stream Readable stream of file contents
    * @param contentType Optional MIME type of the file
@@ -22,20 +21,20 @@ export abstract class FileStoragePort {
 
   /**
    * Retrieves a file as a readable stream
-   * @param path Full storage path in format "bucket/key"
+   * @param path Full storage path in format "path/to/file"
    * @returns Promise resolving to a readable stream
    */
   abstract get(path: string): Promise<Readable>;
 
   /**
    * Deletes a file from storage
-   * @param path Full storage path in format "bucket/key"
+   * @param path Full storage path in format "path/to/file"
    */
   abstract delete(path: string): Promise<void>;
 
   /**
    * Deletes all files in a folder from storage
-   * @param path Full storage path in format "bucket/folder/"
+   * @param path Full storage path in format "path/to/folder/"
    */
   abstract deleteFolder(path: string): Promise<void>;
 }

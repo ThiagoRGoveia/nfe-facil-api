@@ -51,6 +51,18 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   @Property()
   processedFiles: number = 0;
 
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
+  jsonResults?: string;
+
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
+  csvResults?: string;
+
+  @Field(() => String, { nullable: true })
+  @Property({ nullable: true })
+  excelResults?: string;
+
   // Domain logic methods
   addFile(process: FileToProcess) {
     if (this.status !== BatchStatus.CREATED) {

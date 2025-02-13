@@ -14,7 +14,7 @@ import { WebhookNotifierPort } from './application/ports/webhook-notifier.port';
 
 // Repositories
 import { BatchMikroOrmRepository } from './infra/persistence/db/orm/batch-process-mikro-orm-db.repository';
-import { FileProcessMikroOrmDbRepository } from './infra/persistence/db/orm/document-process-mikro-orm-db.repository';
+import { FileProcessMikroOrmDbRepository } from './infra/persistence/db/orm/file-process-mikro-orm-db.repository';
 
 // Adapters
 import { WebhookNotifierAdapter } from './infra/adapters/webhook-notifier.adapter';
