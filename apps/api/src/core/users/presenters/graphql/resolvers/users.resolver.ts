@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
 import { UpdateUserDto } from '../../../application/dtos/update-user.dto';
@@ -14,7 +14,7 @@ import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-re
 import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-
+import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 const PaginatedUsers = PaginatedGraphqlResponse(User);
 
 @Resolver(() => User)
@@ -27,6 +27,11 @@ export class UsersResolver {
     private readonly refreshClientSecretUseCase: RefreshClientSecretUseCase,
     private readonly updatePasswordUseCase: UpdatePasswordUseCase,
   ) {}
+
+  @Query(() => User, { nullable: true })
+  getUser(@Context() context: GraphqlExpressContext) {
+    return context.req.user;
+  }
 
   @Query(() => User, { nullable: true })
   async findUserById(@Args('id', { type: () => String }) id: string): Promise<User | null> {
