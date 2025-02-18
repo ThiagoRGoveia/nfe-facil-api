@@ -9,8 +9,7 @@ import { ApiKeyStrategy } from '../api-key.strategy';
 import { JwtStrategy } from '../jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbDrop, useDbSchema } from '../../tests/db-schema.seed';
-import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { UsersModule } from '@/core/users/users.module';
 import { Resolver, Query, ObjectType, Field } from '@nestjs/graphql';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -57,8 +56,6 @@ class TestResolver {
 describe('RequestTypeGuard (integration)', () => {
   let app: INestApplication;
   let em: EntityManager;
-  let orm: MikroORM;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -85,7 +82,6 @@ describe('RequestTypeGuard (integration)', () => {
 
     app = module.createNestApplication();
     em = module.get<EntityManager>(EntityManager);
-    orm = module.get<MikroORM>(MikroORM);
     await app.init();
 
     await useDbUser(
@@ -189,13 +185,15 @@ describe('RequestTypeGuard (integration)', () => {
         });
     });
 
-    // TODO implement after auth0 is integrated for user oauth2
+    // NOTICE: to test integration with auth0, uncomment the following test and replace the JWT token with a valid one
     // it('should allow access to protected queries with valid JWT', async () => {
-    //   jest.spyOn(jwtGuard, 'parentCanActivate').mockResolvedValue(true);
     //   await request(app.getHttpServer())
     //     .post('/graphql')
     //     .send({ query: protectedQuery })
-    //     .set('Authorization', 'Bearer some.jwt.token')
+    //     .set(
+    //       'Authorization',
+    //       'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImZtb3Y5TE1qRUdjRE5FQk1xeXgzMiJ9.eyJpc3MiOiJodHRwczovL2Rldi1mYTZ1ejIxcHY0MWpoam42LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMjQ2MDczNjYwODYzNjA0NjM3MCIsImF1ZCI6WyJDMkZRWjI1M1lXOVBaMjVIQkdMVloyNU9BVzkzIiwiaHR0cHM6Ly9kZXYtZmE2dXoyMXB2NDFqaGpuNi51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzM5ODg4MDgyLCJleHAiOjE3Mzk5NzQ0ODIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhenAiOiJ2MnZGMlh3bFJaaUE0SjhnMWFMUmxWenpuWXhHYmJ0WiJ9.UetC-_cSiZbMvU_xLbRqo5xc_7dFen2lcG6CzRCochsGXLBkxg-C-ibUn1aZMNOTPJKePNPf3cjbuCeZ3I51kd_GM4lNIo_XX6NbofCjcJMbFSc9EoTpkgbApp-DXWz-Mon6y80f_TZqkMiyhoILtNFtyfTnxAbeEHBhZOjdZ-IFiy2AfUpdHpEHOgIM7JoMqaWs8Uc33IMNOgtNxomk4oR4lTx5667O041wCzKSnWN1Ycae6d5NiD4KCTxQkN_TxfXmID10Iu3ngMjDqZ-I7-eBxpsX19z6KKfeh2st7DBE7PEhpzNhX5oJdeVURSxAlnoxnK0ddZvIQ972_P4AlA',
+    //     )
     //     .expect(200)
     //     .expect((res) => {
     //       expect(res.body.data.protected.message).toBe('protected query');

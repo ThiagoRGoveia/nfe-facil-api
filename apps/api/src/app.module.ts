@@ -11,10 +11,7 @@ import { FeatureModule } from './core/feature.module';
 import { ToolingModule } from './infra/tooling.module';
 import { LoggerModule } from 'nestjs-pino';
 import { defineConfig } from '@mikro-orm/postgresql';
-import { User } from './core/users/domain/entities/user.entity';
-import { FileToProcess } from './core/documents/domain/entities/file-process.entity';
-import { BatchProcess } from './core/documents/domain/entities/batch-process.entity';
-import { Template } from './core/templates/domain/entities/template.entity';
+import entities from './infra/persistence/mikro-orm/entities';
 
 @Module({
   imports: [
@@ -50,8 +47,8 @@ import { Template } from './core/templates/domain/entities/template.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return defineConfig({
-          entities: [User, Template, BatchProcess, FileToProcess],
-          entitiesTs: [User, Template, BatchProcess, FileToProcess],
+          entities: entities,
+          entitiesTs: entities,
           dbName: configService.get('DB_DATABASE'),
           user: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
@@ -61,6 +58,8 @@ import { Template } from './core/templates/domain/entities/template.entity';
           dataloader: DataloaderType.ALL,
           serialization: { forceObject: true },
           loadStrategy: 'select-in',
+          useBatchInserts: true,
+          useBatchUpdates: true,
           resultCache: {
             expiration: 1000,
             global: true,

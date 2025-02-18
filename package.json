@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/api/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/api/test/jest-e2e.json",
+    "db-migrations:initial": "mikro-orm migration:create --initial",
+    "db-migrations:generate": "mikro-orm migration:create",
+    "db-migrations:up": "mikro-orm migration:up",
+    "db-migrations:down": "mikro-orm migration:down",
+    "db-migrations:list": "mikro-orm migration:list"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.744.0",
@@ -102,5 +107,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.7.3",
     "typescript-eslint": "^8.24.0"
+  },
+  "mikro-orm": {
+    "config": "./mikro-orm-config.ts"
   }
 }
