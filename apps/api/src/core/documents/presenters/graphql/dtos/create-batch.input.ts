@@ -1,6 +1,17 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal';
+
+enum FileFormat {
+  JSON = 'json',
+  CSV = 'csv',
+  EXCEL = 'excel',
+}
+
+registerEnumType(FileFormat, {
+  name: 'FileFormat',
+  description: 'The format of the file',
+});
 
 @InputType()
 export class CreateBatchInput {
@@ -12,4 +23,8 @@ export class CreateBatchInput {
   @Field(() => [GraphQLUpload], { nullable: true })
   @IsOptional()
   files?: Promise<FileUpload>[];
+
+  @Field(() => [FileFormat], { nullable: true })
+  @IsOptional()
+  outputFormats?: FileFormat[] = [FileFormat.JSON];
 }

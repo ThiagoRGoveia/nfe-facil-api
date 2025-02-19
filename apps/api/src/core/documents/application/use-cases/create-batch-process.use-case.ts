@@ -38,6 +38,7 @@ export class CreateBatchProcessUseCase {
       template,
       user,
       status: BatchStatus.CREATED,
+      requestedFormats: dto.outputFormats || ['json'],
     });
 
     // Handle file uploads if present

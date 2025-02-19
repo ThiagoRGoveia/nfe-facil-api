@@ -71,6 +71,7 @@ export class BatchProcessesResolver {
         data: f.buffer,
         fileName: f.fileName,
       })),
+      outputFormats: input.outputFormats,
     });
   }
 

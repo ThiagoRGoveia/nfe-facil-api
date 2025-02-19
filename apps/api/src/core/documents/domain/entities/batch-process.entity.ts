@@ -7,6 +7,7 @@ import { Collection } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { BadRequestException } from '@nestjs/common';
 import { FileToProcess } from './file-process.entity';
+import { OutputFormat } from '../types/output-format.type';
 
 export enum BatchStatus {
   CREATED = 'CREATED',
@@ -50,6 +51,10 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   @Field(() => Number)
   @Property()
   processedFiles: number = 0;
+
+  @Field(() => [String])
+  @Property({ type: 'array', default: ['json'] })
+  requestedFormats: OutputFormat[] = ['json'];
 
   @Field(() => String, { nullable: true })
   @Property({ nullable: true })

@@ -64,6 +64,7 @@ export class AsyncBatchProcessUseCase {
               filePath: doc.filePath,
             },
             batchId: batch.id,
+            outputFormats: batch.requestedFormats,
           });
         } catch (error) {
           this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);

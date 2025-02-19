@@ -21,5 +21,5 @@ export class CreateBatchDto {
 
   @IsArray()
   @IsOptional()
-  outputFormats?: OutputFormat[];
+  outputFormats?: OutputFormat[] = ['json'];
 }

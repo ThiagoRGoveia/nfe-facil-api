@@ -14,6 +14,7 @@ export class BatchProcessFactory extends Factory<BatchProcess> {
       totalFiles: faker.number.int({ min: 1, max: 20 }),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
+      requestedFormats: ['json'],
     };
   }
 }
