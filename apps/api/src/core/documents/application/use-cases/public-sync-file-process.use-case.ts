@@ -7,10 +7,20 @@ import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-p
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
 import { ExcelPort } from '@/infra/excel/ports/excel.port';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { PublicFileProcessDbPort } from '../ports/public-file-process-db.port';
+import { PublicFileProcessStatus } from '../../domain/entities/public-file-process.entity';
 
 type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
   files: FileDto[];
   outputFormats?: OutputFormat[];
+};
+
+type Response = {
+  json?: Buffer;
+  csv?: Buffer;
+  excel?: Buffer;
 };
 
 @Injectable()
@@ -22,9 +32,12 @@ export class PublicSyncFileProcessUseCase {
     private readonly logger: PinoLogger,
     private readonly csvConverterPort: CsvPort,
     private readonly excelPort: ExcelPort,
+    private readonly fileStorage: FileStoragePort,
+    private readonly uuidAdapter: UuidAdapter,
+    private readonly publicFileProcessRepository: PublicFileProcessDbPort,
   ) {}
 
-  async execute(dto: SyncProcessDto) {
+  async execute(dto: SyncProcessDto): Promise<Response> {
     const template = await this.templateRepository.findById(dto.templateId);
     if (!template) {
       throw new BadRequestException('Template not found');
@@ -39,7 +52,30 @@ export class PublicSyncFileProcessUseCase {
     const results = await Promise.all(
       files.map(async (doc) => {
         try {
+          // Save file to storage
+          const filePath = `public/${this.uuidAdapter.generate()}`;
+          await this.fileStorage.uploadFromBuffer(filePath, doc.data);
+
+          // Create public file process record
+          const fileProcess = this.publicFileProcessRepository.create({
+            fileName: doc.fileName,
+            filePath,
+            template,
+            status: PublicFileProcessStatus.COMPLETED,
+          });
+
+          // Process the document
           const result = await this.documentProcessorPort.process(doc.data, template);
+
+          if (result.isSuccess()) {
+            fileProcess.setResult(result.payload);
+            fileProcess.markCompleted();
+          } else {
+            fileProcess.markFailed(result.errorMessage || 'Unknown error');
+          }
+
+          await this.publicFileProcessRepository.save();
+
           return {
             fileName: doc.fileName,
             result,

@@ -11,8 +11,10 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
-import { FileToProcess } from '../../../domain/entities/file-process.entity';
 import { BadRequestException } from '@nestjs/common';
+import { Public } from '@/infra/auth/public.decorator';
+import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';
+import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
 
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
@@ -21,6 +23,7 @@ export class BatchProcessesResolver {
   constructor(
     private readonly batchDbPort: BatchDbPort,
     private readonly syncBatchProcessUseCase: SyncFileProcessUseCase,
+    private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })
@@ -71,6 +74,35 @@ export class BatchProcessesResolver {
     });
   }
 
+  @Public()
+  @Mutation(() => PublicSyncProcessResponse)
+  async publicProcessBatchSync(@Args('input') input: CreateBatchInput) {
+    const uploadedFiles = input.files ? await Promise.all(input.files) : [];
+
+    const fileBuffers = await Promise.all(
+      uploadedFiles.map(async (file) => {
+        const fileName = file.filename.toLowerCase();
+        if (!fileName.endsWith('.zip') && !fileName.endsWith('.pdf')) {
+          throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
+        }
+        return {
+          buffer: await this.streamToBuffer(file.createReadStream),
+          fileName: file.filename,
+        };
+      }),
+    );
+
+    const result = await this.publicSyncBatchProcessUseCase.execute({
+      templateId: input.templateId,
+      files: fileBuffers.map((f) => ({
+        data: f.buffer,
+        fileName: f.fileName,
+      })),
+    });
+
+    return PublicSyncProcessResponse.fromBuffers(result);
+  }
+
   @ResolveField(() => User, { nullable: true })
   user(@Parent() batch: BatchProcess): Promise<User | null> {
     return batch.user.load();
@@ -79,12 +111,6 @@ export class BatchProcessesResolver {
   @ResolveField(() => Template, { nullable: true })
   template(@Parent() batch: BatchProcess): Promise<Template | null> {
     return batch.template.load();
-  }
-
-  @ResolveField(() => [FileToProcess])
-  async files(@Parent() batch: BatchProcess): Promise<FileToProcess[]> {
-    const a = await batch.files.loadItems();
-    return a;
   }
 
   private async streamToBuffer(stream: () => NodeJS.ReadableStream): Promise<Buffer> {

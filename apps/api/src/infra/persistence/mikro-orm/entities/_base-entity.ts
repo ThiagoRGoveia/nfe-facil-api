@@ -1,6 +1,8 @@
 import { BaseEntity as MikroORMBaseEntity, OptionalProps, Property } from '@mikro-orm/core';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
+@ObjectType()
 export class BaseEntity<T = never> extends MikroORMBaseEntity {
   [OptionalProps]?: T | 'createdAt' | 'updatedAt';
 
@@ -8,6 +10,7 @@ export class BaseEntity<T = never> extends MikroORMBaseEntity {
     description: 'Creation date',
   })
   @Property({ columnType: 'timestamp', defaultRaw: 'now()' })
+  @Field(() => Date)
   createdAt: Date;
 
   @ApiProperty({
@@ -18,5 +21,6 @@ export class BaseEntity<T = never> extends MikroORMBaseEntity {
     defaultRaw: 'now()',
     onUpdate: () => new Date(),
   })
+  @Field(() => Date)
   updatedAt: Date;
 }

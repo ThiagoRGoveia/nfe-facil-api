@@ -22,7 +22,8 @@
     "db-migrations:generate": "mikro-orm migration:create",
     "db-migrations:up": "mikro-orm migration:up",
     "db-migrations:down": "mikro-orm migration:down",
-    "db-migrations:list": "mikro-orm migration:list"
+    "db-migrations:list": "mikro-orm migration:list",
+    "seed:dev": "mikro-orm seeder:run --class DevSeeder"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.744.0",

@@ -17,12 +17,17 @@ export default defineConfig({
   debug: false,
   migrations: {
     tableName: 'mikro_orm_migrations',
-    path: `./dist/infra/db/mikro-orm/migrations`,
-    pathTs: `.apps/api/src/infra/persistence/mikro-orm/migrations`,
+    path: `./dist/apps/api/src/infra/persistence/mikro-orm/migrations`,
+    pathTs: `./apps/api/src/infra/persistence/mikro-orm/migrations`,
     glob: '!(*.d).{js,ts}',
     safe: true,
     transactional: true,
     allOrNothing: true,
     emit: 'ts',
+  },
+  seeder: {
+    path: `./dist/apps/api/src/infra/persistence/mikro-orm/seed`,
+    pathTs: `./apps/api/src/infra/persistence/mikro-orm/seed`,
+    glob: '!(*.d).{js,ts}',
   },
 });

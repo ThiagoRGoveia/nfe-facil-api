@@ -24,11 +24,13 @@ import { DocumentProcessorAdapter } from './infra/adapters/document-processor.ad
 import { BatchProcessesResolver } from './presenters/graphql/resolvers/batch-processes.resolver';
 import { PublicSyncFileProcessUseCase } from './application/use-cases/public-sync-file-process.use-case';
 import { HandleOutputFormatUseCase } from './application/use-cases/handle-output-format.use-case';
+import { FilesResolver } from './presenters/graphql/resolvers/files.resolver';
 @Global()
 @Module({
   controllers: [DocumentsController],
   providers: [
     BatchProcessesResolver,
+    FilesResolver,
     CreateBatchProcessUseCase,
     UpdateBatchTemplateUseCase,
     AddFileToBatchUseCase,

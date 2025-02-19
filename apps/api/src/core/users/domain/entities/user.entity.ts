@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, Enum } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Enum, Unique, Index } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
@@ -52,6 +52,8 @@ export class User extends BaseEntity<'isSocial'> {
     description: 'Client unique identifier',
   })
   @Property()
+  @Index()
+  @Unique()
   clientId: string;
 
   @Field(() => String)
@@ -80,6 +82,7 @@ export class User extends BaseEntity<'isSocial'> {
   @ApiProperty({
     description: 'Auth0 user identifier',
   })
+  @Unique()
   @Property()
   auth0Id: string;
 
