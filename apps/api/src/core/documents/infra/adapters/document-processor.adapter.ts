@@ -1,14 +1,15 @@
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { DocumentProcessorPort } from '../../application/ports/document-processor.port';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, Injectable } from '@nestjs/common';
 import { NfeTextWorkflow } from '@doc/workflows/nfe/nfe-text.workflow';
 import { BaseWorkflow } from '@doc/workflows/_base.workflow';
 
+@Injectable()
 export class DocumentProcessorAdapter implements DocumentProcessorPort {
   private workflows: Map<string, BaseWorkflow>;
-  constructor(private readonly nfeTextWorkflow: NfeTextWorkflow) {
-    this.workflows = new Map([['nfe-text', this.nfeTextWorkflow]]);
+  constructor(nfeTextWorkflow: NfeTextWorkflow) {
+    this.workflows = new Map([['nfe-json', nfeTextWorkflow]]);
   }
 
   async process(fileBuffer: Buffer, template: Template): Promise<DocumentProcessResult> {

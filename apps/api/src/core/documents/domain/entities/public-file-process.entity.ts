@@ -15,7 +15,7 @@ registerEnumType(PublicFileProcessStatus, {
 });
 
 @ObjectType()
-@Entity({ tableName: 'public_document_processes' })
+@Entity({ tableName: 'public_file_processes' })
 export class PublicFileProcess {
   [OptionalProps]?: 'createdAt' | 'updatedAt';
 

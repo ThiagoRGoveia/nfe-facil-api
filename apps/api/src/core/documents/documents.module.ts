@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { DocumentsController } from './presenters/http/controllers/documents.controller';
+import { DownloadsController } from './presenters/http/controllers/downloads.controller';
 import { CreateBatchProcessUseCase } from './application/use-cases/create-batch-process.use-case';
 import { UpdateBatchTemplateUseCase } from './application/use-cases/update-batch-template.use-case';
 import { AddFileToBatchUseCase } from './application/use-cases/add-file-to-batch.use-case';
@@ -25,9 +26,11 @@ import { BatchProcessesResolver } from './presenters/graphql/resolvers/batch-pro
 import { PublicSyncFileProcessUseCase } from './application/use-cases/public-sync-file-process.use-case';
 import { HandleOutputFormatUseCase } from './application/use-cases/handle-output-format.use-case';
 import { FilesResolver } from './presenters/graphql/resolvers/files.resolver';
+import { PublicFileProcessDbPort } from './application/ports/public-file-process-db.port';
+import { PublicFileProcessMikroOrmDbRepository } from './infra/persistence/db/orm/public-file-process-mikro-orm-db.repository';
 @Global()
 @Module({
-  controllers: [DocumentsController],
+  controllers: [DocumentsController, DownloadsController],
   providers: [
     BatchProcessesResolver,
     FilesResolver,
@@ -55,6 +58,10 @@ import { FilesResolver } from './presenters/graphql/resolvers/files.resolver';
     {
       provide: DocumentProcessorPort,
       useClass: DocumentProcessorAdapter,
+    },
+    {
+      provide: PublicFileProcessDbPort,
+      useClass: PublicFileProcessMikroOrmDbRepository,
     },
   ],
   exports: [BatchDbPort, FileProcessDbPort, WebhookNotifierPort],

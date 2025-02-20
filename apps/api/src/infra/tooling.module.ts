@@ -14,10 +14,13 @@ import { FileStoragePort } from './aws/s3/ports/file-storage.port';
 import { QueuePort } from './aws/sqs/ports/queue.port';
 import { SQSClient } from './aws/sqs/clients/sqs.client';
 import { AuthModule } from './auth/auth.module';
+import { DocumentProcessModule } from '@doc/document-process.module';
+import { HttpModule } from '@nestjs/axios';
+import { OllamaClient } from '@doc/workflows/clients/ollama-client';
 
 @Global()
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, DocumentProcessModule, HttpModule],
   providers: [
     UuidAdapter,
     SecretAdapter,
@@ -45,7 +48,18 @@ import { AuthModule } from './auth/auth.module';
       provide: QueuePort,
       useClass: SQSClient,
     },
+    OllamaClient,
   ],
-  exports: [EncryptionPort, UuidAdapter, SecretAdapter, ZipPort, CsvPort, ExcelPort, FileStoragePort, QueuePort],
+  exports: [
+    EncryptionPort,
+    UuidAdapter,
+    SecretAdapter,
+    ZipPort,
+    CsvPort,
+    ExcelPort,
+    FileStoragePort,
+    QueuePort,
+    OllamaClient,
+  ],
 })
 export class ToolingModule {}

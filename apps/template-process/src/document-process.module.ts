@@ -1,8 +1,19 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { NfeTextWorkflow } from './workflows/nfe/nfe-text.workflow';
+import { PdfPort } from './infra/pdf/ports/pdf.port';
+import { PdfAdapter } from './infra/pdf/adapters/pdf.adapter';
 
+@Global()
 @Module({
   imports: [],
   controllers: [],
-  providers: [],
+  providers: [
+    NfeTextWorkflow,
+    {
+      provide: PdfPort,
+      useClass: PdfAdapter,
+    },
+  ],
+  exports: [NfeTextWorkflow],
 })
 export class DocumentProcessModule {}

@@ -11,6 +11,8 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { PublicFileProcessDbPort } from '../ports/public-file-process-db.port';
 import { PublicFileProcessStatus } from '../../domain/entities/public-file-process.entity';
+import { FileFormat } from '../../domain/constants/file-formats';
+import { ConfigService } from '@nestjs/config';
 
 type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
   files: FileDto[];
@@ -18,9 +20,9 @@ type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
 };
 
 type Response = {
-  json?: Buffer;
-  csv?: Buffer;
-  excel?: Buffer;
+  json?: string;
+  csv?: string;
+  excel?: string;
 };
 
 @Injectable()
@@ -35,6 +37,7 @@ export class PublicSyncFileProcessUseCase {
     private readonly fileStorage: FileStoragePort,
     private readonly uuidAdapter: UuidAdapter,
     private readonly publicFileProcessRepository: PublicFileProcessDbPort,
+    private readonly configService: ConfigService,
   ) {}
 
   async execute(dto: SyncProcessDto): Promise<Response> {
@@ -53,8 +56,8 @@ export class PublicSyncFileProcessUseCase {
       files.map(async (doc) => {
         try {
           // Save file to storage
-          const filePath = `public/${this.uuidAdapter.generate()}`;
-          await this.fileStorage.uploadFromBuffer(filePath, doc.data);
+          const filePath = `public/${this.uuidAdapter.generate()}.${doc.fileName.split('.').pop()}`;
+          // await this.fileStorage.uploadFromBuffer(filePath, doc.data);
 
           // Create public file process record
           const fileProcess = this.publicFileProcessRepository.create({
@@ -72,6 +75,7 @@ export class PublicSyncFileProcessUseCase {
             fileProcess.markCompleted();
           } else {
             fileProcess.markFailed(result.errorMessage || 'Unknown error');
+            fileProcess.setResult(result.payload);
           }
 
           await this.publicFileProcessRepository.save();
@@ -96,34 +100,46 @@ export class PublicSyncFileProcessUseCase {
     const jsonResults = results.filter(({ result }) => result.isSuccess()).map(({ result }) => result.payload);
 
     // Add new format handling
-    const formatResults: {
-      json?: Buffer;
-      csv?: Buffer;
-      excel?: Buffer;
-    } = {};
+    const formatResults: Response = {};
+    const apiUrl = this.configService.get<string>('API_URL');
 
     if (dto.outputFormats) {
       const allResults = jsonResults;
 
       for (const format of dto.outputFormats) {
+        const fileId = this.uuidAdapter.generate();
+
         switch (format) {
-          case 'json':
-            formatResults.json = Buffer.from(JSON.stringify(allResults));
+          case FileFormat.JSON: {
+            const jsonBuffer = Buffer.from(JSON.stringify(allResults));
+            await this.fileStorage.uploadFromBuffer(`downloads/${fileId}.json`, jsonBuffer, 'application/json');
+            formatResults.json = `${apiUrl}/api/v1/downloads/${fileId}.json`;
             break;
-          case 'csv':
-            formatResults.csv = Buffer.from(
+          }
+          case FileFormat.CSV: {
+            const csvBuffer = Buffer.from(
               this.csvConverterPort.convertToCsv(allResults as Record<string, unknown>[], {
                 expandNestedObjects: true,
                 unwindArrays: true,
               }),
             );
+            await this.fileStorage.uploadFromBuffer(`downloads/${fileId}.csv`, csvBuffer, 'text/csv');
+            formatResults.csv = `${apiUrl}/api/v1/downloads/${fileId}.csv`;
             break;
-          case 'excel':
-            formatResults.excel = await this.excelPort.convertToExcel(allResults as Record<string, unknown>[], {
+          }
+          case FileFormat.XLSX: {
+            const excelBuffer = await this.excelPort.convertToExcel(allResults as Record<string, unknown>[], {
               expandNestedObjects: true,
               unwindArrays: true,
             });
+            await this.fileStorage.uploadFromBuffer(
+              `downloads/${fileId}.xlsx`,
+              excelBuffer,
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            );
+            formatResults.excel = `${apiUrl}/api/v1/downloads/${fileId}.xlsx`;
             break;
+          }
         }
       }
     }

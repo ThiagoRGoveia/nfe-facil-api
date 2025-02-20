@@ -10,6 +10,7 @@ import { FileProcessStatus } from '../../domain/entities/file-process.entity';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileFormat } from '../../domain/constants/file-formats';
 
 @Injectable()
 export class CreateBatchProcessUseCase {
@@ -38,7 +39,7 @@ export class CreateBatchProcessUseCase {
       template,
       user,
       status: BatchStatus.CREATED,
-      requestedFormats: dto.outputFormats || ['json'],
+      requestedFormats: dto.outputFormats || [FileFormat.JSON],
     });
 
     // Handle file uploads if present

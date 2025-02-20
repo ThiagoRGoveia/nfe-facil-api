@@ -9,6 +9,7 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
 import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
+import { FileFormat } from '../../domain/constants/file-formats';
 
 const MAX_FILE_SIZE = 300 * 1024; // 300KB in bytes
 
@@ -30,7 +31,7 @@ export class ProcessFileUseCase {
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
-    const { file, user, outputFormats = ['json'] } = params;
+    const { file, user, outputFormats = [FileFormat.JSON] } = params;
     const template = await file.template.load();
     const batchProcess = await file.batchProcess?.load();
 

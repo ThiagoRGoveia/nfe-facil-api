@@ -7,6 +7,7 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
+import { FileFormat } from '../../domain/constants/file-formats';
 
 const MAX_FILES_PER_BATCH = 100;
 
@@ -20,7 +21,7 @@ export class HandleOutputFormatUseCase {
     private readonly fileProcessDbPort: FileProcessDbPort,
   ) {}
 
-  async execute(batchProcess: BatchProcess, outputFormats: OutputFormat[] = ['json']): Promise<void> {
+  async execute(batchProcess: BatchProcess, outputFormats: OutputFormat[] = [FileFormat.JSON]): Promise<void> {
     const baseKey = `${batchProcess.user.id}/batch-results/${batchProcess.id}`;
 
     // Create a stream of completed file results
@@ -34,7 +35,7 @@ export class HandleOutputFormatUseCase {
     const uploadPromises = outputFormats.map((format, index) => {
       const cloneStream = streams[index];
 
-      if (format === 'json') {
+      if (format === FileFormat.JSON) {
         // Create a transformation stream that pipes data in JSON array format.
         const jsonArrayStream = new Transform({
           objectMode: true,
@@ -60,7 +61,7 @@ export class HandleOutputFormatUseCase {
           .then((jsonPath) => {
             batchProcess.jsonResults = jsonPath;
           });
-      } else if (format === 'csv') {
+      } else if (format === FileFormat.CSV) {
         const csvStream = this.csvConverterPort.convertStreamToCsv(cloneStream, {
           expandNestedObjects: true,
           unwindArrays: true,
@@ -68,7 +69,7 @@ export class HandleOutputFormatUseCase {
         return this.fileStoragePort.uploadFromStream(`${baseKey}.csv`, csvStream, 'text/csv').then((csvPath) => {
           batchProcess.csvResults = csvPath;
         });
-      } else if (format === 'excel') {
+      } else if (format === FileFormat.XLSX) {
         const excelStream = this.excelPort.convertStreamToExcel(cloneStream, {
           expandNestedObjects: true,
           unwindArrays: true,

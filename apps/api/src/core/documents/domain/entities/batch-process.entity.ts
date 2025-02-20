@@ -8,6 +8,7 @@ import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity'
 import { BadRequestException } from '@nestjs/common';
 import { FileToProcess } from './file-process.entity';
 import { OutputFormat } from '../types/output-format.type';
+import { FileFormat } from '../constants/file-formats';
 
 export enum BatchStatus {
   CREATED = 'CREATED',
@@ -24,7 +25,7 @@ registerEnumType(BatchStatus, {
 
 @ObjectType()
 @Entity({ tableName: 'batch_processes' })
-export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
+export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles' | 'requestedFormats'> {
   @Field(() => String)
   @PrimaryKey()
   id: string = new UuidAdapter().generate();
@@ -53,8 +54,8 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles'> {
   processedFiles: number = 0;
 
   @Field(() => [String])
-  @Property({ type: 'array', default: ['json'] })
-  requestedFormats: OutputFormat[] = ['json'];
+  @Property({ type: 'array', default: [FileFormat.JSON] })
+  requestedFormats: OutputFormat[] = [FileFormat.JSON];
 
   @Field(() => String, { nullable: true })
   @Property({ nullable: true })

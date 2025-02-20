@@ -1,12 +1,9 @@
+import { FileFormat } from '@/core/documents/domain/constants/file-formats';
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal';
 
-enum FileFormat {
-  JSON = 'json',
-  CSV = 'csv',
-  EXCEL = 'excel',
-}
+
 
 registerEnumType(FileFormat, {
   name: 'FileFormat',

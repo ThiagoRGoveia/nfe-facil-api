@@ -95,13 +95,14 @@ export class BatchProcessesResolver {
 
     const result = await this.publicSyncBatchProcessUseCase.execute({
       templateId: input.templateId,
+      outputFormats: input.outputFormats,
       files: fileBuffers.map((f) => ({
         data: f.buffer,
         fileName: f.fileName,
       })),
     });
 
-    return PublicSyncProcessResponse.fromBuffers(result);
+    return PublicSyncProcessResponse.fromUrls(result);
   }
 
   @ResolveField(() => User, { nullable: true })

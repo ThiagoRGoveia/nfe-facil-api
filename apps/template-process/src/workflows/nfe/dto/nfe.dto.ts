@@ -1,292 +1,432 @@
+import { Expose, Transform } from 'class-transformer';
 import { IsString, IsEmail, IsOptional, Matches } from 'class-validator';
+
+const EMPTY_STRING_INDICATORS = ['-', 'NÃO IDENTIFICADO NA NFS-e', 'Não', 'Nenhum', 'Não Retido', ' ', 'null', ''];
+
+function transformToNull({ value }: { value: string }): string | null {
+  if (!value || EMPTY_STRING_INDICATORS.includes(value)) {
+    return null;
+  }
+  return value;
+}
 
 export class NfeDto {
   @IsString()
   @IsOptional()
   @Matches(/^\d{50}$/)
-  chaveAcessoNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  chave_acesso_nfse: string | null;
 
   @IsString()
   @IsOptional()
-  prefeituraMunicipal?: string;
+  @Transform(transformToNull)
+  @Expose()
+  numero_nfse: string | null;
 
   @IsString()
   @IsOptional()
-  autenticidadeNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  competencia_nfse: string | null;
 
   @IsString()
   @IsOptional()
-  numeroNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  data_hora_emissao_nfse: string | null;
 
   @IsString()
   @IsOptional()
-  competenciaNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  numeroDps: string | null;
 
   @IsString()
   @IsOptional()
-  dataHoraEmissaoNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  serieDps: string | null;
 
   @IsString()
   @IsOptional()
-  numeroDps?: string;
+  @Transform(transformToNull)
+  @Expose()
+  data_hora_emissao_dps: string | null;
 
   @IsString()
   @IsOptional()
-  serieDps?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_prestador_servico_cnpj_cpf_nif: string | null;
 
   @IsString()
   @IsOptional()
-  dataHoraEmissaoDps?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_inscricao_municipal: string | null;
 
   @IsString()
   @IsOptional()
-  emitenteNfsEPrestadorServicoCnpjCpfNif?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_telefone: string | null;
 
   @IsString()
   @IsOptional()
-  emitenteNfsEInscricaoMunicipal?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsETelefone?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsENomeNomeEmpresarial?: string;
-
-  @IsEmail()
-  @IsOptional()
-  emitenteNfsEEmail?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsEEnderecoLogradouro?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsEEnderecoNumero?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsEEnderecoBairro?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsEMunicipio?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsECep?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsESimplesNacionalDataCompetencia?: string;
-
-  @IsString()
-  @IsOptional()
-  emitenteNfsERegimeApuracaoTributariaSn?: string;
-
-  @IsString()
-  @IsOptional()
-  tomadorServicoCnpjCpfNif?: string;
-
-  @IsString()
-  @IsOptional()
-  tomadorServicoInscricaoMunicipal?: string;
-
-  @IsString()
-  @IsOptional()
-  tomadorServicoTelefone?: string;
-
-  @IsString()
-  @IsOptional()
-  tomadorServicoNomeNomeEmpresarial?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_nome_nome_empresarial: string | null;
 
   @IsEmail()
   @IsOptional()
-  tomadorServicoEmail?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_email: string | null;
 
   @IsString()
   @IsOptional()
-  tomadorServicoEnderecoLogradouro?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_endereco_logradouro: string | null;
 
   @IsString()
   @IsOptional()
-  tomadorServicoEnderecoNumero?: string;
-
-  @IsOptional()
-  @IsString()
-  tomadorServicoEnderecoAndar?: string;
-
-  @IsOptional()
-  @IsString()
-  tomadorServicoEnderecoSala?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_endereco_numero: string | null;
 
   @IsString()
   @IsOptional()
-  tomadorServicoEnderecoBairro?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_endereco_bairro: string | null;
 
   @IsString()
   @IsOptional()
-  tomadorServicoMunicipio?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_municipio: string | null;
 
   @IsString()
   @IsOptional()
-  tomadorServicoCep?: string;
-
-  @IsOptional()
-  @IsString()
-  intermediarioServicoIdentificadoNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_cep: string | null;
 
   @IsString()
   @IsOptional()
-  servicoPrestadoCodigoTributacaoNacional?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_simples_nacional_data_competencia: string | null;
 
   @IsString()
   @IsOptional()
-  servicoPrestadoCodigoTributacaoMunicipal?: string;
+  @Transform(transformToNull)
+  @Expose()
+  emitente_nfse_regime_apuracao_tributaria_sn: string | null;
 
   @IsString()
   @IsOptional()
-  servicoPrestadoLocalPrestacao?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_cnpj_cpf_nif: string | null;
 
   @IsString()
   @IsOptional()
-  servicoPrestadoPaisPrestacao?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_inscricao_municipal: string | null;
 
   @IsString()
   @IsOptional()
-  servicoPrestadoDescricaoServico?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_telefone: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalTributacaoIssqnOperacaoTributavel?: string;
+  tomadorServicoNomeNomeEmpresarial: string | null;
+
+  @IsEmail()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_email: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalPaisResultadoPrestacaoServico?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_endereco_logradouro: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalMunicipioIncidenciaIssqn?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_endereco_numero: string | null;
 
   @IsOptional()
   @IsString()
-  tributacaoMunicipalRegimeEspecialTributacao?: string;
-
-  @IsString()
-  @IsOptional()
-  tributacaoMunicipalTipoImunidade?: string;
-
-  @IsString()
-  @IsOptional()
-  tributacaoMunicipalSuspensaoExigibilidadeIssqn?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_endereco_andar: string | null;
 
   @IsOptional()
   @IsString()
-  tributacaoMunicipalNumeroProcessoSuspensao?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_endereco_sala: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalBeneficioMunicipal?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_endereco_bairro: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalValorServico?: string;
-
-  @IsOptional()
-  @IsString()
-  tributacaoMunicipalDescontoIncondicionado?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_municipio: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalTotalDeducoesReducoes?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tomador_servico_cep: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformToNull)
+  @Expose()
+  intermediario_servico_identificado_nfse: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalCalculoBm?: string;
+  @Transform(transformToNull)
+  @Expose()
+  servico_prestado_codigo_tributacao_nacional: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalBcIssqn?: string;
+  @Transform(transformToNull)
+  @Expose()
+  servico_prestado_codigo_tributacao_municipal: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalAlotacaoAplicada?: string;
+  @Transform(transformToNull)
+  @Expose()
+  servico_prestado_local_prestacao: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalRetencoesIssqn?: string;
+  @Transform(transformToNull)
+  @Expose()
+  servico_prestado_pais_prestacao: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoMunicipalIssqnApurado?: string;
+  @Transform(transformToNull)
+  @Expose()
+  servico_prestado_descricao_servico: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalIrrf?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_tributacao_issqn_operacao_tributavel: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalCp?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_pais_resultado_prestacao_servico: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalCsll?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_municipio_incidencia_issqn: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_regime_especial_tributacao: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalPis?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_tipo_imunidade: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalCofins?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_suspensao_exigibilidade_issqn: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_numero_processo_suspensao: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalRetencoesPisCofins?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_beneficio_municipal: string | null;
 
   @IsString()
   @IsOptional()
-  tributacaoFederalTotalTributosFederais?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_valor_servico: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_desconto_incondicionado: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEValorServico?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_total_deducoes_reducoes: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEDescontoCondicionado?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_calculo_bm: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEDescontoIncondicionado?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_bc_issqn: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEIssqnRetido?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_alotacao_aplicada: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEIrrfCpCsllRetidos?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_retencoes_issqn: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEPisCofinsRetidos?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_municipal_issqn_apurado: string | null;
 
   @IsString()
   @IsOptional()
-  valorTotalNfsEValorLiquidoNfsE?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_irrf: string | null;
 
   @IsString()
   @IsOptional()
-  totasAproximadosTributosFederais?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_cp: string | null;
 
   @IsString()
   @IsOptional()
-  totasAproximadosTributosEstaduais?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_csll: string | null;
 
   @IsString()
   @IsOptional()
-  totasAproximadosTributosMunicipais?: string;
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_pis: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_cofins: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_retencoes_pis_cofins: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  tributacao_federal_total_tributos_federais: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_valor_servico: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_desconto_condicionado: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_desconto_incondicionado: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_issqn_retido: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_irrf_cp_csll_retidos: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_pis_cofins_retidos: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  valor_total_nfse_valor_liquido_nfse: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  totas_aproximados_tributos_federais: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  totas_aproximados_tributos_estaduais: string | null;
+
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  totas_aproximados_tributos_municipais: string | null;
 }

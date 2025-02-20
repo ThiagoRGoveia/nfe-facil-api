@@ -45,12 +45,13 @@ export class S3Client implements FileStoragePort {
     return { bucket, key };
   }
 
-  async uploadFromStream(key: string, stream: Readable, contentType?: string): Promise<string> {
+  async uploadFromStream(key: string, stream: Readable, contentType?: string, expiresIn?: Date): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
       Body: stream,
       ContentType: contentType,
+      Expires: expiresIn,
     });
 
     try {
@@ -61,13 +62,14 @@ export class S3Client implements FileStoragePort {
     }
   }
 
-  async uploadFromBuffer(key: string, buffer: Buffer, contentType?: string): Promise<string> {
+  async uploadFromBuffer(key: string, buffer: Buffer, contentType?: string, expiresIn?: Date): Promise<string> {
     const path = `${this.bucketName}/${key}`;
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
       Body: buffer,
       ContentType: contentType,
+      Expires: expiresIn,
     });
 
     try {

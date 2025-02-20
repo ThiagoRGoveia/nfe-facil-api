@@ -22,6 +22,7 @@ import { Json2CsvAdapter } from '@/infra/json-to-csv/adapters/json-2-csv.adapter
 import { ExcelJsAdapter } from '@/infra/excel/adapters/excel.adapter';
 import { FileProcessMikroOrmDbRepository } from '@/core/documents/infra/persistence/db/orm/file-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { FileFormat } from '@/core/documents/domain/constants/file-formats';
 
 jest.setTimeout(100000000);
 describe('HandleOutputFormatUseCase (Integration)', () => {
@@ -118,7 +119,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
   describe('execute', () => {
     it('should generate JSON output', async () => {
       const batch = await createTestBatch(101);
-      await useCase.execute(batch, ['json']);
+      await useCase.execute(batch, [FileFormat.JSON]);
 
       const jsonPath = path.join(process.cwd(), '/test-files', `${testUser.id}/batch-results/${batch.id}.json`);
       const jsonContent = await fs.readFile(jsonPath, 'utf-8');
@@ -131,7 +132,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
 
     it('should generate CSV output', async () => {
       const batch = await createTestBatch(101);
-      await useCase.execute(batch, ['csv']);
+      await useCase.execute(batch, [FileFormat.CSV]);
 
       const csvPath = path.join(process.cwd(), '/test-files', `${testUser.id}/batch-results/${batch.id}.csv`);
       const csvContent = await fs.readFile(csvPath, 'utf-8');
@@ -144,7 +145,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
 
     it('should generate Excel output', async () => {
       const batch = await createTestBatch(101);
-      await useCase.execute(batch, ['excel']);
+      await useCase.execute(batch, [FileFormat.XLSX]);
 
       const excelPath = path.join(process.cwd(), '/test-files', `${testUser.id}/batch-results/${batch.id}.xlsx`);
       const fileExists = await fs
@@ -159,7 +160,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
     it('should handle multiple output formats', async () => {
       // const batch = await createTestBatch(50000);
       const batch = await em.findOneOrFail(BatchProcess, { id: 'fcefb75e-cb85-43aa-b93d-8df13d6d3e25' });
-      await useCase.execute(batch, ['json', 'csv', 'excel']);
+      await useCase.execute(batch, [FileFormat.JSON, FileFormat.CSV, FileFormat.XLSX]);
 
       expect(batch.jsonResults).toBeDefined();
       expect(batch.csvResults).toBeDefined();

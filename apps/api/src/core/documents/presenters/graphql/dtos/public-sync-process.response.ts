@@ -11,11 +11,11 @@ export class PublicSyncProcessResponse {
   @Field(() => String, { nullable: true, description: 'Base64 encoded Excel data' })
   excel?: string;
 
-  static fromBuffers(response: { json?: Buffer; csv?: Buffer; excel?: Buffer }): PublicSyncProcessResponse {
+  static fromUrls(response: { json?: string; csv?: string; excel?: string }): PublicSyncProcessResponse {
     return {
-      json: response.json?.toString('base64'),
-      csv: response.csv?.toString('base64'),
-      excel: response.excel?.toString('base64'),
+      json: response.json,
+      csv: response.csv,
+      excel: response.excel,
     };
   }
 }

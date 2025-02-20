@@ -8,7 +8,7 @@ export abstract class FileStoragePort {
    * @param contentType Optional MIME type of the file
    * @returns Promise resolving to the full storage path
    */
-  abstract uploadFromStream(key: string, stream: Readable, contentType?: string): Promise<string>;
+  abstract uploadFromStream(key: string, stream: Readable, contentType?: string, expiresIn?: Date): Promise<string>;
 
   /**
    * Uploads a file from a buffer
@@ -17,7 +17,7 @@ export abstract class FileStoragePort {
    * @param contentType Optional MIME type of the file
    * @returns Promise resolving to the full storage path
    */
-  abstract uploadFromBuffer(key: string, buffer: Buffer, contentType?: string): Promise<string>;
+  abstract uploadFromBuffer(key: string, buffer: Buffer, contentType?: string, expiresIn?: Date): Promise<string>;
 
   /**
    * Retrieves a file as a readable stream

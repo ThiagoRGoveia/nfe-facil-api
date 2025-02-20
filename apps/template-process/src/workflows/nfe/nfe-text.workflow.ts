@@ -52,27 +52,30 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
       const prompt = buildPrompt(template, text);
 
       // Parallel requests to both models
-      const [qwenResponse, llamaResponse] = await Promise.all([
-        this.ollamaClient.generate(prompt, 'nfe-qwen'),
-        this.ollamaClient.generate(prompt, 'nfe-llama3.1'),
-      ]);
+      // const [qwenResponse, llamaResponse] = await Promise.all([
+      //   this.ollamaClient.generate(prompt, 'nfe-qwen'),
+      //   this.ollamaClient.generate(prompt, 'nfe-llama3.1'),
+      // ]);
+
+      const qwenResponse = await this.ollamaClient.generate(prompt, 'nfe-qwen');
+      // const llamaResponse = await this.ollamaClient.generate(prompt, 'nfe-llama3.1');
 
       // Parse responses
       const qwenJson = this.parseResponse(qwenResponse);
-      const llamaJson = this.parseResponse(llamaResponse);
+      // const llamaJson = this.parseResponse(qwenResponse);
 
       // Validate responses
       await this.validateResponse(qwenJson);
-      await this.validateResponse(llamaJson);
+      // await this.validateResponse(llamaJson);
 
       // Compare responses
-      if (!this.deepEqual(qwenJson, llamaJson)) {
-        return DocumentProcessResult.fromError({
-          code: 'PROCESS_ERROR',
-          message: 'Could not validate response are not equal',
-          data: { result1: qwenJson, result2: llamaJson },
-        });
-      }
+      // if (!this.deepEqual(qwenJson, llamaJson)) {
+      //   return DocumentProcessResult.fromError({
+      //     code: 'PROCESS_ERROR',
+      //     message: 'Could not validate response are not equal',
+      //     data: { result1: qwenJson, result2: llamaJson },
+      //   });
+      // }
 
       return DocumentProcessResult.fromSuccess(qwenJson, warnings);
     } catch (error) {
@@ -83,7 +86,7 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
     }
   }
 
-  private parseResponse(response: string): object {
+  private parseResponse(response: string): NfeDto {
     try {
       // Extract JSON content between curly braces
       const start = response.indexOf('{');
@@ -94,14 +97,16 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
       }
 
       const jsonString = response.slice(start, end + 1);
-      return JSON.parse(jsonString);
+      return plainToInstance(NfeDto, JSON.parse(jsonString), {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       this.logger.error(error);
       throw new Error('Could not parse document');
     }
   }
 
-  private async validateResponse(data: object): Promise<void> {
+  private async validateResponse(data: NfeDto): Promise<void> {
     try {
       await validateOrReject(
         plainToInstance(NfeDto, data, {

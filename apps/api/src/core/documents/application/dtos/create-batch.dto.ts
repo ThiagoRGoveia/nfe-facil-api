@@ -1,5 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
+import { FileFormat } from '../../domain/constants/file-formats';
 
 export class FileDto {
   @IsString()
@@ -21,5 +22,5 @@ export class CreateBatchDto {
 
   @IsArray()
   @IsOptional()
-  outputFormats?: OutputFormat[] = ['json'];
+  outputFormats?: OutputFormat[] = [FileFormat.JSON];
 }

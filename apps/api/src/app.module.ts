@@ -12,9 +12,11 @@ import { ToolingModule } from './infra/tooling.module';
 import { LoggerModule } from 'nestjs-pino';
 import { defineConfig } from '@mikro-orm/postgresql';
 import entities from './infra/persistence/mikro-orm/entities';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     LoggerModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         forRoutes: ['*'],
@@ -83,5 +85,6 @@ import entities from './infra/persistence/mikro-orm/entities';
   ],
   controllers: [AppController],
   providers: [],
+  exports: [HttpModule],
 })
 export class AppModule {}

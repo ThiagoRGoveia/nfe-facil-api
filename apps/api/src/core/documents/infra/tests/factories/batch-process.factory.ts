@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
 import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
+import { FileFormat } from '@/core/documents/domain/constants/file-formats';
 
 export class BatchProcessFactory extends Factory<BatchProcess> {
   model = BatchProcess;
@@ -14,7 +15,7 @@ export class BatchProcessFactory extends Factory<BatchProcess> {
       totalFiles: faker.number.int({ min: 1, max: 20 }),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
-      requestedFormats: ['json'],
+      requestedFormats: [faker.helpers.arrayElement(Object.values(FileFormat))],
     };
   }
 }
