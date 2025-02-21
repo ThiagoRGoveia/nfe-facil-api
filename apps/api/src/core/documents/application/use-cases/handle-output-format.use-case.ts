@@ -8,6 +8,7 @@ import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { FileFormat } from '../../domain/constants/file-formats';
+import { DownloadPath } from '@/core/documents/domain/value-objects/download-path.vo';
 
 const MAX_FILES_PER_BATCH = 100;
 
@@ -22,7 +23,7 @@ export class HandleOutputFormatUseCase {
   ) {}
 
   async execute(batchProcess: BatchProcess, outputFormats: OutputFormat[] = [FileFormat.JSON]): Promise<void> {
-    const baseKey = `${batchProcess.user.id}/batch-results/${batchProcess.id}`;
+    const downloadPath = DownloadPath.forUser(batchProcess.user.id, batchProcess.id);
 
     // Create a stream of completed file results
     const resultsStream = this.fileProcessDbPort.findCompletedByBatchStream(batchProcess.id, MAX_FILES_PER_BATCH);
@@ -56,8 +57,9 @@ export class HandleOutputFormatUseCase {
         });
         // Pipe clone stream to conversion stream.
         const formatStream = cloneStream.pipe(jsonArrayStream);
+        batchProcess.jsonResults = downloadPath.forUserExtension('json');
         return this.fileStoragePort
-          .uploadFromStream(`${baseKey}.json`, formatStream, 'application/json')
+          .uploadFromStream(downloadPath.forUserExtension('json'), formatStream, 'application/json')
           .then((jsonPath) => {
             batchProcess.jsonResults = jsonPath;
           });
@@ -66,17 +68,21 @@ export class HandleOutputFormatUseCase {
           expandNestedObjects: true,
           unwindArrays: true,
         });
-        return this.fileStoragePort.uploadFromStream(`${baseKey}.csv`, csvStream, 'text/csv').then((csvPath) => {
-          batchProcess.csvResults = csvPath;
-        });
+        batchProcess.csvResults = downloadPath.forUserExtension('csv');
+        return this.fileStoragePort
+          .uploadFromStream(downloadPath.forUserExtension('csv'), csvStream, 'text/csv')
+          .then((csvPath) => {
+            batchProcess.csvResults = csvPath;
+          });
       } else if (format === FileFormat.XLSX) {
         const excelStream = this.excelPort.convertStreamToExcel(cloneStream, {
           expandNestedObjects: true,
           unwindArrays: true,
         });
+        batchProcess.excelResults = downloadPath.forUserExtension('xlsx');
         return this.fileStoragePort
           .uploadFromStream(
-            `${baseKey}.xlsx`,
+            downloadPath.forUserExtension('xlsx'),
             excelStream,
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           )

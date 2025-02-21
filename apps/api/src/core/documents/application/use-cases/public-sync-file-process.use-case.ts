@@ -10,9 +10,9 @@ import { ExcelPort } from '@/infra/excel/ports/excel.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { PublicFileProcessDbPort } from '../ports/public-file-process-db.port';
-import { PublicFileProcessStatus } from '../../domain/entities/public-file-process.entity';
 import { FileFormat } from '../../domain/constants/file-formats';
 import { ConfigService } from '@nestjs/config';
+import { DownloadPath } from '@/core/documents/domain/value-objects/download-path.vo';
 
 type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
   files: FileDto[];
@@ -50,21 +50,26 @@ export class PublicSyncFileProcessUseCase {
       throw new BadRequestException(`Up to ${this.MAX_FILES} files are allowed to be processed at once`);
     }
 
+    // Generate a process id and create a DownloadPath for public processes
+    const processId = this.uuidAdapter.generate();
+    const downloadPath = DownloadPath.forPublic(processId);
+
     const files = dto.files;
     // Process files in parallel
     const results = await Promise.all(
       files.map(async (doc) => {
         try {
-          // Save file to storage
-          const filePath = `public/${this.uuidAdapter.generate()}.${doc.fileName.split('.').pop()}`;
-          // await this.fileStorage.uploadFromBuffer(filePath, doc.data);
+          // Save file to storage using the downloadPath
+          const filePath = downloadPath.forPublicFile(
+            `${this.uuidAdapter.generate()}.${doc.fileName.split('.').pop()}`,
+          );
+          await this.fileStorage.uploadFromBuffer(filePath, doc.data);
 
           // Create public file process record
           const fileProcess = this.publicFileProcessRepository.create({
             fileName: doc.fileName,
             filePath,
             template,
-            status: PublicFileProcessStatus.COMPLETED,
           });
 
           // Process the document
@@ -78,14 +83,13 @@ export class PublicSyncFileProcessUseCase {
             fileProcess.setResult(result.payload);
           }
 
-          await this.publicFileProcessRepository.save();
-
           return {
             fileName: doc.fileName,
             result,
           };
         } catch (error) {
           this.logger.error(`Error processing file ${doc.fileName}:`, error);
+
           return {
             fileName: doc.fileName,
             result: DocumentProcessResult.fromError({
@@ -112,8 +116,9 @@ export class PublicSyncFileProcessUseCase {
         switch (format) {
           case FileFormat.JSON: {
             const jsonBuffer = Buffer.from(JSON.stringify(allResults));
-            await this.fileStorage.uploadFromBuffer(`downloads/${fileId}.json`, jsonBuffer, 'application/json');
-            formatResults.json = `${apiUrl}/api/v1/downloads/${fileId}.json`;
+            const uploadPath = downloadPath.forPublicFile(`${fileId}.json`);
+            await this.fileStorage.uploadFromBuffer(uploadPath, jsonBuffer, 'application/json');
+            formatResults.json = `${apiUrl}/api/v1/${uploadPath}`;
             break;
           }
           case FileFormat.CSV: {
@@ -123,8 +128,9 @@ export class PublicSyncFileProcessUseCase {
                 unwindArrays: true,
               }),
             );
-            await this.fileStorage.uploadFromBuffer(`downloads/${fileId}.csv`, csvBuffer, 'text/csv');
-            formatResults.csv = `${apiUrl}/api/v1/downloads/${fileId}.csv`;
+            const uploadPath = downloadPath.forPublicFile(`${fileId}.csv`);
+            await this.fileStorage.uploadFromBuffer(uploadPath, csvBuffer, 'text/csv');
+            formatResults.csv = `${apiUrl}/api/v1/${uploadPath}`;
             break;
           }
           case FileFormat.XLSX: {
@@ -132,18 +138,19 @@ export class PublicSyncFileProcessUseCase {
               expandNestedObjects: true,
               unwindArrays: true,
             });
+            const uploadPath = downloadPath.forPublicFile(`${fileId}.xlsx`);
             await this.fileStorage.uploadFromBuffer(
-              `downloads/${fileId}.xlsx`,
+              uploadPath,
               excelBuffer,
               'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             );
-            formatResults.excel = `${apiUrl}/api/v1/downloads/${fileId}.xlsx`;
+            formatResults.excel = `${apiUrl}/api/v1/${uploadPath}`;
             break;
           }
         }
       }
     }
-
+    await this.publicFileProcessRepository.save();
     return formatResults;
   }
 }

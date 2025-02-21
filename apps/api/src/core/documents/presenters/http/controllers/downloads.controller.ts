@@ -19,18 +19,18 @@ export class DownloadsController {
 
   @Public()
   @Get(':id')
-  async downloadDocument(@Param('id') id: string, @Res() response: Response): Promise<void> {
+  async downloadDocument(@Param('path') path: string, @Res() response: Response): Promise<void> {
     try {
       // Extract file extension to set correct content type
-      const fileExtension = id.split('.').pop()?.toLowerCase();
+      const fileExtension = path.split('.').pop()?.toLowerCase();
       const contentType = fileExtension ? this.contentTypes[fileExtension] : 'application/octet-stream';
 
       const bucketName = this.configService.get<string>('DOCUMENT_BUCKET_NAME');
-      const fileStream = await this.fileStorage.get(`${bucketName}/downloads/${id}`);
+      const fileStream = await this.fileStorage.get(`${bucketName}/downloads/${path}`);
 
       // Set appropriate headers
       response.setHeader('Content-Type', contentType);
-      response.setHeader('Content-Disposition', `attachment; filename=${id}`);
+      response.setHeader('Content-Disposition', `attachment; filename=${path}`);
 
       // Pipe the file stream directly to the response
       fileStream.pipe(response);
