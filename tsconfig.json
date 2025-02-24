@@ -1,4 +1,5 @@
 {
+  "include": ["apps/**/*.ts", "libs/**/*.ts", "sst/**/*.ts", "sst-env.d.ts"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -18,8 +19,12 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["apps/api/src/*"],
-      "@doc/*": ["apps/template-process/src/*"]
+      "@/*": [
+        "apps/api/src/*"
+      ],
+      "@doc/*": [
+        "apps/template-process/src/*"
+      ]
     }
   }
 }

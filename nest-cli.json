@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
+    "process-document-job": {
+      "type": "application",
+      "root": "apps/process-document-job",
+      "entryFile": "lambda",
+      "sourceRoot": "apps/process-document-job/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/process-document-job/tsconfig.app.json"
+      }
+    },
     "template-process": {
       "type": "application",
       "root": "apps/template-process",

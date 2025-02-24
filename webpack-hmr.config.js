@@ -1,23 +1,46 @@
+const webpack = require('webpack');
+const path = require('path');
 
-const nodeExternals = require('webpack-node-externals');
-const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin');
-
-module.exports = function (options, webpack) {
+module.exports = function (options) {
+  const { plugins, ...config } = options;
   return {
-    ...options,
-    entry: ['webpack/hot/poll?100', options.entry],
-    externals: [
-      nodeExternals({
-        allowlist: ['webpack/hot/poll?100'],
-      }),
-    ],
+    ...config,
+    output: {
+      ...config.output,
+      path: path.resolve(__dirname, 'dist/apps/process-document-job'),
+      filename: 'lambda.js',
+      // libraryTarget: 'commonjs2',
+      library: {
+         type: 'commonjs2'
+      },
+    },
+    externals: [],
     plugins: [
-      ...options.plugins,
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.WatchIgnorePlugin({
-        paths: [/\.js$/, /\.d\.ts$/, /node_modules/, /nestjs-module-generator/, /dist/],
+      ...plugins,
+      new webpack.IgnorePlugin({
+        checkResource(resource) {
+          const lazyImports = [
+            '@nestjs/microservices',
+            'cache-manager',
+            // 'class-validator',
+            // 'class-transformer',
+            '@nestjs/websockets/socket-module',
+            '@nestjs/microservices/microservices-module',
+            'fastify-swagger',
+          ];
+          if (!lazyImports.includes(resource)) {
+            return false;
+          }
+          try {
+            require.resolve(resource, {
+              paths: [process.cwd()],
+            });
+          } catch (err) {
+            return true;
+          }
+          return false;
+        },
       }),
-      new RunScriptWebpackPlugin({ name: options.output.filename, autoRestart: false }),
     ],
   };
 };
