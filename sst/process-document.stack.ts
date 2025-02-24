@@ -21,6 +21,6 @@ export function ProcessDocumentStack() {
   );
 
   return {
-    queue: processDocumentQueue,
+    processDocumentQueue,
   };
 }

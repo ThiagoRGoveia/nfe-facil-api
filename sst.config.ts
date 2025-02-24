@@ -2,6 +2,7 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
 import { ProcessDocumentStack } from './sst/process-document.stack';
+import { ApiStack } from './sst/api.stack';
 
 export default $config({
   app(input) {
@@ -13,10 +14,12 @@ export default $config({
     };
   },
   async run() {
-    ProcessDocumentStack();
+    const { api } = ApiStack();
+    const { processDocumentQueue } = ProcessDocumentStack();
 
     return Promise.resolve({
-      ProcessDocumentStack,
+      api,
+      processDocumentQueue,
     });
   },
 });
