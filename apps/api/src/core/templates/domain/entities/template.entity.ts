@@ -7,7 +7,7 @@ import { GraphQLJSON } from 'graphql-scalars';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 @ObjectType()
-@Entity({ tableName: 'template' })
+@Entity({ tableName: 'templates' })
 export class Template<T = Record<string, unknown>> extends BaseEntity {
   @Field(() => String)
   @ApiProperty({

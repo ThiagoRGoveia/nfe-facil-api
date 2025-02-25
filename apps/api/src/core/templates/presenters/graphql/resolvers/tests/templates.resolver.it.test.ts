@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
@@ -8,14 +8,12 @@ import { TemplatesResolver } from '../templates.resolver';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 
 jest.setTimeout(100000);
 describe('TemplatesResolver (Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let user: User;
   let template: Template;
@@ -26,7 +24,6 @@ describe('TemplatesResolver (Integration)', () => {
       providers: [TemplatesResolver],
     }).compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
 

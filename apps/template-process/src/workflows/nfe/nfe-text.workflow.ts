@@ -1,34 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { OllamaClient } from '../clients/ollama-client';
 import { validateOrReject } from 'class-validator';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
 import { PinoLogger } from 'nestjs-pino';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
 import { NfeDto } from './dto/nfe.dto';
 import { BaseWorkflow } from '../_base.workflow';
+import { TogetherClient } from '../clients/together-client';
 
-type TemplateMetadata = {
+type NfeTemplateMetadata = {
   prompt: string;
+  modelConfigs: {
+    model: string;
+    systemMessage: string;
+    config: {
+      maxTokens: number;
+      temperature: number;
+      topP: number;
+      topK: number;
+      repetitionPenalty: number;
+    };
+  }[];
 };
 
 const MAX_FILE_SIZE = 300 * 1024; // 300KB in bytes
 
-const buildPrompt = (template: Template<TemplateMetadata>, nfeText: string) => {
+const buildPrompt = (template: Template<NfeTemplateMetadata>, nfeText: string) => {
   return template.metadata.prompt.replace('{{nfeText}}', nfeText);
 };
 
 @Injectable()
-export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
+export class NfeTextWorkflow extends BaseWorkflow {
   constructor(
-    fileStoragePort: FileStoragePort,
     private readonly pdfExtractor: PdfPort,
-    private readonly ollamaClient: OllamaClient,
-    logger: PinoLogger,
+    private readonly togetherClient: TogetherClient,
+    private readonly logger: PinoLogger,
   ) {
-    super(fileStoragePort, logger);
+    super();
   }
 
   async execute(fileBuffer: Buffer, template: Template): Promise<DocumentProcessResult> {
@@ -37,7 +46,7 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
         throw new Error(`File is too Big)`);
       }
 
-      if (!this.isTemplateMetadata(template, ['prompt'])) {
+      if (!this.isNfeTemplateMetadata(template)) {
         throw new Error(`Template is not a valid template for NFE text extraction`);
       }
 
@@ -52,32 +61,33 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
       const prompt = buildPrompt(template, text);
 
       // Parallel requests to both models
-      // const [qwenResponse, llamaResponse] = await Promise.all([
-      //   this.ollamaClient.generate(prompt, 'nfe-qwen'),
-      //   this.ollamaClient.generate(prompt, 'nfe-llama3.1'),
-      // ]);
-
-      const qwenResponse = await this.ollamaClient.generate(prompt, 'nfe-qwen');
-      // const llamaResponse = await this.ollamaClient.generate(prompt, 'nfe-llama3.1');
+      const modelConfigs = template.metadata.modelConfigs;
+      const responses = await Promise.all(
+        modelConfigs.map((modelConfig) =>
+          this.togetherClient.generate(prompt, {
+            model: modelConfig.model,
+            systemMessage: modelConfig.systemMessage,
+            config: modelConfig.config,
+          }),
+        ),
+      );
 
       // Parse responses
-      const qwenJson = this.parseResponse(qwenResponse);
-      // const llamaJson = this.parseResponse(qwenResponse);
+      const responsesJson = responses.map((response) => this.parseResponse(response));
 
       // Validate responses
-      await this.validateResponse(qwenJson);
-      // await this.validateResponse(llamaJson);
+      await this.validateResponse(responsesJson);
 
       // Compare responses
-      // if (!this.deepEqual(qwenJson, llamaJson)) {
-      //   return DocumentProcessResult.fromError({
-      //     code: 'PROCESS_ERROR',
-      //     message: 'Could not validate response are not equal',
-      //     data: { result1: qwenJson, result2: llamaJson },
-      //   });
-      // }
+      if (!this.deepEqual(responsesJson)) {
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: 'Could not validate response are not equal',
+          data: responsesJson,
+        });
+      }
 
-      return DocumentProcessResult.fromSuccess(qwenJson, warnings);
+      return DocumentProcessResult.fromSuccess(responsesJson[0], warnings);
     } catch (error) {
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
@@ -106,16 +116,28 @@ export class NfeTextWorkflow extends BaseWorkflow<TemplateMetadata> {
     }
   }
 
-  private async validateResponse(data: NfeDto): Promise<void> {
+  private async validateResponse(data: NfeDto[]): Promise<void> {
     try {
-      await validateOrReject(
-        plainToInstance(NfeDto, data, {
-          excludeExtraneousValues: true,
-        }),
-      );
+      await validateOrReject(data);
     } catch (errors) {
       this.logger.error(errors);
       throw new Error('Could not validate document');
     }
+  }
+
+  private isNfeTemplateMetadata(template: Template): template is Template<NfeTemplateMetadata> {
+    return (
+      'prompt' in template.metadata &&
+      'modelConfigs' in template.metadata &&
+      Array.isArray(template.metadata.modelConfigs) &&
+      template.metadata.modelConfigs.every(
+        (modelConfig) => 'model' in modelConfig && 'systemMessage' in modelConfig && 'config' in modelConfig,
+      )
+    );
+  }
+
+  private deepEqual(list: unknown[]): boolean {
+    const firstItem = JSON.stringify(list[0]);
+    return list.every((item) => JSON.stringify(item) === firstItem);
   }
 }
