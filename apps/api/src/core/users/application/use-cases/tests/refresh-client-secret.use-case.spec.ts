@@ -28,10 +28,6 @@ describe('RefreshClientSecretUseCase', () => {
           provide: PinoLogger,
           useValue: createMock<PinoLogger>(),
         },
-        {
-          provide: SecretAdapter,
-          useValue: createMock<SecretAdapter>(),
-        },
       ],
     }).compile();
 

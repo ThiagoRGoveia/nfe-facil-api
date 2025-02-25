@@ -5,6 +5,7 @@ import { BatchProcess } from './batch-process.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import { User } from '@/core/users/domain/entities/user.entity';
+import { DatePort } from '@/infra/adapters/date.adapter';
 export enum FileProcessStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
@@ -71,7 +72,7 @@ export class FileToProcess {
   @Property({
     columnType: 'timestamp',
     defaultRaw: 'now()',
-    onUpdate: () => new Date(),
+    onUpdate: () => DatePort.now(),
   })
   updatedAt: Date;
 
@@ -97,6 +98,6 @@ export class FileToProcess {
   }
 
   public markNotified(): void {
-    this.notifiedAt = new Date();
+    this.notifiedAt = DatePort.now();
   }
 }

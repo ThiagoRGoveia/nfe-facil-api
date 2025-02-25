@@ -3,6 +3,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Webhook } from './webhook.entity';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 export enum WebhookDeliveryStatus {
   PENDING = 'PENDING',
@@ -66,19 +67,19 @@ export class WebhookDelivery extends BaseEntity {
 
   markAsSuccess(): void {
     this.status = WebhookDeliveryStatus.SUCCESS;
-    this.lastAttempt = new Date();
+    this.lastAttempt = DatePort.now();
   }
 
   markAsFailed(error: string): void {
     this.status = WebhookDeliveryStatus.FAILED;
     this.lastError = error;
-    this.lastAttempt = new Date();
+    this.lastAttempt = DatePort.now();
   }
 
   markAsRetryPending(error: string): void {
     this.status = WebhookDeliveryStatus.RETRY_PENDING;
     this.lastError = error;
-    this.lastAttempt = new Date();
+    this.lastAttempt = DatePort.now();
   }
 
   startRetry(): void {

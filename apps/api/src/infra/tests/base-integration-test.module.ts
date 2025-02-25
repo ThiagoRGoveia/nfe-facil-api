@@ -12,6 +12,10 @@ import { EncryptionAdapter } from '../encryption/adapters/encryption.adapter';
 import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { FileStoragePort } from '../aws/s3/ports/file-storage.port';
 import { QueuePort } from '../aws/sqs/ports/queue.port';
+import { ZipPort } from '../zip/zip.port';
+import { CsvPort } from '../json-to-csv/ports/csv.port';
+import { ExcelPort } from '../excel/ports/excel.port';
+import { DatePort } from '../adapters/date.adapter';
 @Global()
 @Module({
   imports: [
@@ -60,6 +64,22 @@ import { QueuePort } from '../aws/sqs/ports/queue.port';
       provide: QueuePort,
       useValue: createMock<QueuePort>(),
     },
+    {
+      provide: ZipPort,
+      useValue: createMock<ZipPort>(),
+    },
+    {
+      provide: CsvPort,
+      useValue: createMock<CsvPort>(),
+    },
+    {
+      provide: ExcelPort,
+      useValue: createMock<ExcelPort>(),
+    },
+    {
+      provide: DatePort,
+      useValue: createMock<DatePort>(),
+    },
   ],
   exports: [
     DatabaseLifecycleService,
@@ -70,6 +90,10 @@ import { QueuePort } from '../aws/sqs/ports/queue.port';
     EncryptionPort,
     FileStoragePort,
     QueuePort,
+    ZipPort,
+    CsvPort,
+    ExcelPort,
+    DatePort,
   ],
 })
 export class BaseIntegrationTestModule {}

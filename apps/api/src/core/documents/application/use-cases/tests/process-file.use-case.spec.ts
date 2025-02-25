@@ -15,6 +15,8 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
+import { HandleOutputFormatUseCase } from '../handle-output-format.use-case';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 
 describe('ProcessFileUseCase', () => {
   let useCase: ProcessFileUseCase;
@@ -48,24 +50,31 @@ describe('ProcessFileUseCase', () => {
           useValue: createMock<WebhookNotifierPort>(),
         },
         {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            get: jest.fn().mockResolvedValue(
-              new Readable({
-                read() {
-                  this.push('test');
-                  this.push(null);
-                },
-              }),
-            ),
-          }),
+          provide: BatchDbPort,
+          useValue: createMock<BatchDbPort>(),
         },
         {
-          provide: BatchDbPort,
-          useValue: createMock<BatchDbPort>({}),
+          provide: HandleOutputFormatUseCase,
+          useValue: createMock<HandleOutputFormatUseCase>(),
         },
       ],
-    }).compile();
+    })
+      .overrideProvider(FileStoragePort)
+      .useValue(
+        createMock<FileStoragePort>({
+          get: jest.fn().mockResolvedValue(
+            new Readable({
+              read() {
+                this.push('test');
+                this.push(null);
+              },
+            }),
+          ),
+        }),
+      )
+      .overrideProvider(UuidAdapter)
+      .useValue(createMock<UuidAdapter>({ generate: jest.fn().mockReturnValue('file-uuid') }))
+      .compile();
 
     useCase = module.get<ProcessFileUseCase>(ProcessFileUseCase);
     fileProcessDbPort = module.get(FileProcessDbPort);
@@ -88,17 +97,19 @@ describe('ProcessFileUseCase', () => {
         status: FileProcessStatus.PENDING,
         template,
         filePath: 's3://valid/path.pdf',
+        user: mockUser,
       },
       em,
     );
+    fileProcessDbPort.findById.mockResolvedValueOnce(fileProcess);
+    fileStoragePort.getBuffer.mockResolvedValueOnce(Buffer.from('test'));
 
     const result = await useCase.execute({
-      user: mockUser,
-      file: fileProcess,
+      fileId: fileProcess.id,
     });
 
     expect(documentProcessor.process).toHaveBeenCalledWith(expect.any(Buffer), template);
-    expect(fileStoragePort.get).toHaveBeenCalledWith(fileProcess.filePath);
+    expect(fileStoragePort.getBuffer).toHaveBeenCalledWith(fileProcess.filePath);
     expect(webhookNotifier.notifySuccess).toHaveBeenCalled();
     expect(result.status).toBe(FileProcessStatus.COMPLETED);
     expect(fileProcessDbPort.save).toHaveBeenCalledTimes(2);
@@ -106,7 +117,7 @@ describe('ProcessFileUseCase', () => {
 
   it('should handle processing failure', async () => {
     const template = useTemplateFactory({ user: mockUser }, em);
-    const fileProcess = useFileProcessFactory({ template }, em);
+    const fileProcess = useFileProcessFactory({ template, user: mockUser }, em);
     documentProcessor.process.mockResolvedValueOnce(
       createMock<DocumentProcessResult>({
         isError: () => true,
@@ -114,8 +125,9 @@ describe('ProcessFileUseCase', () => {
         isSuccess: () => false,
       }),
     );
+    fileProcessDbPort.findById.mockResolvedValueOnce(fileProcess);
 
-    const result = await useCase.execute({ user: mockUser, file: fileProcess });
+    const result = await useCase.execute({ fileId: fileProcess.id });
 
     expect(result.status).toBe(FileProcessStatus.FAILED);
     expect(webhookNotifier.notifyFailure).toHaveBeenCalled();
@@ -123,61 +135,37 @@ describe('ProcessFileUseCase', () => {
 
   it('should reject inaccessible template', async () => {
     const otherUserTemplate = useTemplateFactory({ user: useUserFactory({}, em), isPublic: false }, em);
-    const otherFileProcess = useFileProcessFactory({ template: otherUserTemplate }, em);
+    const otherFileProcess = useFileProcessFactory({ template: otherUserTemplate, user: mockUser }, em);
+    fileProcessDbPort.findById.mockResolvedValueOnce(otherFileProcess);
 
-    await expect(useCase.execute({ user: mockUser, file: otherFileProcess })).rejects.toThrow(
+    await expect(useCase.execute({ fileId: otherFileProcess.id })).rejects.toThrow(
       "You don't have access to this template",
     );
   });
 
   it('should handle missing file path', async () => {
     const fileProcess = useFileProcessFactory(
-      { filePath: null, template: useTemplateFactory({ user: mockUser }, em) },
+      { filePath: null, template: useTemplateFactory({ user: mockUser }, em), user: mockUser },
       em,
     );
+    fileProcessDbPort.findById.mockResolvedValueOnce(fileProcess);
 
-    await expect(useCase.execute({ user: mockUser, file: fileProcess })).rejects.toThrow(
-      'Missing file for file processing',
-    );
+    await expect(useCase.execute({ fileId: fileProcess.id })).rejects.toThrow('Missing file for file processing');
   });
 
   it('should throw when template is not found', async () => {
     const fileProcess = useFileProcessFactory(
       {
         template: useTemplateFactory({ user: mockUser }, em),
+        user: mockUser,
       },
       em,
     );
+    fileProcessDbPort.findById.mockResolvedValueOnce(fileProcess);
 
     jest.spyOn(fileProcess.template, 'load').mockResolvedValueOnce(null);
 
-    await expect(useCase.execute({ user: mockUser, file: fileProcess })).rejects.toThrow('Template not found');
-  });
-
-  it('should throw when file size exceeds maximum limit', async () => {
-    const template = useTemplateFactory({ user: mockUser }, em);
-    const fileProcess = useFileProcessFactory(
-      {
-        status: FileProcessStatus.PENDING,
-        template,
-        filePath: 's3://valid/large-file.pdf',
-      },
-      em,
-    );
-
-    // Mock a large file (400KB)
-    fileStoragePort.get.mockResolvedValueOnce(
-      new Readable({
-        read() {
-          this.push(Buffer.alloc(400 * 1024));
-          this.push(null);
-        },
-      }),
-    );
-
-    await expect(useCase.execute({ user: mockUser, file: fileProcess })).rejects.toThrow(
-      'File ' + fileProcess.id + ' is too large (max 300KB)',
-    );
+    await expect(useCase.execute({ fileId: fileProcess.id })).rejects.toThrow('Template not found');
   });
 
   it('should handle batch completion when all files are processed', async () => {
@@ -189,9 +177,11 @@ describe('ProcessFileUseCase', () => {
         template,
         filePath: 's3://valid/path.pdf',
         batchProcess,
+        user: mockUser,
       },
       em,
     );
+    fileProcessDbPort.findById.mockResolvedValueOnce(fileProcess);
 
     em.clear();
     const updatedBatchProcess = useBatchProcessFactory(
@@ -206,7 +196,7 @@ describe('ProcessFileUseCase', () => {
 
     const spy = jest.spyOn(updatedBatchProcess, 'markCompleted');
 
-    await useCase.execute({ user: mockUser, file: fileProcess });
+    await useCase.execute({ fileId: fileProcess.id });
 
     expect(batchDbPort.incrementProcessedFilesCount).toHaveBeenCalledWith(batchProcess.id);
     expect(spy).toHaveBeenCalled();

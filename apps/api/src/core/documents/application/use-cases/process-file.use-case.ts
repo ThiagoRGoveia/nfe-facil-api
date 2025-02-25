@@ -3,20 +3,12 @@ import { FileToProcess } from '@/core/documents/domain/entities/file-process.ent
 import { DocumentProcessorPort } from '@/core/documents/application/ports/document-processor.port';
 import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-notifier.port';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
-import { User } from '@/core/users/domain/entities/user.entity';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { Readable } from 'stream';
 import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
-import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
-import { FileFormat } from '../../domain/constants/file-formats';
-
-const MAX_FILE_SIZE = 300 * 1024; // 300KB in bytes
 
 export interface ProcessFileParams {
-  user: User;
-  file: FileToProcess;
-  outputFormats?: OutputFormat[];
+  fileId: FileToProcess['id'];
 }
 
 @Injectable()
@@ -31,7 +23,15 @@ export class ProcessFileUseCase {
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileToProcess> {
-    const { file, user, outputFormats = [FileFormat.JSON] } = params;
+    const { fileId } = params;
+    const file = await this.fileProcessDbPort.findById(fileId);
+
+    const user = await file?.user.load();
+
+    if (!file || !user) {
+      throw new BadRequestException('File or user not found');
+    }
+
     const template = await file.template.load();
     const batchProcess = await file.batchProcess?.load();
 
@@ -50,12 +50,7 @@ export class ProcessFileUseCase {
       throw new BadRequestException('Missing file for file processing');
     }
 
-    const pdfBuffer = await this.streamToBuffer(await this.fileStoragePort.get(file.filePath));
-    const fileSize = pdfBuffer.length;
-
-    if (fileSize > MAX_FILE_SIZE) {
-      throw new BadRequestException(`File ${file.id} is too large (max ${MAX_FILE_SIZE / 1024}KB)`);
-    }
+    const pdfBuffer = await this.fileStoragePort.getBuffer(file.filePath);
 
     const result = await this.documentProcessorPort.process(pdfBuffer, template);
 
@@ -73,20 +68,12 @@ export class ProcessFileUseCase {
       const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
       if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
         updatedBatchProcess.markCompleted();
-        await this.handleOutputFormatUseCase.execute(updatedBatchProcess, outputFormats);
+        await this.handleOutputFormatUseCase.execute(updatedBatchProcess);
         await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
       }
     }
 
     await this.fileProcessDbPort.save();
     return file;
-  }
-
-  private streamToBuffer(stream: Readable): Promise<Buffer> {
-    return new Promise((resolve) => {
-      const chunks: Buffer[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-    });
   }
 }

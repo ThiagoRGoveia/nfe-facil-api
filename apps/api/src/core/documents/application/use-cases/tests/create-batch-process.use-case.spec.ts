@@ -52,27 +52,21 @@ describe('CreateBatchProcessUseCase', () => {
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            uploadFromBuffer: jest.fn().mockResolvedValue(undefined),
-            deleteFolder: jest.fn().mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: ZipPort,
-          useValue: createMock<ZipPort>({
-            extractFiles: jest.fn().mockResolvedValue([]),
-          }),
-        },
-        {
-          provide: UuidAdapter,
-          useValue: createMock<UuidAdapter>({
-            generate: jest.fn().mockReturnValue('file-uuid-123'),
-          }),
-        },
       ],
-    }).compile();
+    })
+      .overrideProvider(UuidAdapter)
+      .useValue(
+        createMock<UuidAdapter>({
+          generate: jest.fn().mockReturnValue('file-uuid-123'),
+        }),
+      )
+      .overrideProvider(ZipPort)
+      .useValue(
+        createMock<ZipPort>({
+          extractFiles: jest.fn().mockResolvedValue([]),
+        }),
+      )
+      .compile();
 
     useCase = module.get<CreateBatchProcessUseCase>(CreateBatchProcessUseCase);
     templateDbPort = module.get(TemplateDbPort);

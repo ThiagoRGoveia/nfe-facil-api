@@ -6,6 +6,11 @@ import { FileStoragePort } from '../ports/file-storage.port';
 
 // NOTICE: This is a test adapter, it is not used in production
 export class LocalFileStorageAdapter extends FileStoragePort {
+  async getBuffer(pathString: string): Promise<Buffer> {
+    const filePath = path.join(process.cwd(), '/test-files', pathString);
+    return fs.readFile(filePath);
+  }
+
   async uploadFromStream(key: string, stream: Readable): Promise<string> {
     const filePath = path.join(process.cwd(), '/test-files', key);
     await fs.mkdir(path.dirname(filePath), { recursive: true });

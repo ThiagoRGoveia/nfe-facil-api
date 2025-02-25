@@ -41,18 +41,7 @@ describe('PublicSyncFileProcessUseCase', () => {
             process: jest.fn().mockResolvedValue(DocumentProcessResult.fromSuccess({})),
           }),
         },
-        {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            uploadFromBuffer: jest.fn().mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: UuidAdapter,
-          useValue: createMock<UuidAdapter>({
-            generate: jest.fn().mockReturnValue('mock-uuid'),
-          }),
-        },
+
         {
           provide: PublicFileProcessDbPort,
           useValue: createMock<PublicFileProcessDbPort>({
@@ -60,26 +49,33 @@ describe('PublicSyncFileProcessUseCase', () => {
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: ConfigService,
-          useValue: createMock<ConfigService>({
-            get: jest.fn().mockReturnValue('http://api.example.com'),
-          }),
-        },
-        {
-          provide: CsvPort,
-          useValue: createMock<CsvPort>({
-            convertToCsv: jest.fn().mockReturnValue('csv,data'),
-          }),
-        },
-        {
-          provide: ExcelPort,
-          useValue: createMock<ExcelPort>({
-            convertToExcel: jest.fn().mockResolvedValue(Buffer.from('excel-data')),
-          }),
-        },
       ],
-    }).compile();
+    })
+      .overrideProvider(UuidAdapter)
+      .useValue(
+        createMock<UuidAdapter>({
+          generate: jest.fn().mockReturnValue('mock-uuid'),
+        }),
+      )
+      .overrideProvider(ConfigService)
+      .useValue(
+        createMock<ConfigService>({
+          get: jest.fn().mockReturnValue('http://api.example.com'),
+        }),
+      )
+      .overrideProvider(CsvPort)
+      .useValue(
+        createMock<CsvPort>({
+          convertToCsv: jest.fn().mockReturnValue('csv,data'),
+        }),
+      )
+      .overrideProvider(ExcelPort)
+      .useValue(
+        createMock<ExcelPort>({
+          convertToExcel: jest.fn().mockResolvedValue(Buffer.from('excel-data')),
+        }),
+      )
+      .compile();
 
     useCase = module.get<PublicSyncFileProcessUseCase>(PublicSyncFileProcessUseCase);
     templateRepository = module.get(TemplateDbPort);

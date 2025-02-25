@@ -6,6 +6,7 @@ import { WebhookEvent } from '../../domain/entities/webhook.entity';
 import { WebhookDeliveryStatus } from '../../domain/entities/webhook-delivery.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { User } from '@/core/users/domain/entities/user.entity';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 export interface NotifyWebhookParams {
   user: User;
@@ -20,6 +21,7 @@ export class NotifyWebhookUseCase {
     private readonly deliveryRepository: WebhookDeliveryDbPort,
     private readonly dispatcher: WebhookDispatcherPort,
     private readonly logger: PinoLogger,
+    private readonly datePort: DatePort,
   ) {}
 
   async execute(params: NotifyWebhookParams): Promise<void> {
@@ -48,7 +50,7 @@ export class NotifyWebhookUseCase {
             status: WebhookDeliveryStatus.FAILED,
             retryCount: delivery.retryCount + 1,
             lastError: error.message,
-            lastAttempt: new Date(),
+            lastAttempt: this.datePort.now(),
           });
         }
       }),

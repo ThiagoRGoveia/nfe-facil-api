@@ -93,6 +93,7 @@ describe('SyncBatchProcessUseCase', () => {
         status: BatchStatus.COMPLETED,
       }),
     );
+    expect(batchDbPort.refresh).toHaveBeenCalledWith(batch);
   });
 
   it('should cancel batch if too many files', async () => {

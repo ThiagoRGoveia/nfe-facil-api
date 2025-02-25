@@ -40,12 +40,6 @@ describe('CancelBatchProcessUseCase', () => {
             deleteByBatchId: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            deleteFolder: jest.fn().mockResolvedValue(undefined),
-          }),
-        },
       ],
     }).compile();
 

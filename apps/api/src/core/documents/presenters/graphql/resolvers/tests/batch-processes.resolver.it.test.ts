@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { INestApplication, Module, Global } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
@@ -27,18 +27,6 @@ import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-p
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
 
-@Global()
-@Module({
-  providers: [
-    {
-      provide: ZipPort,
-      useClass: ZipAdapter,
-    },
-  ],
-  exports: [ZipPort],
-})
-class TestZipModule {}
-
 jest.setTimeout(100000);
 describe('BatchProcesses Resolver (integration)', () => {
   let app: INestApplication;
@@ -50,7 +38,7 @@ describe('BatchProcesses Resolver (integration)', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [useGraphqlModule(() => user), DocumentsModule, TemplatesModule, TestZipModule],
+      imports: [useGraphqlModule(() => user), DocumentsModule, TemplatesModule],
     })
       .overrideProvider(DocumentProcessorPort)
       .useValue(createMock<DocumentProcessorPort>())
@@ -75,6 +63,8 @@ describe('BatchProcesses Resolver (integration)', () => {
           ),
         }),
       )
+      .overrideProvider(ZipPort)
+      .useValue(new ZipAdapter())
       .compile();
 
     em = module.get(EntityManager);
@@ -108,12 +98,6 @@ describe('BatchProcesses Resolver (integration)', () => {
           }
           user {
             id
-          }
-          files {
-            id
-            fileName
-            status
-            error
           }
         }
       }
@@ -165,11 +149,8 @@ describe('BatchProcesses Resolver (integration)', () => {
         expect(body.data.processBatchSync.status).toBe(BatchStatus.COMPLETED);
         expect(body.data.processBatchSync.template.id).toBe(template.id);
         expect(body.data.processBatchSync.user.id).toBe(user.id);
-        // Updated assertion for 3 files (2 from zip and 1 from pdf)
-        expect(body.data.processBatchSync.files).toHaveLength(3);
-        expect(body.data.processBatchSync.files[0].fileName).toBe('test.pdf');
-        expect(body.data.processBatchSync.files[1].fileName).toBe('Test 1.pdf');
-        expect(body.data.processBatchSync.files[2].fileName).toBe('Test 2.pdf');
+        expect(body.data.processBatchSync.totalFiles).toBe(3);
+        expect(body.data.processBatchSync.processedFiles).toBe(3);
       })
       .expect(200);
 

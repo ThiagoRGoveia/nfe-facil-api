@@ -47,8 +47,7 @@ export class SyncFileProcessUseCase {
       files.map(async (doc) => {
         try {
           await this.processFileUseCase.execute({
-            file: doc,
-            user,
+            fileId: doc.id,
           });
         } catch (error) {
           this.logger.error(`Error processing file ${doc.filePath}:`, error);
@@ -58,6 +57,6 @@ export class SyncFileProcessUseCase {
 
     this.batchRepository.update(batch.id, { status: BatchStatus.COMPLETED });
     await this.batchRepository.save();
-    return batch;
+    return this.batchRepository.refresh(batch);
   }
 }

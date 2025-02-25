@@ -7,7 +7,6 @@ import { CreateUserUseCase } from '../create-user.use-case';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { UserRole } from '../../../domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
@@ -29,18 +28,6 @@ describe('CreateUserUseCase', () => {
         {
           provide: UserDbPort,
           useValue: createMock<UserDbPort>(),
-        },
-        {
-          provide: PinoLogger,
-          useValue: createMock<PinoLogger>(),
-        },
-        {
-          provide: UuidAdapter,
-          useValue: createMock<UuidAdapter>(),
-        },
-        {
-          provide: SecretAdapter,
-          useValue: createMock<SecretAdapter>(),
         },
       ],
     }).compile();

@@ -33,18 +33,18 @@ describe('CreateWebhookUseCase', () => {
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: EncryptionPort,
-          useValue: createMock<EncryptionPort>({
-            encrypt: jest.fn().mockReturnValue('encrypted-config'),
-          }),
-        },
       ],
     })
       .overrideProvider(ConfigService)
       .useValue({
         get: jest.fn().mockReturnValue('development'),
       })
+      .overrideProvider(EncryptionPort)
+      .useValue(
+        createMock<EncryptionPort>({
+          encrypt: jest.fn().mockReturnValue('encrypted-config'),
+        }),
+      )
       .compile();
 
     useCase = module.get<CreateWebhookUseCase>(CreateWebhookUseCase);

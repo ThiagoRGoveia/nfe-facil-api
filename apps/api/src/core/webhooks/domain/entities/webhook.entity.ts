@@ -77,9 +77,9 @@ export class Webhook extends BaseEntity<'maxRetries' | 'timeout' | 'headers'> {
   @Property({ type: 'json' })
   headers: Record<string, string> = {};
 
+  @Property({ columnType: 'timestamp', defaultRaw: 'now()' })
   @Field(() => Date)
-  @Property()
-  createdAt: Date = new Date();
+  createdAt: Date;
 
   isActive(): boolean {
     return this.status === WebhookStatus.ACTIVE;

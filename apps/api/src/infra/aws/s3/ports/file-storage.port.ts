@@ -27,6 +27,13 @@ export abstract class FileStoragePort {
   abstract get(path: string): Promise<Readable>;
 
   /**
+   * Retrieves a file as a buffer
+   * @param path Full storage path in format "path/to/file"
+   * @returns Promise resolving to a buffer
+   */
+  abstract getBuffer(path: string): Promise<Buffer>;
+
+  /**
    * Deletes a file from storage
    * @param path Full storage path in format "path/to/file"
    */

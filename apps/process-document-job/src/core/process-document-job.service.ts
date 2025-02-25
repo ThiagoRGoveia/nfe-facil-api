@@ -1,28 +1,45 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ProcessFileUseCase } from 'apps/api/src/core/documents/application/use-cases/process-file.use-case';
+import { DatePort } from '@/infra/adapters/date.adapter';
+import { PinoLogger } from 'nestjs-pino';
+type MessageParam = {
+  fileId: string;
+};
 
 @Injectable()
 export class ProcessDocumentJobService {
-  private readonly logger = new Logger(ProcessDocumentJobService.name);
+  constructor(
+    private readonly processFileUseCase: ProcessFileUseCase,
+    private readonly datePort: DatePort,
+    private readonly logger: PinoLogger,
+  ) {}
 
-  processMessage(message: any) {
+  async processMessage(message: object) {
     try {
-      this.logger.log(`Processing document message: ${JSON.stringify(message)}`);
+      this.logger.info(`Processing document message: ${JSON.stringify(message)}`);
 
-      // TODO: Implement your document processing logic here
-      // For example:
-      // - Parse document data
-      // - Validate document
-      // - Store document
-      // - Update document status
+      if (!this.validateMessage(message)) {
+        throw new Error('Invalid message: missing fileId in message body');
+      }
+
+      const { fileId } = message;
+
+      // Process the file using the ProcessFileUseCase
+      await this.processFileUseCase.execute({ fileId });
+
+      this.logger.info(`File processed successfully: ${fileId}`);
 
       return {
         success: true,
-        messageId: message.messageId,
-        processedAt: new Date().toISOString(),
+        processedAt: this.datePort.now().toISOString(),
       };
     } catch (error) {
       this.logger.error(`Error processing document: ${error.message}`, error.stack);
       throw error;
     }
+  }
+
+  private validateMessage(message: object): message is MessageParam {
+    return 'fileId' in message;
   }
 }

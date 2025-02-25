@@ -13,6 +13,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useWebhookDeliveryFactory } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
 import { BadRequestException } from '@nestjs/common';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 describe('NotifyWebhookUseCase', () => {
   let useCase: NotifyWebhookUseCase;
@@ -22,7 +23,7 @@ describe('NotifyWebhookUseCase', () => {
   let em: EntityManager;
   let testUser: User;
   let testWebhook: Webhook;
-
+  let datePort: jest.Mocked<DatePort>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [useUnitTestModule()],
@@ -53,6 +54,7 @@ describe('NotifyWebhookUseCase', () => {
     webhookDbPort = module.get(WebhookDbPort);
     deliveryDbPort = module.get(WebhookDeliveryDbPort);
     dispatcherPort = module.get(WebhookDispatcherPort);
+    datePort = module.get(DatePort);
     em = module.get(EntityManager);
 
     testUser = useUserFactory({ id: '1' }, em);
@@ -115,6 +117,8 @@ describe('NotifyWebhookUseCase', () => {
     );
 
     deliveryDbPort.create.mockReturnValue(testDelivery);
+    const mockDate = new Date();
+    datePort.now.mockReturnValue(mockDate);
 
     await useCase.execute({ event: testEvent, payload: testPayload, user: testUser });
 
@@ -122,7 +126,7 @@ describe('NotifyWebhookUseCase', () => {
       status: WebhookDeliveryStatus.FAILED,
       retryCount: 1,
       lastError: testError.message,
-      lastAttempt: expect.any(Date),
+      lastAttempt: mockDate,
     });
   });
 

@@ -6,12 +6,14 @@ import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 @Injectable()
 export class WebhookNotifierAdapter implements WebhookNotifierPort {
   constructor(
     private readonly notifyWebhookUseCase: NotifyWebhookUseCase,
     private readonly logger: PinoLogger,
+    private readonly datePort: DatePort,
   ) {}
 
   async notifySuccess(process: FileToProcess): Promise<void> {
@@ -24,7 +26,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
           documentId: process.id,
           status: process.status,
           fileName: process.fileName,
-          processedAt: new Date(),
+          processedAt: this.datePort.now(),
           result: process.result,
         },
       });
@@ -43,7 +45,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
           documentId: process.id,
           error: process.error,
           fileName: process.fileName,
-          failedAt: new Date(),
+          failedAt: this.datePort.now(),
         },
       });
     } catch (error) {

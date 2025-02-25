@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
 import { WebhookDeliveryDbPort } from '@/core/webhooks/application/ports/webhook-delivery-db.port';
 import { WebhookDelivery, WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 @Injectable()
 export class WebhookDeliveryMikroOrmDbRepository
@@ -12,7 +13,7 @@ export class WebhookDeliveryMikroOrmDbRepository
   async findPendingDeliveries(): Promise<WebhookDelivery[]> {
     return this.em.find(WebhookDelivery, {
       status: { $in: [WebhookDeliveryStatus.PENDING, WebhookDeliveryStatus.RETRY_PENDING] },
-      nextAttempt: { $lte: new Date() },
+      nextAttempt: { $lte: DatePort.now() },
     });
   }
 

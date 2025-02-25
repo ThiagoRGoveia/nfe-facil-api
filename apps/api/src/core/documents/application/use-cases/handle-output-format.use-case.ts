@@ -5,7 +5,6 @@ import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
 import { ExcelPort } from '@/infra/excel/ports/excel.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
-import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { FileFormat } from '../../domain/constants/file-formats';
 import { DownloadPath } from '@/core/documents/domain/value-objects/download-path.vo';
@@ -22,7 +21,7 @@ export class HandleOutputFormatUseCase {
     private readonly fileProcessDbPort: FileProcessDbPort,
   ) {}
 
-  async execute(batchProcess: BatchProcess, outputFormats: OutputFormat[] = [FileFormat.JSON]): Promise<void> {
+  async execute(batchProcess: BatchProcess): Promise<void> {
     const downloadPath = DownloadPath.forUser(batchProcess.user.id, batchProcess.id);
 
     // Create a stream of completed file results
@@ -30,10 +29,12 @@ export class HandleOutputFormatUseCase {
 
     // If more than one output is needed, duplicate the original stream.
     const streams =
-      outputFormats.length > 1 ? this.duplicateStream(resultsStream, outputFormats.length) : [resultsStream];
+      batchProcess.requestedFormats.length > 1
+        ? this.duplicateStream(resultsStream, batchProcess.requestedFormats.length)
+        : [resultsStream];
 
     // Create an array of upload promises so the transformations and uploads can happen concurrently.
-    const uploadPromises = outputFormats.map((format, index) => {
+    const uploadPromises = batchProcess.requestedFormats.map((format, index) => {
       const cloneStream = streams[index];
 
       if (format === FileFormat.JSON) {

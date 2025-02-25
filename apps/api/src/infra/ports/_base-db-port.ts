@@ -97,4 +97,6 @@ export abstract class BaseDbPort<T extends { id: string | number }> {
     pagination?: Pagination,
     sort?: Sort,
   ): Promise<PaginatedResponse<T>>;
+
+  abstract refresh(entity: T): Promise<T>;
 }

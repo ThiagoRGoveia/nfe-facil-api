@@ -64,6 +64,21 @@ import { PublicFileProcessMikroOrmDbRepository } from './infra/persistence/db/or
       useClass: PublicFileProcessMikroOrmDbRepository,
     },
   ],
-  exports: [BatchDbPort, FileProcessDbPort, WebhookNotifierPort],
+  exports: [
+    CreateBatchProcessUseCase,
+    UpdateBatchTemplateUseCase,
+    AddFileToBatchUseCase,
+    CancelBatchProcessUseCase,
+    AsyncBatchProcessUseCase,
+    SyncFileProcessUseCase,
+    ProcessFileUseCase,
+    PublicSyncFileProcessUseCase,
+    HandleOutputFormatUseCase,
+    BatchDbPort,
+    FileProcessDbPort,
+    WebhookNotifierPort,
+    DocumentProcessorPort,
+    PublicFileProcessDbPort,
+  ],
 })
 export class DocumentsModule {}

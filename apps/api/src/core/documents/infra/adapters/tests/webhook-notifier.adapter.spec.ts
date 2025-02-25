@@ -10,6 +10,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 describe('WebhookNotifierAdapter', () => {
   let adapter: WebhookNotifierAdapter;
@@ -17,7 +18,7 @@ describe('WebhookNotifierAdapter', () => {
   let em: EntityManager;
   let mockProcess: FileToProcess;
   let logger: jest.Mocked<PinoLogger>;
-
+  let datePort: jest.Mocked<DatePort>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [useUnitTestModule()],
@@ -36,6 +37,7 @@ describe('WebhookNotifierAdapter', () => {
     notifyWebhookUseCase = module.get(NotifyWebhookUseCase);
     em = module.get<EntityManager>(EntityManager);
     logger = module.get<jest.Mocked<PinoLogger>>(PinoLogger);
+    datePort = module.get<jest.Mocked<DatePort>>(DatePort);
   });
 
   describe('notifySuccess', () => {
@@ -43,19 +45,20 @@ describe('WebhookNotifierAdapter', () => {
       const user = useUserFactory({}, em);
       const template = useTemplateFactory({ user }, em);
       mockProcess = useFileProcessFactory({ template: template, user }, em);
-
+      const mockDate = new Date();
+      datePort.now.mockReturnValue(mockDate);
       await adapter.notifySuccess(mockProcess);
 
       expect(notifyWebhookUseCase.execute).toHaveBeenCalledWith({
-        user: expect.any(Object),
+        user: user,
         event: WebhookEvent.DOCUMENT_PROCESSED,
-        payload: expect.objectContaining({
+        payload: {
           documentId: mockProcess.id,
           fileName: mockProcess.fileName,
           status: mockProcess.status,
-          processedAt: expect.any(Date),
+          processedAt: mockDate,
           result: mockProcess.result,
-        }),
+        },
       });
     });
   });
@@ -64,6 +67,8 @@ describe('WebhookNotifierAdapter', () => {
     it('should send document failed event with error details', async () => {
       const user = useUserFactory({}, em);
       const template = useTemplateFactory({ user }, em);
+      const mockDate = new Date();
+      datePort.now.mockReturnValue(mockDate);
       const errorProcess = useFileProcessFactory({ error: 'Processing failed', template: template, user }, em);
 
       await adapter.notifyFailure(errorProcess);
@@ -71,12 +76,12 @@ describe('WebhookNotifierAdapter', () => {
       expect(notifyWebhookUseCase.execute).toHaveBeenCalledWith({
         user: user,
         event: WebhookEvent.DOCUMENT_FAILED,
-        payload: expect.objectContaining({
+        payload: {
           documentId: errorProcess.id,
           error: errorProcess.error,
           fileName: errorProcess.fileName,
-          failedAt: expect.any(Date),
-        }),
+          failedAt: mockDate,
+        },
       });
     });
   });

@@ -45,16 +45,6 @@ describe('AsyncBatchProcessUseCase', () => {
             findByBatchPaginated: jest.fn().mockResolvedValue([]),
           }),
         },
-        {
-          provide: QueuePort,
-          useValue: createMock<QueuePort>(),
-        },
-        {
-          provide: PinoLogger,
-          useValue: createMock<PinoLogger>({
-            error: jest.fn(),
-          }),
-        },
       ],
     })
       .overrideProvider(ConfigService)
@@ -93,22 +83,10 @@ describe('AsyncBatchProcessUseCase', () => {
     expect(batchDbPort.update).toHaveBeenCalledWith(batch.id, { status: BatchStatus.PROCESSING });
     expect(queuePort.sendMessage).toHaveBeenCalledTimes(2);
     expect(queuePort.sendMessage).toHaveBeenNthCalledWith(1, 'test-queue', {
-      user: batch.user,
-      templateId: batch.template.id,
-      file: {
-        fileName: files[0].fileName,
-        filePath: files[0].filePath,
-      },
-      batchId: batch.id,
+      fileId: files[0].id,
     });
     expect(queuePort.sendMessage).toHaveBeenNthCalledWith(2, 'test-queue', {
-      user: batch.user,
-      templateId: batch.template.id,
-      file: {
-        fileName: files[1].fileName,
-        filePath: files[1].filePath,
-      },
-      batchId: batch.id,
+      fileId: files[1].id,
     });
   });
 

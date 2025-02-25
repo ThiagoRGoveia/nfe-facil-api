@@ -3,6 +3,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
+import { DatePort } from '@/infra/adapters/date.adapter';
 
 export enum PublicFileProcessStatus {
   COMPLETED = 'COMPLETED',
@@ -54,7 +55,7 @@ export class PublicFileProcess {
   @Property({
     columnType: 'timestamp',
     defaultRaw: 'now()',
-    onUpdate: () => new Date(),
+    onUpdate: () => DatePort.now(),
   })
   updatedAt: Date;
 

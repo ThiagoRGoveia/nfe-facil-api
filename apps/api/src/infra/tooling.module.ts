@@ -17,6 +17,8 @@ import { AuthModule } from './auth/auth.module';
 import { DocumentProcessModule } from '@doc/document-process.module';
 import { HttpModule } from '@nestjs/axios';
 import { OllamaClient } from '@doc/workflows/clients/ollama-client';
+import { DateAdapter } from './adapters/date.adapter';
+import { DatePort } from './adapters/date.adapter';
 
 @Global()
 @Module({
@@ -49,6 +51,10 @@ import { OllamaClient } from '@doc/workflows/clients/ollama-client';
       useClass: SQSClient,
     },
     OllamaClient,
+    {
+      provide: DatePort,
+      useClass: DateAdapter,
+    },
   ],
   exports: [
     EncryptionPort,

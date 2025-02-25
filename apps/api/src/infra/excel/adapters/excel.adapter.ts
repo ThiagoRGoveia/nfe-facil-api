@@ -5,7 +5,7 @@ import { Readable, PassThrough } from 'stream';
 
 @Injectable()
 export class ExcelJsAdapter implements ExcelPort {
-  convertToExcel(
+  async convertToExcel(
     data: Record<string, unknown>[],
     options: {
       expandNestedObjects?: boolean;
@@ -16,7 +16,11 @@ export class ExcelJsAdapter implements ExcelPort {
     const worksheet = workbook.addWorksheet('Sheet1');
 
     if (data.length === 0) {
-      return workbook.xlsx.writeBuffer() as Promise<Buffer>;
+      const buffer = await workbook.xlsx.writeBuffer();
+      if (!this.isBuffer(buffer)) {
+        throw new Error('Failed to convert workbook to buffer');
+      }
+      return buffer;
     }
 
     // Process the data to handle nested objects and arrays if needed
@@ -32,7 +36,11 @@ export class ExcelJsAdapter implements ExcelPort {
       worksheet.addRow(row);
     });
 
-    return workbook.xlsx.writeBuffer() as Promise<Buffer>;
+    const buffer = await workbook.xlsx.writeBuffer();
+    if (!this.isBuffer(buffer)) {
+      throw new Error('Failed to convert workbook to buffer');
+    }
+    return buffer;
   }
 
   private processData(
@@ -166,5 +174,9 @@ export class ExcelJsAdapter implements ExcelPort {
     });
 
     return passThrough;
+  }
+
+  private isBuffer(buffer: unknown): buffer is Buffer {
+    return Buffer.isBuffer(buffer);
   }
 }

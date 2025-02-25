@@ -1,5 +1,5 @@
 import { ExcelJsAdapter } from './excel.adapter';
-import { Workbook } from 'exceljs';
+import { Workbook, Buffer as ExcelJsBuffer } from 'exceljs';
 import { Readable } from 'stream';
 
 describe('ExcelAdapter', () => {
@@ -12,9 +12,8 @@ describe('ExcelAdapter', () => {
   describe('convertToExcel', () => {
     it('should create an empty Excel file when no data is provided', async () => {
       const buffer = await adapter.convertToExcel([]);
-
       const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as ExcelJsBuffer);
       const worksheet = workbook.getWorksheet('Sheet1');
 
       expect(worksheet).toBeDefined();
@@ -30,7 +29,7 @@ describe('ExcelAdapter', () => {
       const buffer = await adapter.convertToExcel(data);
 
       const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as ExcelJsBuffer);
       const worksheet = workbook.getWorksheet('Sheet1');
 
       expect(worksheet?.getRow(1).values).toEqual([undefined, 'name', 'age']);
@@ -49,7 +48,7 @@ describe('ExcelAdapter', () => {
       const buffer = await adapter.convertToExcel(data, { expandNestedObjects: true });
 
       const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as ExcelJsBuffer);
       const worksheet = workbook.getWorksheet('Sheet1');
 
       const headers = worksheet?.getRow(1).values as string[];
@@ -70,7 +69,7 @@ describe('ExcelAdapter', () => {
       const buffer = await adapter.convertToExcel(data, { unwindArrays: true });
 
       const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as ExcelJsBuffer);
       const worksheet = workbook.getWorksheet('Sheet1');
 
       const headers = worksheet?.getRow(1).values as string[];
@@ -98,7 +97,7 @@ describe('ExcelAdapter', () => {
       });
 
       const workbook = new Workbook();
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(buffer as unknown as ExcelJsBuffer);
       const worksheet = workbook.getWorksheet('Sheet1');
 
       const headers = worksheet?.getRow(1).values as string[];
@@ -130,7 +129,7 @@ describe('ExcelAdapter', () => {
         const buffer = Buffer.concat(chunks);
         const workbook = new Workbook();
         workbook.xlsx
-          .load(buffer)
+          .load(buffer as unknown as ExcelJsBuffer)
           .then(() => {
             const worksheet = workbook.getWorksheet('Sheet1');
             expect(worksheet).toBeDefined();
@@ -181,7 +180,7 @@ describe('ExcelAdapter', () => {
         const buffer = Buffer.concat(chunks);
         const workbook = new Workbook();
         workbook.xlsx
-          .load(buffer)
+          .load(buffer as unknown as ExcelJsBuffer)
           .then(() => {
             const worksheet = workbook.getWorksheet('Sheet1');
 

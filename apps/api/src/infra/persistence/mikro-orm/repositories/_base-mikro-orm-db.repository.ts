@@ -38,6 +38,11 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
     this.orm = orm;
   }
 
+  async refresh(entity: T): Promise<T> {
+    const refreshedEntity = await this.em.refresh(entity);
+    return refreshedEntity as T;
+  }
+
   async save(): Promise<void> {
     await this.em.flush();
   }

@@ -35,12 +35,6 @@ describe('RemoveFileFromBatchUseCase', () => {
             delete: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            delete: jest.fn().mockResolvedValue(undefined),
-          }),
-        },
       ],
     }).compile();
 

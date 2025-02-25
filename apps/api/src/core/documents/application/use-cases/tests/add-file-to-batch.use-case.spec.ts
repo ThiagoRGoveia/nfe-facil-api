@@ -42,28 +42,15 @@ describe('AddFileToBatchUseCase', () => {
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
-        {
-          provide: FileStoragePort,
-          useValue: createMock<FileStoragePort>({
-            uploadFromStream: jest.fn().mockResolvedValue('s3://path/to/file'),
-            uploadFromBuffer: jest.fn().mockResolvedValue('s3://path/to/file'),
-            delete: jest.fn().mockResolvedValue(undefined),
-          }),
-        },
-        {
-          provide: ZipPort,
-          useValue: createMock<ZipPort>({
-            extractFiles: jest.fn().mockResolvedValue([]),
-          }),
-        },
-        {
-          provide: UuidAdapter,
-          useValue: createMock<UuidAdapter>({
-            generate: jest.fn().mockReturnValue('uuid-123'),
-          }),
-        },
       ],
-    }).compile();
+    })
+      .overrideProvider(UuidAdapter)
+      .useValue(createMock<UuidAdapter>({ generate: jest.fn().mockReturnValue('uuid-123') }))
+      .overrideProvider(FileStoragePort)
+      .useValue(createMock<FileStoragePort>({ uploadFromBuffer: jest.fn().mockResolvedValue('s3://path/to/file') }))
+      .overrideProvider(ZipPort)
+      .useValue(createMock<ZipPort>({ extractFiles: jest.fn().mockResolvedValue([]) }))
+      .compile();
 
     useCase = module.get<AddFileToBatchUseCase>(AddFileToBatchUseCase);
     batchDbPort = module.get(BatchDbPort);

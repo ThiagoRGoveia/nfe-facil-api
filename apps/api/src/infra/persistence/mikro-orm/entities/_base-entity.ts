@@ -1,3 +1,4 @@
+import { DatePort } from '@/infra/adapters/date.adapter';
 import { BaseEntity as MikroORMBaseEntity, OptionalProps, Property } from '@mikro-orm/core';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
@@ -19,7 +20,7 @@ export class BaseEntity<T = never> extends MikroORMBaseEntity {
   @Property({
     columnType: 'timestamp',
     defaultRaw: 'now()',
-    onUpdate: () => new Date(),
+    onUpdate: () => DatePort.now(),
   })
   @Field(() => Date)
   updatedAt: Date;

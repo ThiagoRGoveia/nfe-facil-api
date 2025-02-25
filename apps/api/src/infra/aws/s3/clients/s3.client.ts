@@ -38,6 +38,15 @@ export class S3Client implements FileStoragePort {
 
     this.s3Client = new AWSS3Client(clientConfig);
   }
+  async getBuffer(path: string): Promise<Buffer> {
+    const stream = await this.get(path);
+    return new Promise((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      stream.on('data', (chunk) => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      stream.on('error', reject);
+    });
+  }
 
   private parsePath(path: string): { bucket: string; key: string } {
     const [bucket, ...keyParts] = path.split('/');
