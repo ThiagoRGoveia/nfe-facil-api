@@ -66,6 +66,7 @@ export class FileToProcess {
   @ManyToOne(() => User, { ref: true, eager: false })
   user: Ref<User>;
 
+  @Field(() => Date)
   @Property({ columnType: 'timestamp', defaultRaw: 'now()' })
   createdAt: Date;
 

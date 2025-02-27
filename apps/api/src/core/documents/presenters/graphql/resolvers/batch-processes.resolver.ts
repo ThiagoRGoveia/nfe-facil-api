@@ -18,6 +18,8 @@ import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response'
 
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 @Resolver(() => BatchProcess)
 export class BatchProcessesResolver {
   constructor(
@@ -32,12 +34,13 @@ export class BatchProcessesResolver {
   }
 
   @Query(() => PaginatedBatchProcesses)
-  findAllBatchProcesses(
+  async findAllBatchProcesses(
     @Context() context: GraphqlExpressContext,
     @Args('filters', { nullable: true }) filters?: Filters,
     @Args('pagination', { nullable: true }) pagination?: Pagination,
     @Args('sort', { nullable: true }) sort?: Sort,
   ): Promise<PaginatedResponse<BatchProcess>> {
+    await delay(2000);
     if (context.req.user.role === UserRole.ADMIN) {
       return this.batchDbPort.findAll(filters?.filters, pagination, sort);
     } else {

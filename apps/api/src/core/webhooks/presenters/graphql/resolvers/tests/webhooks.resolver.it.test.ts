@@ -1,13 +1,12 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Webhook, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { WebhooksResolver } from '../webhooks.resolver';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
@@ -15,7 +14,6 @@ import { WebhooksModule } from '@/core/webhooks/webhooks.module';
 jest.setTimeout(100000);
 describe('WebhooksResolver (Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let user: User;
   let webhook: Webhook;
@@ -26,7 +24,6 @@ describe('WebhooksResolver (Integration)', () => {
       providers: [WebhooksResolver],
     }).compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
 

@@ -44,24 +44,29 @@ export class HttpWebhookDispatcherAdapter implements WebhookDispatcherPort {
 
     const decryptedConfig = this.encryptionPort.decrypt(webhook.encryptedConfig);
 
-    const config = JSON.parse(decryptedConfig);
+    const config = JSON.parse(decryptedConfig) as BasicAuthConfig | OAuth2Config;
 
-    switch (webhook.authType) {
-      case WebhookAuthType.BASIC:
-        return {
-          type: 'basic',
-          username: config.username,
-          password: config.password,
-        };
-      case WebhookAuthType.OAUTH2:
-        return {
-          type: 'oauth2',
-          clientId: config.clientId,
-          clientSecret: config.clientSecret,
-          tokenUrl: config.tokenUrl,
-        };
-      default:
-        throw new Error(`Unsupported authentication type`);
+    if (this.isBasicAuthConfig(config)) {
+      return {
+        type: 'basic',
+        username: config.username,
+        password: config.password,
+      };
+    } else if (this.isOAuth2Config(config)) {
+      return {
+        type: 'oauth2',
+        clientId: config.clientId,
+        clientSecret: config.clientSecret,
+        tokenUrl: config.tokenUrl,
+      };
     }
+  }
+
+  isBasicAuthConfig(config: BasicAuthConfig | OAuth2Config): config is BasicAuthConfig {
+    return 'username' in config && 'password' in config;
+  }
+
+  isOAuth2Config(config: BasicAuthConfig | OAuth2Config): config is OAuth2Config {
+    return 'clientId' in config && 'clientSecret' in config && 'tokenUrl' in config;
   }
 }

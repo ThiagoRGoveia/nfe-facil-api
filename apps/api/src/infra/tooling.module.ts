@@ -19,6 +19,7 @@ import { HttpModule } from '@nestjs/axios';
 import { OllamaClient } from '@doc/workflows/clients/ollama-client';
 import { DateAdapter } from './adapters/date.adapter';
 import { DatePort } from './adapters/date.adapter';
+import { TogetherClient } from '@doc/workflows/clients/together-client';
 
 @Global()
 @Module({
@@ -50,11 +51,12 @@ import { DatePort } from './adapters/date.adapter';
       provide: QueuePort,
       useClass: SQSClient,
     },
-    OllamaClient,
     {
       provide: DatePort,
       useClass: DateAdapter,
     },
+    OllamaClient,
+    TogetherClient,
   ],
   exports: [
     EncryptionPort,
@@ -66,6 +68,8 @@ import { DatePort } from './adapters/date.adapter';
     FileStoragePort,
     QueuePort,
     OllamaClient,
+    DatePort,
+    TogetherClient,
   ],
 })
 export class ToolingModule {}

@@ -10,10 +10,62 @@ import {
   IsUrl,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import { WebhookAuthType, WebhookEvent } from '../../domain/entities/webhook.entity';
+import { Type } from 'class-transformer';
+
+@InputType()
+export class BasicAuthConfigInput {
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Username for basic authentication',
+    example: 'username',
+  })
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Password for basic authentication',
+    example: 'password',
+  })
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+@InputType()
+export class OAuth2ConfigInput {
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Client ID for OAuth2 authentication',
+    example: 'client-id',
+  })
+  @IsString()
+  @IsNotEmpty()
+  clientId: string;
+
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Client secret for OAuth2 authentication',
+    example: 'client-secret',
+  })
+  @IsString()
+  @IsNotEmpty()
+  clientSecret: string;
+
+  @Field(() => String)
+  @ApiProperty({
+    description: 'Token URL for OAuth2 authentication',
+    example: 'https://auth.example.com/token',
+  })
+  @IsUrl()
+  tokenUrl: string;
+}
 
 @InputType()
 export class CreateWebhookDto {
@@ -56,12 +108,18 @@ export class CreateWebhookDto {
   @Field(() => GraphQLJSON, { nullable: true })
   @ApiProperty({
     description: 'Authentication configuration (if required)',
-    example: { apiKey: 'secret-key' },
+    oneOf: [{ $ref: '#/components/schemas/BasicAuthConfigInput' }, { $ref: '#/components/schemas/OAuth2ConfigInput' }],
     required: false,
   })
-  @IsObject()
   @IsOptional()
-  authConfig?: Record<string, string>;
+  @ValidateNested()
+  @Type((options) => {
+    const authType = (options?.object as CreateWebhookDto)?.authType;
+    if (authType === WebhookAuthType.BASIC) return BasicAuthConfigInput;
+    if (authType === WebhookAuthType.OAUTH2) return OAuth2ConfigInput;
+    return Object;
+  })
+  authConfig?: BasicAuthConfigInput | OAuth2ConfigInput;
 
   @Field(() => GraphQLJSON, { nullable: true })
   @ApiProperty({

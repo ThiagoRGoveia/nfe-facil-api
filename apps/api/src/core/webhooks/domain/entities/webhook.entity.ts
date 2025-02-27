@@ -26,6 +26,27 @@ registerEnumType(WebhookAuthType, { name: 'WebhookAuthType' });
 registerEnumType(WebhookStatus, { name: 'WebhookStatus' });
 
 @ObjectType()
+export class BasicAuthConfig {
+  @Field(() => String)
+  username: string;
+
+  @Field(() => String)
+  password: string;
+}
+
+@ObjectType()
+export class OAuth2Config {
+  @Field(() => String)
+  clientId: string;
+
+  @Field(() => String)
+  clientSecret: string;
+
+  @Field(() => String)
+  tokenUrl: string;
+}
+
+@ObjectType()
 @Entity({ tableName: 'webhooks' })
 export class Webhook extends BaseEntity<'maxRetries' | 'timeout' | 'headers'> {
   @Field(() => String)
@@ -69,7 +90,6 @@ export class Webhook extends BaseEntity<'maxRetries' | 'timeout' | 'headers'> {
   @Enum(() => WebhookAuthType)
   authType: WebhookAuthType = WebhookAuthType.NONE;
 
-  @Field(() => String, { nullable: true })
   @Property({ nullable: true })
   encryptedConfig?: string;
 
