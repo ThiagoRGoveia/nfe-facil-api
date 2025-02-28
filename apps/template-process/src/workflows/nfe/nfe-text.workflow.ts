@@ -5,7 +5,7 @@ import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
 import { PinoLogger } from 'nestjs-pino';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
-import { NfeDto } from './dto/nfe.dto';
+import { NfseDto } from './dto/nfse.dto';
 import { BaseWorkflow } from '../_base.workflow';
 import { TogetherClient } from '../clients/together-client';
 
@@ -96,7 +96,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
     }
   }
 
-  private parseResponse(response: string): NfeDto {
+  private parseResponse(response: string): NfseDto {
     try {
       // Extract JSON content between curly braces
       const start = response.indexOf('{');
@@ -107,7 +107,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
       }
 
       const jsonString = response.slice(start, end + 1);
-      return plainToInstance(NfeDto, JSON.parse(jsonString), {
+      return plainToInstance(NfseDto, JSON.parse(jsonString), {
         excludeExtraneousValues: true,
       });
     } catch (error) {
@@ -116,7 +116,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
     }
   }
 
-  private async validateResponse(data: NfeDto[]): Promise<void> {
+  private async validateResponse(data: NfseDto[]): Promise<void> {
     try {
       await validateOrReject(data);
     } catch (errors) {

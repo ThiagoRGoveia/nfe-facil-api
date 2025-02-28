@@ -28,6 +28,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
           fileName: process.fileName,
           processedAt: this.datePort.now(),
           result: process.result,
+          batchId: process.batchProcess?.id,
         },
       });
     } catch (error) {
@@ -46,6 +47,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
           error: process.error,
           fileName: process.fileName,
           failedAt: this.datePort.now(),
+          batchId: process.batchProcess?.id,
         },
       });
     } catch (error) {
