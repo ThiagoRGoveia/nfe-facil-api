@@ -68,6 +68,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "sst": "3.9.10",
+    "stripe": "^17.7.0",
     "unzipper": "^0.12.3",
     "uuid": "^11.1.0"
   },
