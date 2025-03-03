@@ -9,8 +9,13 @@ import {
   ApiNoContentResponse,
   ApiExtraModels,
   refs,
+  ApiBasicAuth,
 } from '@nestjs/swagger';
-import { CreateWebhookDto } from '@/core/webhooks/application/dtos/create-webhook.dto';
+import {
+  BasicAuthConfigInput,
+  CreateWebhookDto,
+  OAuth2ConfigInput,
+} from '@/core/webhooks/application/dtos/create-webhook.dto';
 import { UpdateWebhookDto } from '@/core/webhooks/application/dtos/update-webhook.dto';
 import { CreateWebhookUseCase } from '@/core/webhooks/application/use-cases/create-webhook.use-case';
 import { UpdateWebhookUseCase } from '@/core/webhooks/application/use-cases/update-webhook.use-case';
@@ -27,7 +32,6 @@ import { SortDirection } from '@/infra/dtos/sort.dto';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { NotifyWebhookDto } from '@/core/webhooks/application/dtos/notify-webhook.dto';
 import {
-  WebhookNotificationDto,
   DocumentProcessedPayloadDto,
   DocumentFailedPayloadDto,
   BatchFinishedPayloadDto,
@@ -42,8 +46,8 @@ const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
  * - ${WebhookEvent.DOCUMENT_FAILED}: Quando ocorre uma falha no processamento de uma NFSe
  * - ${WebhookEvent.BATCH_FINISHED}: Quando um lote completo de NFSe é finalizado
  */
-@ApiTags('NFSe Webhooks')
-@ApiExtraModels(WebhookNotificationDto, DocumentProcessedPayloadDto, DocumentFailedPayloadDto, BatchFinishedPayloadDto)
+@ApiTags('Webhooks')
+@ApiBasicAuth()
 @Controller('nfse/webhooks')
 export class NFSeWebhooksController {
   constructor(
@@ -68,6 +72,7 @@ export class NFSeWebhooksController {
       'O payload contém o ID do lote processado.',
   })
   @ApiBody({ type: CreateWebhookDto, description: 'Dados para criação do webhook' })
+  @ApiExtraModels(BasicAuthConfigInput, OAuth2ConfigInput)
   @ApiCreatedResponse({ type: Webhook, description: 'Webhook criado com sucesso' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Dados de entrada inválidos' })
   @HttpCode(HttpStatus.CREATED)
@@ -225,6 +230,7 @@ export class NFSeWebhooksController {
       },
     },
   })
+  @ApiExtraModels(DocumentProcessedPayloadDto, DocumentFailedPayloadDto, BatchFinishedPayloadDto)
   @ApiOkResponse({ description: 'Notificações disparadas com sucesso' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Dados de entrada inválidos' })
   @HttpCode(HttpStatus.OK)

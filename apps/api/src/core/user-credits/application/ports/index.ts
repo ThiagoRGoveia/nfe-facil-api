@@ -1,4 +1,4 @@
-export * from './user-credit-db.port';
+export * from './user-credits-db.port';
 export * from './credit-transaction-db.port';
 export * from './credit-subscription-db.port';
 export * from './auto-topup-config-db.port';

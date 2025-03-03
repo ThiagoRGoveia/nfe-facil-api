@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import {
   IsArray,
   IsEnum,
@@ -108,7 +108,7 @@ export class CreateWebhookDto {
   @Field(() => GraphQLJSON, { nullable: true })
   @ApiProperty({
     description: 'Authentication configuration (if required)',
-    oneOf: [{ $ref: '#/components/schemas/BasicAuthConfigInput' }, { $ref: '#/components/schemas/OAuth2ConfigInput' }],
+    oneOf: [{ $ref: getSchemaPath(BasicAuthConfigInput) }, { $ref: getSchemaPath(OAuth2ConfigInput) }],
     required: false,
   })
   @IsOptional()

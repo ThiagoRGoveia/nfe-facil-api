@@ -23,7 +23,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api/test/jest-e2e.json",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "nfse-doc:build": "ts-node --project tsconfig.json apps/api/src/infra/swagger/nfe-facil/nfe-facil-docs.ts",
+    "nfse-doc:generate": "pnpm nfse-doc:build && npx @redocly/cli build-docs nfe-facil-docs.json  -o docs/nfe-facil/index.html -t mustache-templates/redoc.mustache"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.750.0",

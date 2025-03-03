@@ -1,0 +1,966 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/nfse/processar": {
+      "post": {
+        "description": "Realiza a extração de dados de uma NFSe de forma síncrona. Este endpoint aguarda o processamento completo de todos os arquivos antes de retornar uma resposta, sendo ideal para processamento de poucos arquivos onde o tempo de resposta imediato é necessário. Suporta arquivos PDF e ZIP contendo múltiplos PDFs de NFSe. O diagrama do fluxo de processamento pode ser visualizado em /diagrams/nfse-flow-diagram.png. Somente 10 arquivos podem ser processados por vez.",
+        "operationId": "NFSeController_processBatchSync",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "NFSe processada com sucesso. Retorna os dados extraídos diretamente na resposta."
+          },
+          "400": {
+            "description": "Erro de validação nos arquivos enviados ou formato incompatível."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Processar NFSe de forma síncrona",
+        "tags": [
+          "NFSe"
+        ]
+      }
+    },
+    "/nfse/processar/lote": {
+      "post": {
+        "description": "Cria um novo lote para extração assíncrona de dados de arquivos de NFSe. Este endpoint permite iniciar um lote vazio ou com arquivos iniciais. É a primeira etapa do fluxo assíncrono, ideal para processamento em lote de grandes volumes de arquivos. Consulte o diagrama em /diagrams/nfse-flow-diagram.png para melhor entendimento.",
+        "operationId": "NFSeController_createBatch",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Lote de NFSe criado com sucesso. Retorna o ID do lote para referência em operações subsequentes."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Criar um novo lote de processamento de NFSe",
+        "tags": [
+          "NFSe"
+        ]
+      }
+    },
+    "/nfse/lote/{id}": {
+      "get": {
+        "description": "Recupera informações detalhadas sobre um lote específico de NFSe, incluindo seu status atual, quantidade de arquivos, resultados de processamento (se concluído) e histórico de eventos.",
+        "operationId": "NFSeController_getBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Informações do lote recuperadas com sucesso."
+          },
+          "404": {
+            "description": "Lote não encontrado com o ID especificado."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Obter informações de um lote de NFSe",
+        "tags": [
+          "NFSe"
+        ]
+      },
+      "delete": {
+        "description": "Cancela o processamento de um lote existente. Se o lote já estiver em processamento, tenta interromper as operações em andamento. Lotes já processados não podem ser cancelados.",
+        "operationId": "NFSeController_cancelBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Processamento de lote cancelado com sucesso."
+          },
+          "400": {
+            "description": "Lote não pode ser cancelado no estado atual."
+          },
+          "404": {
+            "description": "Lote não encontrado com o ID especificado."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Cancelar processamento de lote de NFSe",
+        "tags": [
+          "NFSe"
+        ]
+      }
+    },
+    "/nfse/lote/{id}/arquivos": {
+      "put": {
+        "description": "Permite adicionar novos arquivos a um lote de processamento já existente. Útil para agregar mais NFSe a um lote antes de iniciar seu processamento assíncrono. Os arquivos são validados antes de serem adicionados ao lote.",
+        "operationId": "NFSeController_addFileToBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arquivos adicionados ao lote com sucesso."
+          },
+          "400": {
+            "description": "Erro de validação nos arquivos enviados ou lote em estado que não permite adição de arquivos."
+          },
+          "404": {
+            "description": "Lote não encontrado com o ID especificado."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Adicionar arquivos a um lote existente",
+        "tags": [
+          "NFSe"
+        ]
+      }
+    },
+    "/nfse/lote/{id}/processar": {
+      "post": {
+        "description": "Inicia o processamento assíncrono de um lote de NFSe. Este endpoint retorna imediatamente após iniciar o processamento em segundo plano, permitindo o processamento eficiente de grandes volumes de arquivos. O progresso pode ser acompanhado consultando o status do lote, e notificações via webhook podem ser configuradas para informar sobre a conclusão. Para entender o fluxo completo, consulte o diagrama em /diagrams/nfse-flow-diagram.png",
+        "operationId": "NFSeController_processBatchAsync",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Processamento assíncrono iniciado com sucesso. O resultado estará disponível posteriormente."
+          },
+          "400": {
+            "description": "Lote em estado que não permite processamento ou sem arquivos para processar."
+          },
+          "404": {
+            "description": "Lote não encontrado com o ID especificado."
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Processar lote de NFSe de forma assíncrona",
+        "tags": [
+          "NFSe"
+        ]
+      }
+    },
+    "/nfse/webhooks": {
+      "post": {
+        "description": "Cria um novo endpoint de webhook para receber notificações relacionadas ao processamento de NFSe. Os eventos disponíveis são: \n\n• **DOCUMENT_PROCESSED**: Enviado quando uma NFSe é processada com sucesso. O payload contém os dados extraídos da NFSe, ID do documento, status, nome do arquivo e data de processamento.\n\n• **DOCUMENT_FAILED**: Enviado quando ocorre uma falha no processamento de uma NFSe. O payload contém o ID do documento, a mensagem de erro, nome do arquivo e data da falha.\n\n• **BATCH_FINISHED**: Enviado quando um lote completo de NFSe é finalizado. O payload contém o ID do lote processado.",
+        "operationId": "NFSeWebhooksController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Dados para criação do webhook",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Criar um novo webhook para NFSe",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "get": {
+        "description": "Retorna uma lista paginada de todos os webhooks configurados para o processamento de NFSe.",
+        "operationId": "NFSeWebhooksController_findAll",
+        "parameters": [
+          {
+            "name": "sortDirection",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "ASC",
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          },
+          {
+            "name": "sortField",
+            "required": false,
+            "in": "query",
+            "description": "The field to sort by",
+            "schema": {
+              "default": "id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de webhooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Listar todos os webhooks de NFSe",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/nfse/webhooks/{id}": {
+      "get": {
+        "description": "Recupera informações detalhadas de um webhook específico configurado para NFSe pelo seu ID.",
+        "operationId": "NFSeWebhooksController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook não encontrado"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Obter webhook por ID",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "put": {
+        "description": "Atualiza as configurações de um webhook existente para o processamento de NFSe.",
+        "operationId": "NFSeWebhooksController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Dados de atualização do webhook",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Webhook"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permissões insuficientes"
+          },
+          "404": {
+            "description": "Webhook não encontrado"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Atualizar webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      },
+      "delete": {
+        "description": "Remove um webhook configurado para o processamento de NFSe.",
+        "operationId": "NFSeWebhooksController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Webhook excluído com sucesso"
+          },
+          "403": {
+            "description": "Permissões insuficientes"
+          },
+          "404": {
+            "description": "Webhook não encontrado"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Excluir webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/nfse/webhooks/notificar": {
+      "post": {
+        "description": "Dispara manualmente notificações para webhooks registrados no contexto de processamento de NFSe (Utilizado para testes).\n\n**Estruturas de Payload por Evento:**\n\n• **DOCUMENT_PROCESSED**: \n```json\n{\n  \"documentId\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"PROCESSED\",\n  \"fileName\": \"nfse_12345.pdf\",\n  \"processedAt\": \"2023-09-15T14:30:15.123Z\",\n  \"batchId\": \"123e4567-e89b-12d3-a456-426614174001\",\n  \"result\": { /* Dados extraídos da NFSe */ }\n}\n```\n\n• **DOCUMENT_FAILED**: \n```json\n{\n  \"documentId\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"error\": \"Não foi possível extrair os dados do documento: formato inválido\",\n  \"fileName\": \"nfse_12345.pdf\",\n  \"failedAt\": \"2023-09-15T14:30:15.123Z\",\n  \"batchId\": \"123e4567-e89b-12d3-a456-426614174001\"\n}\n```\n\n• **BATCH_FINISHED**: \n```json\n{\n  \"batchId\": \"123e4567-e89b-12d3-a456-426614174001\"\n}\n```\n",
+        "operationId": "NFSeWebhooksController_notify",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Payload de notificação de webhook baseado no tipo de evento",
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DocumentProcessedPayloadDto"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DocumentFailedPayloadDto"
+                  },
+                  {
+                    "$ref": "#/components/schemas/BatchFinishedPayloadDto"
+                  }
+                ]
+              },
+              "examples": {
+                "documentProcessed": {
+                  "summary": "Exemplo para evento DOCUMENT_PROCESSED",
+                  "value": {
+                    "event": "DOCUMENT_PROCESSED",
+                    "payload": {
+                      "documentId": "123e4567-e89b-12d3-a456-426614174000",
+                      "status": "PROCESSED",
+                      "fileName": "nfse_12345.pdf",
+                      "processedAt": "2025-03-03T21:02:28.896Z",
+                      "batchId": "123e4567-e89b-12d3-a456-426614174001",
+                      "result": {
+                        "chave_acesso_nfse": "12345678901234567890123456789012345678901234567890",
+                        "numero_nfse": "123456"
+                      }
+                    }
+                  }
+                },
+                "documentFailed": {
+                  "summary": "Exemplo para evento DOCUMENT_FAILED",
+                  "value": {
+                    "event": "DOCUMENT_FAILED",
+                    "payload": {
+                      "documentId": "123e4567-e89b-12d3-a456-426614174000",
+                      "error": "Não foi possível extrair os dados do documento: formato inválido",
+                      "fileName": "nfse_12345.pdf",
+                      "failedAt": "2025-03-03T21:02:28.896Z",
+                      "batchId": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                  }
+                },
+                "batchFinished": {
+                  "summary": "Exemplo para evento BATCH_FINISHED",
+                  "value": {
+                    "event": "BATCH_FINISHED",
+                    "payload": {
+                      "batchId": "123e4567-e89b-12d3-a456-426614174001"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notificações disparadas com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "summary": "Acionar notificações de webhook",
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "NFe-Fácil API",
+    "description": "\n      API para gerenciamento de Notas Fiscais Eletrônicas de Serviço (NFSe).\n      Permite o processamento, consulta e gerenciamento de lotes de NFSe,\n      incluindo operações síncronas e assíncronas.\n      \n      A NFSe é o documento fiscal eletrônico que comprova a prestação de serviços,\n      sendo obrigatório para empresas e profissionais autônomos.\n      \n      Principais funcionalidades:\n       - Extração de dados de NFSe de arquivos PDF e ZIP (Extração Síncrona)\n       - Gerenciamento de extração de NFSe por lotes (Extração Assíncrona)\n       - Webhooks para notificação de status de processamento\n    ",
+    "version": "1.0.0",
+    "contact": {},
+    "x-logo": {
+      "url": "https://logo.png",
+      "backgroundColor": "#EFEFF2",
+      "altText": "NFe-Fácil logo"
+    }
+  },
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Utilize API Key and Secret gerados no Dashboard da NFe-Fácil para autenticação."
+    },
+    {
+      "name": "NFSe",
+      "description": "Módulo para processamento de Notas Fiscais de Serviço Eletrônicas (NFSe). \n  Oferece funcionalidades completas para criação, gerenciamento e processamento de lotes de NFSe, \n  tanto de forma síncrona quanto assíncrona. Este módulo faz parte da API de Documentos Fiscais \n  Eletrônicos, que será expandida com novos módulos para outros tipos de documentos no futuro."
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.nfe-facil.com.br"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "BasicAuthConfigInput": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username for basic authentication",
+            "example": "username"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for basic authentication",
+            "example": "password"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "OAuth2ConfigInput": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "Client ID for OAuth2 authentication",
+            "example": "client-id"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "Client secret for OAuth2 authentication",
+            "example": "client-secret"
+          },
+          "tokenUrl": {
+            "type": "string",
+            "description": "Token URL for OAuth2 authentication",
+            "example": "https://auth.example.com/token"
+          }
+        },
+        "required": [
+          "clientId",
+          "clientSecret",
+          "tokenUrl"
+        ]
+      },
+      "CreateWebhookDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Webhook name",
+            "example": "Invoice Processing Webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "Target URL for webhook notifications",
+            "example": "https://api.example.com/webhooks"
+          },
+          "events": {
+            "type": "array",
+            "description": "List of events to subscribe to",
+            "example": [
+              "document.processed",
+              "invoice.paid"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "DOCUMENT_PROCESSED",
+                "DOCUMENT_FAILED",
+                "BATCH_FINISHED"
+              ]
+            }
+          },
+          "authType": {
+            "type": "string",
+            "description": "Authentication type for the webhook",
+            "enum": [
+              "NONE",
+              "BASIC",
+              "OAUTH2"
+            ]
+          },
+          "authConfig": {
+            "description": "Authentication configuration (if required)",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BasicAuthConfigInput"
+              },
+              {
+                "$ref": "#/components/schemas/OAuth2ConfigInput"
+              }
+            ]
+          },
+          "headers": {
+            "type": "object",
+            "description": "Custom headers for the webhook request",
+            "example": {
+              "X-Custom-Header": "value"
+            }
+          },
+          "maxRetries": {
+            "type": "number",
+            "description": "Maximum number of retries for the webhook",
+            "example": 3,
+            "default": 5
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout for the webhook request",
+            "example": 5000,
+            "default": 5000
+          }
+        },
+        "required": [
+          "name",
+          "url",
+          "events",
+          "authType"
+        ]
+      },
+      "Webhook": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation date"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update date"
+          }
+        },
+        "required": [
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Array of items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Webhook"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 100,
+            "description": "Total number of items"
+          },
+          "page": {
+            "type": "number",
+            "example": 1,
+            "description": "Current page number"
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 10,
+            "description": "Number of items per page"
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 10,
+            "description": "Total number of pages"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "UpdateWebhookDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Webhook name",
+            "example": "Invoice Processing Webhook"
+          },
+          "url": {
+            "type": "string",
+            "description": "Target URL for webhook notifications",
+            "example": "https://api.example.com/webhooks"
+          },
+          "events": {
+            "type": "array",
+            "description": "List of events to subscribe to",
+            "example": [
+              "document.processed",
+              "invoice.paid"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "DOCUMENT_PROCESSED",
+                "DOCUMENT_FAILED",
+                "BATCH_FINISHED"
+              ]
+            }
+          },
+          "authType": {
+            "type": "string",
+            "description": "Authentication type for the webhook",
+            "enum": [
+              "NONE",
+              "BASIC",
+              "OAUTH2"
+            ]
+          },
+          "authConfig": {
+            "type": "object",
+            "description": "Authentication configuration (if required)",
+            "example": {
+              "apiKey": "secret-key"
+            }
+          },
+          "headers": {
+            "type": "object",
+            "description": "Custom headers for the webhook request",
+            "example": {
+              "X-Custom-Header": "value"
+            }
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the webhook is active",
+            "example": true
+          }
+        }
+      },
+      "NfseDto": {
+        "type": "object",
+        "properties": {
+          "chave_acesso_nfse": {
+            "type": "object",
+            "description": "Chave de acesso da NFSe - Código de validação",
+            "example": "12345678901234567890123456789012345678901234567890",
+            "nullable": true
+          },
+          "numero_nfse": {
+            "type": "object",
+            "description": "Número da NFSe",
+            "example": "123456",
+            "nullable": true
+          },
+          "competencia_nfse": {
+            "type": "object",
+            "description": "Competência da NFSe (período)",
+            "example": "07/2023",
+            "nullable": true
+          },
+          "data_hora_emissao_nfse": {
+            "type": "object",
+            "description": "Data e hora de emissão da NFSe",
+            "example": "2023-07-15T14:30:00",
+            "nullable": true
+          },
+          "numeroDps": {
+            "type": "object",
+            "description": "Número do DPS (Documento de Prestação de Serviço)",
+            "example": "1234",
+            "nullable": true
+          },
+          "emitente_nfse_prestador_servico_cnpj_cpf_nif": {
+            "type": "object",
+            "description": "CNPJ/CPF/NIF do emitente da NFSe (prestador de serviço)",
+            "example": "12345678901234",
+            "nullable": true
+          },
+          "emitente_nfse_nome_nome_empresarial": {
+            "type": "object",
+            "description": "Nome/Nome empresarial do emitente da NFSe",
+            "example": "Empresa XYZ Ltda",
+            "nullable": true
+          },
+          "emitente_nfse_email": {
+            "type": "object",
+            "description": "Email do emitente da NFSe",
+            "example": "contato@empresa.com.br",
+            "nullable": true
+          },
+          "tomador_servico_cnpj_cpf_nif": {
+            "type": "object",
+            "description": "CNPJ/CPF/NIF do tomador do serviço",
+            "example": "98765432109876",
+            "nullable": true
+          },
+          "tomadorServicoNomeNomeEmpresarial": {
+            "type": "object",
+            "description": "Nome/Nome empresarial do tomador do serviço",
+            "example": "Cliente ABC S/A",
+            "nullable": true
+          },
+          "servico_prestado_descricao_servico": {
+            "type": "object",
+            "description": "Descrição do serviço prestado",
+            "example": "Desenvolvimento de software sob encomenda",
+            "nullable": true
+          },
+          "tributacao_municipal_valor_servico": {
+            "type": "object",
+            "description": "Valor do serviço",
+            "example": "1000.00",
+            "nullable": true
+          },
+          "valor_total_nfse_valor_liquido_nfse": {
+            "type": "object",
+            "description": "Valor total líquido da NFSe",
+            "example": "950.00",
+            "nullable": true
+          }
+        }
+      },
+      "DocumentProcessedPayloadDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "ID único do documento processado",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do processamento",
+            "example": "PROCESSED"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Nome do arquivo processado",
+            "example": "nfse_12345.pdf"
+          },
+          "processedAt": {
+            "type": "string",
+            "description": "Data e hora do processamento",
+            "example": "2023-09-15T14:30:15.123Z"
+          },
+          "batchId": {
+            "type": "string",
+            "description": "ID do lote ao qual o documento pertence",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
+          "result": {
+            "description": "Resultado da extração dos dados da NFSe",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NfseDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "documentId",
+          "status",
+          "fileName",
+          "processedAt",
+          "batchId",
+          "result"
+        ]
+      },
+      "DocumentFailedPayloadDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "ID único do documento com falha",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "error": {
+            "type": "string",
+            "description": "Mensagem de erro detalhada",
+            "example": "Não foi possível extrair os dados do documento: formato inválido"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Nome do arquivo com falha",
+            "example": "nfse_12345.pdf"
+          },
+          "failedAt": {
+            "type": "string",
+            "description": "Data e hora da falha",
+            "example": "2023-09-15T14:30:15.123Z"
+          },
+          "batchId": {
+            "type": "string",
+            "description": "ID do lote ao qual o documento pertence",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          }
+        },
+        "required": [
+          "documentId",
+          "error",
+          "fileName",
+          "failedAt",
+          "batchId"
+        ]
+      },
+      "BatchFinishedPayloadDto": {
+        "type": "object",
+        "properties": {
+          "batchId": {
+            "type": "string",
+            "description": "ID único do lote finalizado",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          }
+        },
+        "required": [
+          "batchId"
+        ]
+      }
+    }
+  }
+}

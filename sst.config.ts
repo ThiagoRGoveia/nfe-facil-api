@@ -3,6 +3,7 @@
 
 import { ProcessDocumentStack } from './sst/process-document.stack';
 import { ApiStack } from './sst/api.stack';
+import { DocsStack } from './sst/docs.stack';
 
 export default $config({
   app(input) {
@@ -16,10 +17,13 @@ export default $config({
   async run() {
     const { api } = ApiStack();
     const { processDocumentQueue } = ProcessDocumentStack();
+    const { site, url } = DocsStack();
 
     return Promise.resolve({
       api,
       processDocumentQueue,
+      docsUrl: url,
+      docsSite: site,
     });
   },
 });
