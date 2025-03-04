@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
+import { FileRecord } from '@/core/documents/domain/entities/file-records.entity';
 import { DocumentProcessorPort } from '@/core/documents/application/ports/document-processor.port';
 import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-notifier.port';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
@@ -8,7 +8,7 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
 
 export interface ProcessFileParams {
-  fileId: FileToProcess['id'];
+  fileId: FileRecord['id'];
 }
 
 @Injectable()
@@ -22,7 +22,7 @@ export class ProcessFileUseCase {
     private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
   ) {}
 
-  async execute(params: ProcessFileParams): Promise<FileToProcess> {
+  async execute(params: ProcessFileParams): Promise<FileRecord> {
     const { fileId } = params;
     const file = await this.fileProcessDbPort.findById(fileId);
 

@@ -13,7 +13,7 @@ import { BatchProcess } from '@/core/documents/domain/entities/batch-process.ent
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 import { ZipPort } from '@/infra/zip/zip.port';
 
 describe('AddFileToBatchUseCase', () => {

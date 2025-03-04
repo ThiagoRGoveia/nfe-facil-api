@@ -4,7 +4,7 @@ import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
-import { FileProcessStatus, FileToProcess } from '../../domain/entities/file-process.entity';
+import { FileProcessStatus, FileRecord } from '../../domain/entities/file-records.entity';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
 import { ExtractedFile, ZipPort } from '@/infra/zip/zip.port';
 import { PinoLogger } from 'nestjs-pino';
@@ -37,7 +37,7 @@ export class AddFileToBatchUseCase {
       throw new BadRequestException('Batch is not in CREATED status');
     }
 
-    const allFileProcesses: FileToProcess[] = [];
+    const allFileProcesses: FileRecord[] = [];
 
     // Process each file in parallel
     await Promise.all(

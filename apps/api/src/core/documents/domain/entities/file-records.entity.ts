@@ -20,8 +20,8 @@ registerEnumType(FileProcessStatus, {
 
 @ObjectType()
 @Index({ properties: ['createdAt', 'batchProcess'] })
-@Entity({ tableName: 'document_processes' })
-export class FileToProcess {
+@Entity({ tableName: 'file_records' })
+export class FileRecord {
   [OptionalProps]?: 'createdAt' | 'updatedAt';
 
   @Field(() => String)

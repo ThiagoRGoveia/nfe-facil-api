@@ -10,7 +10,7 @@ import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 import { graphqlUploadExpress } from 'graphql-upload-minimal';

@@ -20,8 +20,8 @@ import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.
 import { ZipPort } from '@/infra/zip/zip.port';
 import { ZipAdapter } from '@/infra/zip/zip.adapter';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { useDbFileRecord } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
@@ -245,8 +245,8 @@ describe('DocumentsController (REST Integration)', () => {
     it('should start async batch processing', async () => {
       const template = await useDbTemplate({ user }, em);
       const batchProcess = await useDbBatchProcess({ user, template, status: BatchStatus.CREATED, files: [] }, em);
-      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
-      await useDbFileProcess({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
+      await useDbFileRecord({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
+      await useDbFileRecord({ batchProcess, status: FileProcessStatus.PENDING, template, user }, em);
 
       await request(app.getHttpServer())
         .post(`/documents/batch/${batchProcess.id}/process`)

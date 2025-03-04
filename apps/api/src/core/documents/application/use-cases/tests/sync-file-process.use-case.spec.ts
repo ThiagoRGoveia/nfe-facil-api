@@ -11,8 +11,8 @@ import { CancelBatchProcessUseCase } from '../cancel-batch-process.use-case';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 describe('SyncBatchProcessUseCase', () => {
   let useCase: SyncFileProcessUseCase;
   let batchDbPort: jest.Mocked<BatchDbPort>;
@@ -77,8 +77,8 @@ describe('SyncBatchProcessUseCase', () => {
   it('should process batch with files successfully', async () => {
     const batch = useBatchProcessFactory({ status: BatchStatus.CREATED, totalFiles: 2, processedFiles: 0 }, em);
     const files = [
-      useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
-      useFileProcessFactory({ status: FileProcessStatus.PENDING }, em),
+      useFileRecordFactory({ status: FileProcessStatus.PENDING }, em),
+      useFileRecordFactory({ status: FileProcessStatus.PENDING }, em),
     ];
 
     createBatchProcessUseCase.execute.mockResolvedValue(batch);

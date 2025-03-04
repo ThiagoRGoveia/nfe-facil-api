@@ -5,7 +5,7 @@ import { BatchStatus } from '../../domain/entities/batch-process.entity';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
-import { FileToProcess } from '../../domain/entities/file-process.entity';
+import { FileRecord } from '../../domain/entities/file-records.entity';
 import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class AsyncBatchProcessUseCase {
 
     const limit = 100;
     let offset = 0;
-    let files: FileToProcess[];
+    let files: FileRecord[];
 
     do {
       files = await this.fileProcessRepository.findByBatchPaginated(batchId, limit, offset);
@@ -52,7 +52,7 @@ export class AsyncBatchProcessUseCase {
     } while (files.length === limit);
   }
 
-  private async processFiles(files: FileToProcess[]) {
+  private async processFiles(files: FileRecord[]) {
     await Promise.all(
       files.map(async (doc) => {
         try {

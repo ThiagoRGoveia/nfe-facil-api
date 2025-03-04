@@ -7,8 +7,8 @@ import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.m
 
 import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
-import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileRecord } from '@/core/documents/domain/entities/file-records.entity';
+import { useDbFileRecord } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
@@ -20,7 +20,7 @@ describe('BatchMikroOrmRepository (integration)', () => {
   let em: EntityManager;
   let repository: BatchMikroOrmRepository;
   let testBatch: BatchProcess;
-  let testFile: FileToProcess;
+  let testFile: FileRecord;
   let testTemplate: Template;
   let testUser: User;
 
@@ -41,7 +41,7 @@ describe('BatchMikroOrmRepository (integration)', () => {
     testUser = await useDbUser({}, em);
     testTemplate = await useDbTemplate({}, em);
     testBatch = await useDbBatchProcess({ user: testUser, template: testTemplate }, em);
-    testFile = await useDbFileProcess({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
+    testFile = await useDbFileRecord({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
     testBatch.files.add(testFile);
 
     await em.persistAndFlush([testBatch, testFile]);

@@ -3,10 +3,10 @@ import { Seeder } from '@mikro-orm/seeder';
 import { UserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { TemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { BatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { FileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 
 export class DevSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
@@ -49,7 +49,7 @@ export class DevSeeder extends Seeder {
 
       // Create 50 files for each batch
       for (let j = 0; j < 50; j++) {
-        new FileProcessFactory(em).makeOne({
+        new FileRecordFactory(em).makeOne({
           status: FileProcessStatus.COMPLETED,
           batchProcess: batch,
           user,

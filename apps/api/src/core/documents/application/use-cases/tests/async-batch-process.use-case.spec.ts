@@ -9,7 +9,7 @@ import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { NotFoundException } from '@nestjs/common';
@@ -71,8 +71,8 @@ describe('AsyncBatchProcessUseCase', () => {
       em,
     );
     const files = [
-      useFileProcessFactory({ fileName: 'file1.pdf', filePath: 's3://path/1' }, em),
-      useFileProcessFactory({ fileName: 'file2.pdf', filePath: 's3://path/2' }, em),
+      useFileRecordFactory({ fileName: 'file1.pdf', filePath: 's3://path/1' }, em),
+      useFileRecordFactory({ fileName: 'file2.pdf', filePath: 's3://path/2' }, em),
     ];
 
     batchDbPort.findById.mockResolvedValue(batch);
@@ -97,10 +97,10 @@ describe('AsyncBatchProcessUseCase', () => {
     );
     const firstBatch = Array(100)
       .fill(null)
-      .map(() => useFileProcessFactory({}, em));
+      .map(() => useFileRecordFactory({}, em));
     const secondBatch = Array(50)
       .fill(null)
-      .map(() => useFileProcessFactory({}, em));
+      .map(() => useFileRecordFactory({}, em));
 
     batchDbPort.findById.mockResolvedValue(batch);
     fileProcessDbPort.findByBatchPaginated
@@ -120,8 +120,8 @@ describe('AsyncBatchProcessUseCase', () => {
       em,
     );
     const files = [
-      useFileProcessFactory({ fileName: 'file1.pdf' }, em),
-      useFileProcessFactory({ fileName: 'file2.pdf' }, em),
+      useFileRecordFactory({ fileName: 'file1.pdf' }, em),
+      useFileRecordFactory({ fileName: 'file2.pdf' }, em),
     ];
 
     batchDbPort.findById.mockResolvedValue(batch);

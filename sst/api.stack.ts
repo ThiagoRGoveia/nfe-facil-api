@@ -18,7 +18,7 @@ export function ApiStack() {
 
   // Add the catch-all route
   api.route('ANY /{proxy+}', {
-    handler: 'dist/apps/api/lambda.handler',
+    handler: 'dist/apps/api/main.handler',
     runtime: 'nodejs20.x',
     timeout: '29 seconds',
     memory: '1024 MB',

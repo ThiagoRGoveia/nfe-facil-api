@@ -5,12 +5,12 @@ import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 import { HandleOutputFormatUseCase } from '../handle-output-format.use-case';
 import { LocalFileStorageAdapter } from '@/infra/aws/s3/adapters/local-file-storage.adapter';
 import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
@@ -86,7 +86,7 @@ describe('HandleOutputFormatUseCase (Integration)', () => {
     );
 
     for (let i = 0; i < fileCount; i++) {
-      useFileProcessFactory(
+      useFileRecordFactory(
         {
           batchProcess: batch,
           template: testTemplate,

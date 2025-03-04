@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
-import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 import { Readable } from 'stream';
 
 @Injectable()
-export class FileProcessMikroOrmDbRepository extends EntityRepository(FileToProcess) implements FileProcessDbPort {
-  async findByBatchPaginated(batchId: string, limit: number, offset: number): Promise<FileToProcess[]> {
-    return this.em.find(FileToProcess, { batchProcess: { id: batchId } }, { offset, limit });
+export class FileProcessMikroOrmDbRepository extends EntityRepository(FileRecord) implements FileProcessDbPort {
+  async findByBatchPaginated(batchId: string, limit: number, offset: number): Promise<FileRecord[]> {
+    return this.em.find(FileRecord, { batchProcess: { id: batchId } }, { offset, limit });
   }
 
   findByBatchPaginatedAndStatus(
@@ -15,16 +15,16 @@ export class FileProcessMikroOrmDbRepository extends EntityRepository(FileToProc
     status: FileProcessStatus,
     limit: number,
     offset: number,
-  ): Promise<FileToProcess[]> {
-    return this.em.find(FileToProcess, { batchProcess: { id: batchId }, status }, { offset, limit });
+  ): Promise<FileRecord[]> {
+    return this.em.find(FileRecord, { batchProcess: { id: batchId }, status }, { offset, limit });
   }
 
   async deleteByBatchId(batchId: string): Promise<void> {
-    await this.em.nativeDelete(FileToProcess, { batchProcess: { id: batchId } });
+    await this.em.nativeDelete(FileRecord, { batchProcess: { id: batchId } });
   }
 
   async countByBatchAndStatus(batchId: string, status: FileProcessStatus): Promise<number> {
-    return this.em.count(FileToProcess, { batchProcess: { id: batchId }, status });
+    return this.em.count(FileRecord, { batchProcess: { id: batchId }, status });
   }
 
   findCompletedByBatchStream(batchId: string, limit: number): Readable {

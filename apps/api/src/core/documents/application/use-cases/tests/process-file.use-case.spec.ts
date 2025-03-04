@@ -6,10 +6,10 @@ import { ProcessFileUseCase } from '../process-file.use-case';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { DocumentProcessorPort } from '../../ports/document-processor.port';
 import { WebhookNotifierPort } from '../../ports/webhook-notifier.port';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
+import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
@@ -92,7 +92,7 @@ describe('ProcessFileUseCase', () => {
 
   it('should process file successfully with webhook', async () => {
     const template = useTemplateFactory({ user: mockUser }, em);
-    const fileProcess = useFileProcessFactory(
+    const fileProcess = useFileRecordFactory(
       {
         status: FileProcessStatus.PENDING,
         template,
@@ -117,7 +117,7 @@ describe('ProcessFileUseCase', () => {
 
   it('should handle processing failure', async () => {
     const template = useTemplateFactory({ user: mockUser }, em);
-    const fileProcess = useFileProcessFactory({ template, user: mockUser }, em);
+    const fileProcess = useFileRecordFactory({ template, user: mockUser }, em);
     documentProcessor.process.mockResolvedValueOnce(
       createMock<DocumentProcessResult>({
         isError: () => true,
@@ -135,7 +135,7 @@ describe('ProcessFileUseCase', () => {
 
   it('should reject inaccessible template', async () => {
     const otherUserTemplate = useTemplateFactory({ user: useUserFactory({}, em), isPublic: false }, em);
-    const otherFileProcess = useFileProcessFactory({ template: otherUserTemplate, user: mockUser }, em);
+    const otherFileProcess = useFileRecordFactory({ template: otherUserTemplate, user: mockUser }, em);
     fileProcessDbPort.findById.mockResolvedValueOnce(otherFileProcess);
 
     await expect(useCase.execute({ fileId: otherFileProcess.id })).rejects.toThrow(
@@ -144,7 +144,7 @@ describe('ProcessFileUseCase', () => {
   });
 
   it('should handle missing file path', async () => {
-    const fileProcess = useFileProcessFactory(
+    const fileProcess = useFileRecordFactory(
       { filePath: null, template: useTemplateFactory({ user: mockUser }, em), user: mockUser },
       em,
     );
@@ -154,7 +154,7 @@ describe('ProcessFileUseCase', () => {
   });
 
   it('should throw when template is not found', async () => {
-    const fileProcess = useFileProcessFactory(
+    const fileProcess = useFileRecordFactory(
       {
         template: useTemplateFactory({ user: mockUser }, em),
         user: mockUser,
@@ -171,7 +171,7 @@ describe('ProcessFileUseCase', () => {
   it('should handle batch completion when all files are processed', async () => {
     const template = useTemplateFactory({ user: mockUser }, em);
     const batchProcess = useBatchProcessFactory({ user: mockUser, template }, em);
-    const fileProcess = useFileProcessFactory(
+    const fileProcess = useFileRecordFactory(
       {
         status: FileProcessStatus.PENDING,
         template,

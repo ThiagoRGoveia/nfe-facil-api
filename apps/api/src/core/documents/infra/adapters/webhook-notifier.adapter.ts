@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
-import { FileToProcess } from '../../domain/entities/file-process.entity';
+import { FileRecord } from '../../domain/entities/file-records.entity';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
@@ -16,7 +16,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     private readonly datePort: DatePort,
   ) {}
 
-  async notifySuccess(process: FileToProcess): Promise<void> {
+  async notifySuccess(process: FileRecord): Promise<void> {
     try {
       const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
@@ -36,7 +36,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     }
   }
 
-  async notifyFailure(process: FileToProcess): Promise<void> {
+  async notifyFailure(process: FileRecord): Promise<void> {
     try {
       const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
@@ -73,7 +73,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     }
   }
 
-  private async getUser(process: FileToProcess): Promise<User> {
+  private async getUser(process: FileRecord): Promise<User> {
     const user = await process.user.load();
     if (!user) {
       throw new InternalServerErrorException(`User not found for process ${process.id}`);

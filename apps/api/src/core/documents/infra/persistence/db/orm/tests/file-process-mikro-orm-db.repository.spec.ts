@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 
 describe('FileProcessMikroOrmDbRepository (unit)', () => {
   let em: EntityManager;
@@ -28,16 +28,16 @@ describe('FileProcessMikroOrmDbRepository (unit)', () => {
       const batchId = 'batch1';
       const limit = 5;
       const offset = 0;
-      const expectedFiles: FileToProcess[] = [
-        useFileProcessFactory({ batchProcess: batchId }, em),
-        useFileProcessFactory({ batchProcess: batchId }, em),
+      const expectedFiles: FileRecord[] = [
+        useFileRecordFactory({ batchProcess: batchId }, em),
+        useFileRecordFactory({ batchProcess: batchId }, em),
       ];
 
       const findSpy = jest.spyOn(em, 'find').mockResolvedValue(expectedFiles);
 
       const result = await repository.findByBatchPaginated(batchId, limit, offset);
       expect(result).toEqual(expectedFiles);
-      expect(findSpy).toHaveBeenCalledWith(FileToProcess, { batchProcess: { id: batchId } }, { offset, limit });
+      expect(findSpy).toHaveBeenCalledWith(FileRecord, { batchProcess: { id: batchId } }, { offset, limit });
     });
   });
 
@@ -47,7 +47,7 @@ describe('FileProcessMikroOrmDbRepository (unit)', () => {
       const nativeDeleteSpy = jest.spyOn(em, 'nativeDelete').mockResolvedValue(1);
 
       await repository.deleteByBatchId(batchId);
-      expect(nativeDeleteSpy).toHaveBeenCalledWith(FileToProcess, { batchProcess: { id: batchId } });
+      expect(nativeDeleteSpy).toHaveBeenCalledWith(FileRecord, { batchProcess: { id: batchId } });
     });
   });
 
@@ -59,7 +59,7 @@ describe('FileProcessMikroOrmDbRepository (unit)', () => {
 
       const count = await repository.countByBatchAndStatus(batchId, status);
       expect(count).toBe(4);
-      expect(countSpy).toHaveBeenCalledWith(FileToProcess, { batchProcess: { id: batchId }, status });
+      expect(countSpy).toHaveBeenCalledWith(FileRecord, { batchProcess: { id: batchId }, status });
     });
   });
 });

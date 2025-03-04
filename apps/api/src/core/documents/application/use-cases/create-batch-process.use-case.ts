@@ -6,7 +6,7 @@ import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { BadRequestException } from '@nestjs/common';
 import { ZipPort } from '../../../../infra/zip/zip.port';
 import { BatchDbPort } from '../ports/batch-db.port';
-import { FileProcessStatus } from '../../domain/entities/file-process.entity';
+import { FileProcessStatus } from '../../domain/entities/file-records.entity';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';

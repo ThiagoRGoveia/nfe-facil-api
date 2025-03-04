@@ -5,8 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
-import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-import { useDbFileProcess, useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { useDbFileRecord, useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { Template } from '@/core/templates/domain/entities/template.entity';
@@ -20,7 +20,7 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   let em: EntityManager;
   let repository: FileProcessMikroOrmDbRepository;
   let testBatch: BatchProcess;
-  let testFile: FileToProcess;
+  let testFile: FileRecord;
   let testTemplate: Template;
   let testUser: User;
 
@@ -41,7 +41,7 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
     testUser = await useDbUser({}, em);
     testTemplate = await useDbTemplate({}, em);
     testBatch = await useDbBatchProcess({ user: testUser, template: testTemplate }, em);
-    testFile = await useDbFileProcess(
+    testFile = await useDbFileRecord(
       { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
       em,
     );
@@ -60,11 +60,11 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   describe('findByBatchPaginated', () => {
     it('should find files by batch with pagination', async () => {
       // Create additional test files
-      const file2 = await useDbFileProcess(
+      const file2 = await useDbFileRecord(
         { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
         em,
       );
-      const file3 = await useDbFileProcess(
+      const file3 = await useDbFileRecord(
         { batchProcess: testBatch, template: testTemplate, status: FileProcessStatus.FAILED, user: testUser },
         em,
       );
@@ -81,12 +81,12 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   describe('deleteByBatchId', () => {
     it('should delete all files for a batch', async () => {
       // Create another file in same batch
-      await useDbFileProcess({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
+      await useDbFileRecord({ batchProcess: testBatch, template: testTemplate, user: testUser }, em);
       await em.flush();
 
       await repository.deleteByBatchId(testBatch.id);
 
-      const remainingFiles = await em.find(FileToProcess, { batchProcess: testBatch });
+      const remainingFiles = await em.find(FileRecord, { batchProcess: testBatch });
       expect(remainingFiles).toHaveLength(0);
     });
   });
@@ -94,15 +94,15 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
   describe('countByBatchAndStatus', () => {
     it('should count files by batch and status', async () => {
       // Create files with different statuses
-      await useDbFileProcess(
+      await useDbFileRecord(
         { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate, user: testUser },
         em,
       );
-      await useDbFileProcess(
+      await useDbFileRecord(
         { batchProcess: testBatch, status: FileProcessStatus.COMPLETED, template: testTemplate, user: testUser },
         em,
       );
-      await useDbFileProcess(
+      await useDbFileRecord(
         { batchProcess: testBatch, status: FileProcessStatus.PENDING, template: testTemplate, user: testUser },
         em,
       );
@@ -124,7 +124,7 @@ describe('FileProcessMikroOrmDbRepository (integration)', () => {
 
       // Create 10,000 completed files with unique results
       for (let i = 0; i < fileCount; i++) {
-        useFileProcessFactory(
+        useFileRecordFactory(
           {
             batchProcess: streamBatch,
             template: testTemplate,

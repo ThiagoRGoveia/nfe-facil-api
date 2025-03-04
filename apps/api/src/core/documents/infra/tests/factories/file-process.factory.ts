@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
-import { FileToProcess, FileProcessStatus } from '@/core/documents/domain/entities/file-process.entity';
-export class FileProcessFactory extends Factory<FileToProcess> {
-  model = FileToProcess;
+import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+export class FileRecordFactory extends Factory<FileRecord> {
+  model = FileRecord;
 
-  definition(): Partial<FileToProcess> {
+  definition(): Partial<FileRecord> {
     return {
       id: faker.string.uuid(),
       fileName: faker.system.fileName(),
@@ -19,18 +19,15 @@ export class FileProcessFactory extends Factory<FileToProcess> {
   }
 }
 
-export function useFileProcessFactory(
-  data: Partial<RequiredEntityData<FileToProcess>>,
-  em: EntityManager,
-): FileToProcess {
-  return new FileProcessFactory(em).makeOne(data);
+export function useFileRecordFactory(data: Partial<RequiredEntityData<FileRecord>>, em: EntityManager): FileRecord {
+  return new FileRecordFactory(em).makeOne(data);
 }
 
-export async function useDbFileProcess(
-  data: Partial<RequiredEntityData<FileToProcess>>,
+export async function useDbFileRecord(
+  data: Partial<RequiredEntityData<FileRecord>>,
   em: EntityManager,
-): Promise<FileToProcess> {
-  const fileProcess = useFileProcessFactory(data, em);
+): Promise<FileRecord> {
+  const fileProcess = useFileRecordFactory(data, em);
   await em.persistAndFlush(fileProcess);
   return fileProcess;
 }

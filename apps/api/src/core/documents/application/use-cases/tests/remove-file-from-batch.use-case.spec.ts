@@ -7,10 +7,10 @@ import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { BadRequestException } from '@nestjs/common';
 import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
+import { FileRecord } from '@/core/documents/domain/entities/file-records.entity';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useFileProcessFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 
@@ -20,7 +20,7 @@ describe('RemoveFileFromBatchUseCase', () => {
   let fileStoragePort: jest.Mocked<FileStoragePort>;
   let em: EntityManager;
   let batch: BatchProcess;
-  let file: FileToProcess;
+  let file: FileRecord;
   let mockUser: User;
 
   beforeEach(async () => {
@@ -45,7 +45,7 @@ describe('RemoveFileFromBatchUseCase', () => {
 
     mockUser = useUserFactory({ role: UserRole.CUSTOMER }, em);
     batch = useBatchProcessFactory({ user: mockUser }, em);
-    file = useFileProcessFactory({ batchProcess: batch, filePath: 's3://path/to/file' }, em);
+    file = useFileRecordFactory({ batchProcess: batch, filePath: 's3://path/to/file' }, em);
   });
 
   function createValidParams() {
@@ -72,14 +72,14 @@ describe('RemoveFileFromBatchUseCase', () => {
 
   it('should throw when file belongs to different batch', async () => {
     const otherBatch = useBatchProcessFactory({ user: mockUser }, em);
-    const foreignFile = useFileProcessFactory({ batchProcess: otherBatch }, em);
+    const foreignFile = useFileRecordFactory({ batchProcess: otherBatch }, em);
     fileProcessDbPort.findById.mockResolvedValueOnce(foreignFile);
 
     await expect(useCase.execute(createValidParams())).rejects.toThrow('File not found in batch');
   });
 
   it('should not call storage delete when no filePath exists', async () => {
-    const noPathFile = useFileProcessFactory({ batchProcess: batch, filePath: null }, em);
+    const noPathFile = useFileRecordFactory({ batchProcess: batch, filePath: null }, em);
     fileProcessDbPort.findById.mockResolvedValueOnce(noPathFile);
 
     await useCase.execute({ batchId: batch.id, fileId: noPathFile.id });

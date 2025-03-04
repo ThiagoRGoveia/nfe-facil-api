@@ -10,8 +10,8 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useDbFileProcess } from '@/core/documents/infra/tests/factories/file-process.factory';
-import { FileProcessStatus, FileToProcess } from '@/core/documents/domain/entities/file-process.entity';
+import { useDbFileRecord } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileProcessStatus, FileRecord } from '@/core/documents/domain/entities/file-records.entity';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
 import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
@@ -124,7 +124,7 @@ describe('ProcessDocumentJobService (Integration)', () => {
         { user: testUser, template: testTemplate, totalFiles: 1, processedFiles: 0 },
         em,
       );
-      const fileProcess = await useDbFileProcess(
+      const fileProcess = await useDbFileRecord(
         {
           batchProcess: batch,
           template: testTemplate,
@@ -170,7 +170,7 @@ describe('ProcessDocumentJobService (Integration)', () => {
         },
       });
 
-      const updatedFileProcess = await em.findOne(FileToProcess, { id: fileProcess.id });
+      const updatedFileProcess = await em.findOne(FileRecord, { id: fileProcess.id });
       const updatedBatchProcess = await em.findOne(BatchProcess, { id: batch.id });
       expect(updatedFileProcess).toBeDefined();
       expect(updatedFileProcess?.status).toBe(FileProcessStatus.COMPLETED);
@@ -192,7 +192,7 @@ describe('ProcessDocumentJobService (Integration)', () => {
       );
 
       // Create a file process entity
-      const fileProcess = await useDbFileProcess(
+      const fileProcess = await useDbFileRecord(
         {
           template: testTemplate,
           user: testUser,
@@ -221,7 +221,7 @@ describe('ProcessDocumentJobService (Integration)', () => {
       );
 
       // Create a file process entity
-      const fileProcess = await useDbFileProcess(
+      const fileProcess = await useDbFileRecord(
         {
           template: testTemplate,
           user: testUser,
@@ -244,7 +244,7 @@ describe('ProcessDocumentJobService (Integration)', () => {
         { user: testUser, template: testTemplate, totalFiles: 2, processedFiles: 0 },
         em,
       );
-      const fileProcess = await useDbFileProcess(
+      const fileProcess = await useDbFileRecord(
         {
           batchProcess: batch,
           template: testTemplate,

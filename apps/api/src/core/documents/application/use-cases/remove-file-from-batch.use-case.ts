@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
-import { FileToProcess } from '../../domain/entities/file-process.entity';
+import { FileRecord } from '../../domain/entities/file-records.entity';
 
 @Injectable()
 export class RemoveFileFromBatchUseCase {
@@ -11,7 +11,7 @@ export class RemoveFileFromBatchUseCase {
     private readonly fileStoragePort: FileStoragePort,
   ) {}
 
-  async execute(params: { batchId: BatchProcess['id']; fileId: FileToProcess['id'] }) {
+  async execute(params: { batchId: BatchProcess['id']; fileId: FileRecord['id'] }) {
     const file = await this.fileProcessRepository.findById(params.fileId);
 
     if (!file || file.batchProcess?.id !== params.batchId) {

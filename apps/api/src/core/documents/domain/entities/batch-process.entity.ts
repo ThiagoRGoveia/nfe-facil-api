@@ -6,7 +6,7 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { Collection } from '@mikro-orm/core';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { BadRequestException } from '@nestjs/common';
-import { FileToProcess } from './file-process.entity';
+import { FileRecord } from './file-records.entity';
 import { OutputFormat } from '../types/output-format.type';
 import { FileFormat } from '../constants/file-formats';
 
@@ -38,8 +38,8 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles' | '
   @ManyToOne(() => Template, { eager: false, ref: true })
   template!: Ref<Template>;
 
-  @OneToMany(() => FileToProcess, (process) => process.batchProcess, { eager: false, ref: true })
-  files = new Collection<FileToProcess>(this);
+  @OneToMany(() => FileRecord, (process) => process.batchProcess, { eager: false, ref: true })
+  files = new Collection<FileRecord>(this);
 
   @Field(() => User)
   @ManyToOne(() => User, { eager: false, ref: true })
@@ -70,7 +70,7 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles' | '
   excelResults?: string;
 
   // Domain logic methods
-  addFile(process: FileToProcess) {
+  addFile(process: FileRecord) {
     if (this.status !== BatchStatus.CREATED) {
       throw new BadRequestException('Cannot add files to a started batch');
     }
