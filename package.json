@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build --webpack --webpackPath webpack-hmr.config.js",
+    "build": "nest build --webpack --webpackPath ./.webpack/prod/webpack-hmr.config.js --all",
     "db-migrations:down": "mikro-orm migration:down",
     "db-migrations:generate": "mikro-orm migration:create",
     "db-migrations:initial": "mikro-orm migration:create --initial",
@@ -17,7 +17,7 @@
     "seed:dev": "mikro-orm seeder:run --class DevSeeder",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
-    "start:dev": "nest build --webpack --webpackPath webpack-hmr-dev.config.js --watch",
+    "start:dev": "nest build --webpack --webpackPath ./.webpack/dev/webpack-hmr-dev.config.js --watch",
     "start:prod": "node dist/apps/api/main",
     "test": "jest --config jest-it.config.js",
     "test:cov": "jest --coverage",

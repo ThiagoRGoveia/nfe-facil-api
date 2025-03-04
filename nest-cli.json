@@ -22,7 +22,7 @@
     "process-document-job": {
       "type": "application",
       "root": "apps/process-document-job",
-      "entryFile": "lambda",
+      "entryFile": "main",
       "sourceRoot": "apps/process-document-job/src",
       "compilerOptions": {
         "tsConfigPath": "apps/process-document-job/tsconfig.app.json"
