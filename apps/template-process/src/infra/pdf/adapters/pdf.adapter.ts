@@ -1,5 +1,7 @@
-import * as pdfParse from 'pdf-parse';
+import pdfParse from 'pdf-parse';
 import { PdfPort } from '../ports/pdf.port';
+import type { Options } from 'pdf-to-img';
+import { pdf } from 'pdf-to-img';
 
 export class PdfAdapter implements PdfPort {
   async extract(pdfBuffer: Buffer): Promise<{ text: string; numPages: number }> {
@@ -14,5 +16,29 @@ export class PdfAdapter implements PdfPort {
   async extractFirstPage(pdfBuffer: Buffer): Promise<{ text: string; numPages: number }> {
     const data = await pdfParse(pdfBuffer, { max: 1 });
     return { text: data.text.trim(), numPages: data.numpages };
+  }
+
+  async extractImages(pdfBuffer: Buffer): Promise<Buffer[]> {
+    try {
+      // Convert the PDF buffer to images
+      // pdf-to-img returns an object with iterable pages
+      const options: Options = {
+        scale: 2, // Higher resolution for better quality
+      };
+
+      const pdfDoc = await pdf(pdfBuffer, options);
+
+      // Collect all page buffers
+      const buffers: Buffer[] = [];
+
+      // Get all pages
+      for await (const image of pdfDoc) {
+        buffers.push(image);
+      }
+
+      return buffers;
+    } catch (error) {
+      throw new Error(`PDF image extraction failed: ${error.message}`);
+    }
   }
 }
