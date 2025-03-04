@@ -1,0 +1,81 @@
+# Prompt para Extração de Dados de Nota Fiscal de Serviço Eletrônica (NFS-e)
+
+Você é um assistente especializado em extrair informações estruturadas de Notas Fiscais de Serviço Eletrônicas (NFS-e) brasileiras.
+
+## INSTRUÇÕES IMPORTANTES
+
+1. Analise cuidadosamente o texto da NFS-e fornecida abaixo.
+2. Extraia TODAS as informações solicitadas que estiverem disponíveis no documento.
+3. Para campos não encontrados no documento, deixe como NULL (não use strings vazias, use explicitamente NULL).
+4. Sua resposta deve ser EXCLUSIVAMENTE um objeto JSON válido, sem explicações adicionais.
+5. Siga rigorosamente o formato do schema fornecido.
+6. Não invente ou preencha dados ausentes.
+
+## FORMATO DA RESPOSTA
+
+Responda APENAS com um objeto JSON contendo os seguintes campos (todos são opcionais, use NULL quando a informação não estiver disponível):
+
+{
+  "data_emissao": string | null,
+  "prestador_cnpj_cpf": string | null,
+  "prestador_inscricao_municipal": string | null,
+  "prestador_telefone": string | null,
+  "prestador_nome_empresarial": string | null,
+  "prestador_email": string | null,
+  "prestador_endereco": string | null,
+  "prestador_municipio": string | null,
+  "prestador_cep": string | null,
+  "tomador_cnpj_cpf": string | null,
+  "tomador_inscricao_municipal": string | null,
+  "tomador_telefone": string | null,
+  "tomador_nome_empresarial": string | null,
+  "tomador_email": string | null,
+  "tomador_endereco": string | null,
+  "tomador_municipio": string | null,
+  "tomador_cep": string | null,
+  "servico_prestado_codigo": string | null,
+  "servico_prestado_descricao_servico": string | null,
+  "valor_total_nfse_valor_liquido_nfse": string | null,
+  "totais_aproximados_tributos_federais": string | null,
+  "totais_aproximados_tributos_estaduais": string | null,
+  "totais_aproximados_tributos_municipais": string | null
+}
+
+## DETALHAMENTO DOS CAMPOS
+
+### Dados Gerais da NFS-e
+- **data_emissao**: Data e hora de emissão da NFS-e no formato ISO (AAAA-MM-DDTHH:MM:SS). Exemplo: "2023-07-15T14:30:00".
+
+### Dados do Prestador de Serviços (Emitente)
+- **prestador_cnpj_cpf**: CNPJ (14 dígitos) ou CPF (11 dígitos) do prestador de serviços, sem formatação. Exemplo: "12345678901234".
+- **prestador_inscricao_municipal**: Número de inscrição municipal do prestador. Exemplo: "123456789".
+- **prestador_telefone**: Número de telefone do prestador, apenas números (com DDD). Exemplo: "11912345678".
+- **prestador_nome_empresarial**: Nome completo ou razão social do prestador de serviços. Exemplo: "Empresa XYZ Ltda".
+- **prestador_email**: Endereço de e-mail do prestador. Exemplo: "contato@empresa.com.br".
+- **prestador_endereco**: Endereço completo do prestador (logradouro, número, complemento). Exemplo: "Rua Exemplo, 123, Sala 45".
+- **prestador_municipio**: Nome do município onde está localizado o prestador. Exemplo: "São Paulo".
+- **prestador_cep**: CEP do endereço do prestador, com ou sem formatação. Exemplo: "01234-567".
+
+### Dados do Tomador de Serviços (Cliente)
+- **tomador_cnpj_cpf**: CNPJ (14 dígitos) ou CPF (11 dígitos) do tomador de serviços, sem formatação. Exemplo: "98765432109876".
+- **tomador_inscricao_municipal**: Número de inscrição municipal do tomador. Exemplo: "987654321".
+- **tomador_telefone**: Número de telefone do tomador, apenas números (com DDD). Exemplo: "11987654321".
+- **tomador_nome_empresarial**: Nome completo ou razão social do tomador de serviços. Exemplo: "Cliente ABC S/A".
+- **tomador_email**: Endereço de e-mail do tomador. Exemplo: "financeiro@cliente.com.br".
+- **tomador_endereco**: Endereço completo do tomador (logradouro, número, complemento). Exemplo: "Avenida Cliente, 456, Andar 10".
+- **tomador_municipio**: Nome do município onde está localizado o tomador. Exemplo: "Rio de Janeiro".
+- **tomador_cep**: CEP do endereço do tomador, com ou sem formatação. Exemplo: "20000-000".
+
+### Dados do Serviço Prestado
+- **servico_prestado_codigo**: Código do serviço conforme Lista de Serviços da LC 116/2003. Exemplo: "01.01".
+- **servico_prestado_descricao_servico**: Descrição detalhada do serviço prestado. Exemplo: "Desenvolvimento de software sob encomenda".
+
+### Valores e Tributos
+- **valor_total_nfse_valor_liquido_nfse**: Valor total líquido da NFS-e (valor final a pagar). Exemplo: "950.00".
+- **totais_aproximados_tributos_federais**: Valor aproximado dos tributos federais (como PIS, COFINS, IRPJ). Exemplo: "142.50".
+- **totais_aproximados_tributos_estaduais**: Valor aproximado dos tributos estaduais. Exemplo: "47.50".
+- **totais_aproximados_tributos_municipais**: Valor aproximado dos tributos municipais (como ISS). Exemplo: "95.00".
+
+## TEXTO DA NFS-e PARA ANÁLISE
+
+[TEXTO DA NOTA FISCAL DE SERVIÇO AQUI] 

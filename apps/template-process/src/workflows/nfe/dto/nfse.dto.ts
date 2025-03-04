@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsString, IsEmail, IsOptional, Matches } from 'class-validator';
+import { IsString, IsEmail, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 const EMPTY_STRING_INDICATORS = ['-', 'NÃO IDENTIFICADO NA NFS-e', 'Não', 'Nenhum', 'Não Retido', ' ', 'null', ''];
@@ -13,43 +13,6 @@ function transformToNull({ value }: { value: string }): string | null {
 
 export class NfseDto {
   @ApiProperty({
-    description: 'Chave de acesso da NFSe - Código de validação',
-    example: '12345678901234567890123456789012345678901234567890',
-    required: false,
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  @Matches(/^\d{50}$/)
-  @Transform(transformToNull)
-  @Expose()
-  chave_acesso_nfse: string | null;
-
-  @ApiProperty({
-    description: 'Número da NFSe',
-    example: '123456',
-    required: false,
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  numero_nfse: string | null;
-
-  @ApiProperty({
-    description: 'Competência da NFSe (período)',
-    example: '07/2023',
-    required: false,
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  competencia_nfse: string | null;
-
-  @ApiProperty({
     description: 'Data e hora de emissão da NFSe',
     example: '2023-07-15T14:30:00',
     required: false,
@@ -59,34 +22,11 @@ export class NfseDto {
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  data_hora_emissao_nfse: string | null;
+  data_emissao: string | null;
 
   @ApiProperty({
-    description: 'Número do DPS (Documento de Prestação de Serviço)',
-    example: '1234',
-    required: false,
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  numeroDps: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  serieDps: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  data_hora_emissao_dps: string | null;
-
-  @ApiProperty({
-    description: 'CNPJ/CPF/NIF do emitente da NFSe (prestador de serviço)',
+    description:
+      'CNPJ/CPF/NIF do prestador emitente da NFSe (prestador de serviço). CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)',
     example: '12345678901234',
     required: false,
     nullable: true,
@@ -95,22 +35,34 @@ export class NfseDto {
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  emitente_nfse_prestador_servico_cnpj_cpf_nif: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_inscricao_municipal: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_telefone: string | null;
+  prestador_cnpj_cpf: string | null;
 
   @ApiProperty({
-    description: 'Nome/Nome empresarial do emitente da NFSe',
+    description: 'Inscrição Municipal do prestador emitente da NFSe',
+    example: '123456789',
+    required: false,
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  prestador_inscricao_municipal: string | null;
+
+  @ApiProperty({
+    description: 'Telefone do prestador emitente da NFSe',
+    example: '11912345678',
+    required: false,
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  prestador_telefone: string | null;
+
+  @ApiProperty({
+    description: 'Nome/Nome empresarial do prestador emitente da NFSe',
     example: 'Empresa XYZ Ltda',
     required: false,
     nullable: true,
@@ -119,10 +71,10 @@ export class NfseDto {
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  emitente_nfse_nome_nome_empresarial: string | null;
+  prestador_nome_empresarial: string | null;
 
   @ApiProperty({
-    description: 'Email do emitente da NFSe',
+    description: 'Email do prestador emitente da NFSe',
     example: 'contato@empresa.com.br',
     required: false,
     nullable: true,
@@ -131,52 +83,47 @@ export class NfseDto {
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  emitente_nfse_email: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_endereco_logradouro: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_endereco_numero: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_endereco_bairro: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_municipio: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_cep: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_simples_nacional_data_competencia: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  emitente_nfse_regime_apuracao_tributaria_sn: string | null;
+  prestador_email: string | null;
 
   @ApiProperty({
-    description: 'CNPJ/CPF/NIF do tomador do serviço',
+    description: 'Endereço completo do prestador emitente da NFSe',
+    example: 'Rua Exemplo, 123, Sala 45',
+    required: false,
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  prestador_endereco: string | null;
+
+  @ApiProperty({
+    description: 'Município do prestador emitente da NFSe',
+    example: 'São Paulo',
+    required: false,
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  prestador_municipio: string | null;
+
+  @ApiProperty({
+    description: 'CEP do prestador emitente da NFSe no formato XXXXX-XXX',
+    example: '01234-567',
+    required: false,
+    nullable: true,
+  })
+  @IsString()
+  @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
+  prestador_cep: string | null;
+
+  @ApiProperty({
+    description:
+      'CNPJ/CPF/NIF do tomador do serviço. CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)',
     example: '98765432109876',
     required: false,
     nullable: true,
@@ -185,19 +132,31 @@ export class NfseDto {
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_cnpj_cpf_nif: string | null;
+  tomador_cnpj_cpf: string | null;
 
+  @ApiProperty({
+    description: 'Inscrição Municipal do tomador do serviço',
+    example: '987654321',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_inscricao_municipal: string | null;
+  tomador_inscricao_municipal: string | null;
 
+  @ApiProperty({
+    description: 'Telefone do tomador do serviço',
+    example: '11987654321',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_telefone: string | null;
+  tomador_telefone: string | null;
 
   @ApiProperty({
     description: 'Nome/Nome empresarial do tomador do serviço',
@@ -207,85 +166,67 @@ export class NfseDto {
   })
   @IsString()
   @IsOptional()
-  tomadorServicoNomeNomeEmpresarial: string | null;
+  tomador_nome_empresarial: string | null;
 
+  @ApiProperty({
+    description: 'Email do tomador do serviço',
+    example: 'financeiro@cliente.com.br',
+    required: false,
+    nullable: true,
+  })
   @IsEmail()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_email: string | null;
+  tomador_email: string | null;
 
+  @ApiProperty({
+    description: 'Endereço completo do tomador do serviço',
+    example: 'Avenida Cliente, 456, Andar 10',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_endereco_logradouro: string | null;
+  tomador_endereco: string | null;
 
+  @ApiProperty({
+    description: 'Município do tomador do serviço',
+    example: 'Rio de Janeiro',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_endereco_numero: string | null;
+  tomador_municipio: string | null;
 
-  @IsOptional()
-  @IsString()
-  @Transform(transformToNull)
-  @Expose()
-  tomador_servico_endereco_andar: string | null;
-
-  @IsOptional()
-  @IsString()
-  @Transform(transformToNull)
-  @Expose()
-  tomador_servico_endereco_sala: string | null;
-
+  @ApiProperty({
+    description: 'CEP do tomador do serviço no formato XXXXX-XXX',
+    example: '20000-000',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_endereco_bairro: string | null;
+  tomador_cep: string | null;
 
+  @ApiProperty({
+    description: 'Código do serviço prestado conforme Lista de Serviços da LC 116/2003',
+    example: '01.01',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  tomador_servico_municipio: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tomador_servico_cep: string | null;
-
-  @IsOptional()
-  @IsString()
-  @Transform(transformToNull)
-  @Expose()
-  intermediario_servico_identificado_nfse: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  servico_prestado_codigo_tributacao_nacional: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  servico_prestado_codigo_tributacao_municipal: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  servico_prestado_local_prestacao: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  servico_prestado_pais_prestacao: string | null;
+  servico_prestado_codigo: string | null;
 
   @ApiProperty({
     description: 'Descrição do serviço prestado',
@@ -300,150 +241,6 @@ export class NfseDto {
   servico_prestado_descricao_servico: string | null;
 
   @ApiProperty({
-    description: 'Valor do serviço',
-    example: '1000.00',
-    required: false,
-    nullable: true,
-  })
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_valor_servico: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_tributacao_issqn_operacao_tributavel: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_pais_resultado_prestacao_servico: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_municipio_incidencia_issqn: string | null;
-
-  @IsOptional()
-  @IsString()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_regime_especial_tributacao: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_tipo_imunidade: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_suspensao_exigibilidade_issqn: string | null;
-
-  @IsOptional()
-  @IsString()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_numero_processo_suspensao: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_beneficio_municipal: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_desconto_incondicionado: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_total_deducoes_reducoes: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_calculo_bm: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_bc_issqn: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_alotacao_aplicada: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_retencoes_issqn: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_municipal_issqn_apurado: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_irrf: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_cp: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_csll: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_pis: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_cofins: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_retencoes_pis_cofins: string | null;
-
-  @IsString()
-  @IsOptional()
-  @Transform(transformToNull)
-  @Expose()
-  tributacao_federal_total_tributos_federais: string | null;
-
-  @ApiProperty({
     description: 'Valor total líquido da NFSe',
     example: '950.00',
     required: false,
@@ -455,21 +252,39 @@ export class NfseDto {
   @Expose()
   valor_total_nfse_valor_liquido_nfse: string | null;
 
+  @ApiProperty({
+    description: 'Valor aproximado dos tributos federais incidentes sobre o serviço',
+    example: '142.50',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  totas_aproximados_tributos_federais: string | null;
+  totais_aproximados_tributos_federais: string | null;
 
+  @ApiProperty({
+    description: 'Valor aproximado dos tributos estaduais incidentes sobre o serviço',
+    example: '47.50',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  totas_aproximados_tributos_estaduais: string | null;
+  totais_aproximados_tributos_estaduais: string | null;
 
+  @ApiProperty({
+    description: 'Valor aproximado dos tributos municipais incidentes sobre o serviço (ex: ISS)',
+    example: '95.00',
+    required: false,
+    nullable: true,
+  })
   @IsString()
   @IsOptional()
   @Transform(transformToNull)
   @Expose()
-  totas_aproximados_tributos_municipais: string | null;
+  totais_aproximados_tributos_municipais: string | null;
 }
