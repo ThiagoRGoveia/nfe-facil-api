@@ -1,7 +1,7 @@
 import { PdfAdapter } from '../pdf.adapter';
 import * as fs from 'fs';
 
-const document = fs.readFileSync(__dirname + '/test-image.pdf');
+const document = fs.readFileSync(__dirname + '/test.pdf');
 // const pdfBuffer = Buffer.from(document);
 
 describe('PdfLibAdapter', () => {
