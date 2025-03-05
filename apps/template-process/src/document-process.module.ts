@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { NfeTextWorkflow } from './workflows/nfe/nfe-text.workflow';
+import { NfeTextWorkflow } from './workflows/nfe/nfse-text.workflow';
 import { PdfPort } from './infra/pdf/ports/pdf.port';
 import { PdfAdapter } from './infra/pdf/adapters/pdf.adapter';
 

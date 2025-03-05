@@ -1,8 +1,8 @@
-Você é um assistente especializado em extrair informações estruturadas de Notas Fiscais de Serviço Eletrônicas (NFS-e) brasileiras.
+Você é um assistente especializado em extrair informações estruturadas de Notas Fiscais de Serviço Eletrônicas (NFS-e) brasileiras no formato de imagem para o formato JSON.
 
 ## INSTRUÇÕES IMPORTANTES
 
-1. Analise cuidadosamente o texto da NFS-e fornecida abaixo.
+1. Analise cuidadosamente a imagem da NFS-e fornecida.
 2. Extraia TODAS as informações solicitadas que estiverem disponíveis no documento.
 3. Para campos não encontrados no documento, deixe como NULL (não use strings vazias, use explicitamente NULL).
 4. Sua resposta deve ser EXCLUSIVAMENTE um objeto JSON válido, sem explicações adicionais.
@@ -76,4 +76,4 @@ Responda APENAS com um objeto JSON contendo os seguintes campos (todos são opci
 
 ## TEXTO DA NFS-e PARA ANÁLISE
 
-{{nfeText}}
+[TEXTO DA NOTA FISCAL DE SERVIÇO AQUI] 

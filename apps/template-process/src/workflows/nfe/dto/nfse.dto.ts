@@ -166,6 +166,8 @@ export class NfseDto {
   })
   @IsString()
   @IsOptional()
+  @Transform(transformToNull)
+  @Expose()
   tomador_nome_empresarial: string | null;
 
   @ApiProperty({

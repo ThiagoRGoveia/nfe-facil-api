@@ -72,4 +72,57 @@ export class TogetherClient {
       throw new Error(`Together API error: ${error.message}`);
     }
   }
+
+  async generateWithImage(prompt: string, imageBuffer: Buffer, config: LLMConfig): Promise<string> {
+    try {
+      const base64Image = imageBuffer.toString('base64');
+      const response = await lastValueFrom(
+        this.httpService.post(
+          this.apiUrl,
+          {
+            model: config.model,
+            messages: [
+              {
+                role: 'system',
+                content: config.systemMessage,
+              },
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:image/jpeg;base64,${base64Image}`,
+                    },
+                  },
+                  {
+                    type: 'text',
+                    text: prompt,
+                  },
+                ],
+              },
+            ],
+            max_tokens: config.config.maxTokens,
+            temperature: config.config.temperature,
+            top_p: config.config.topP,
+            top_k: config.config.topK,
+            repetition_penalty: config.config.repetitionPenalty,
+            seed: config.config.seed,
+            stop: ['<|im_end|>'],
+            stream: false,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.apiKey}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        ),
+      );
+
+      return response.data.choices[0]?.message?.content || '';
+    } catch (error) {
+      throw new Error(`Together API error: ${error.message}`);
+    }
+  }
 }

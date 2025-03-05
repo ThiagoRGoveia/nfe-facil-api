@@ -3,7 +3,7 @@ import { EntityManager } from '@mikro-orm/core';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { NfeTextWorkflow } from '../nfe-text.workflow';
+import { NfeTextWorkflow } from '../nfse-text.workflow';
 import { BaseE2eTestModule } from '../../../testing/base-e2e-test.module';
 import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
 import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';

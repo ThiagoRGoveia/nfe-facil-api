@@ -1,7 +1,6 @@
-import pdfParse from 'pdf-parse';
+import * as pdfParse from 'pdf-parse';
 import { PdfPort } from '../ports/pdf.port';
 import type { Options } from 'pdf-to-img';
-import { pdf } from 'pdf-to-img';
 
 export class PdfAdapter implements PdfPort {
   async extract(pdfBuffer: Buffer): Promise<{ text: string; numPages: number }> {
@@ -20,6 +19,7 @@ export class PdfAdapter implements PdfPort {
 
   async extractImages(pdfBuffer: Buffer): Promise<Buffer[]> {
     try {
+      const { pdf } = await import('pdf-to-img');
       // Convert the PDF buffer to images
       // pdf-to-img returns an object with iterable pages
       const options: Options = {
