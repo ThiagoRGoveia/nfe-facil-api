@@ -23,6 +23,10 @@ type Response = {
   json?: string;
   csv?: string;
   excel?: string;
+  errors?: {
+    fileName: string;
+    error?: string;
+  }[];
 };
 
 @Injectable()
@@ -58,19 +62,16 @@ export class PublicSyncFileProcessUseCase {
     // Process files in parallel
     const results = await Promise.all(
       files.map(async (doc) => {
+        // Create public file process record
+        const filePath = downloadPath.forPublicFile(`${this.uuidAdapter.generate()}.${doc.fileName.split('.').pop()}`);
+        const fileProcess = this.publicFileProcessRepository.create({
+          fileName: doc.fileName,
+          filePath,
+          template,
+        });
         try {
           // Save file to storage using the downloadPath
-          const filePath = downloadPath.forPublicFile(
-            `${this.uuidAdapter.generate()}.${doc.fileName.split('.').pop()}`,
-          );
           await this.fileStorage.uploadFromBuffer(filePath, doc.data);
-
-          // Create public file process record
-          const fileProcess = this.publicFileProcessRepository.create({
-            fileName: doc.fileName,
-            filePath,
-            template,
-          });
 
           // Process the document
           const result = await this.documentProcessorPort.process(doc.data, template);
@@ -89,7 +90,7 @@ export class PublicSyncFileProcessUseCase {
           };
         } catch (error) {
           this.logger.error(`Error processing file ${doc.fileName}:`, error);
-
+          fileProcess.markFailed(error.message);
           return {
             fileName: doc.fileName,
             result: DocumentProcessResult.fromError({
@@ -102,12 +103,18 @@ export class PublicSyncFileProcessUseCase {
     );
 
     const jsonResults = results.filter(({ result }) => result.isSuccess()).map(({ result }) => result.payload);
+    const errors = results
+      .filter(({ result }) => result.isError())
+      .map(({ fileName, result }) => ({
+        fileName,
+        error: result.errorMessage,
+      }));
 
     // Add new format handling
-    const formatResults: Response = {};
+    const formatResults: Response = { errors };
     const apiUrl = this.configService.get<string>('API_URL');
 
-    if (dto.outputFormats) {
+    if (dto.outputFormats && jsonResults.length > 0) {
       const allResults = jsonResults;
 
       for (const format of dto.outputFormats) {
