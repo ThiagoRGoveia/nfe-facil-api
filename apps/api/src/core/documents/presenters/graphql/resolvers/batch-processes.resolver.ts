@@ -53,20 +53,25 @@ export class BatchProcessesResolver {
     @Context() context: GraphqlExpressContext,
     @Args('input') input: CreateBatchInput,
   ): Promise<BatchProcess> {
-    const uploadedFiles = input.files ? await Promise.all(input.files) : [];
+    const fileBuffers: Array<{ buffer: Buffer; fileName: string }> = [];
 
-    const fileBuffers = await Promise.all(
-      uploadedFiles.map(async (file) => {
+    if (input.files) {
+      for (const filePromise of input.files) {
+        const file = await filePromise;
+
         const fileName = file.filename.toLowerCase();
         if (!fileName.endsWith('.zip') && !fileName.endsWith('.pdf')) {
           throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
         }
-        return {
-          buffer: await this.streamToBuffer(file.createReadStream),
+
+        const buffer = await this.streamToBuffer(file.createReadStream);
+
+        fileBuffers.push({
+          buffer,
           fileName: file.filename,
-        };
-      }),
-    );
+        });
+      }
+    }
 
     return this.syncBatchProcessUseCase.execute(context.req.user, {
       templateId: input.templateId,
@@ -81,20 +86,25 @@ export class BatchProcessesResolver {
   @Public()
   @Mutation(() => PublicSyncProcessResponse)
   async publicProcessBatchSync(@Args('input') input: CreateBatchInput) {
-    const uploadedFiles = input.files ? await Promise.all(input.files) : [];
+    const fileBuffers: Array<{ buffer: Buffer; fileName: string }> = [];
 
-    const fileBuffers = await Promise.all(
-      uploadedFiles.map(async (file) => {
+    if (input.files) {
+      for (const filePromise of input.files) {
+        const file = await filePromise;
+
         const fileName = file.filename.toLowerCase();
         if (!fileName.endsWith('.zip') && !fileName.endsWith('.pdf')) {
           throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
         }
-        return {
-          buffer: await this.streamToBuffer(file.createReadStream),
+
+        const buffer = await this.streamToBuffer(file.createReadStream);
+
+        fileBuffers.push({
+          buffer,
           fileName: file.filename,
-        };
-      }),
-    );
+        });
+      }
+    }
 
     const result = await this.publicSyncBatchProcessUseCase.execute({
       templateId: input.templateId,
