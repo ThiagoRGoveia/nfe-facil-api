@@ -70,14 +70,6 @@ export class User extends BaseEntity<'isSocial'> {
   @Property()
   credits: number;
 
-  @Field(() => String, { nullable: true })
-  @ApiProperty({
-    description: 'External payment system identifier',
-    required: false,
-  })
-  @Property({ nullable: true })
-  paymentExternalId?: string;
-
   @Field(() => String)
   @ApiProperty({
     description: 'Auth0 user identifier',
@@ -101,4 +93,17 @@ export class User extends BaseEntity<'isSocial'> {
     default: false,
   })
   isSocial: boolean = false;
+
+  // Credit management methods migrated from UserCredit entity
+  public deductCredits(amount: number): boolean {
+    if (this.credits < amount) {
+      return false;
+    }
+    this.credits -= amount;
+    return true;
+  }
+
+  public addCredits(amount: number): void {
+    this.credits += amount;
+  }
 }

@@ -48,24 +48,6 @@ export interface TopupParams {
 
 @Injectable()
 export abstract class PaymentServicePort {
-  // Customer management
-  abstract createCustomer(email: string, name?: string): Promise<PaymentCustomer>;
-  abstract getCustomer(customerId: string): Promise<PaymentCustomer | null>;
-  abstract updateCustomer(customerId: string, data: Partial<PaymentCustomer>): Promise<PaymentCustomer>;
-
-  // Payment methods
-  abstract getPaymentMethods(customerId: string): Promise<PaymentMethod[]>;
-  abstract setDefaultPaymentMethod(customerId: string, paymentMethodId: string): Promise<void>;
-
-  // Subscription management
-  abstract createSubscription(params: SubscriptionCreateParams): Promise<SubscriptionResponse>;
   abstract cancelSubscription(subscriptionId: string): Promise<SubscriptionResponse>;
-  abstract getSubscription(subscriptionId: string): Promise<SubscriptionResponse | null>;
-
-  // One-time payments
-  abstract createPaymentIntent(params: TopupParams): Promise<PaymentResponse>;
-  abstract getPaymentIntent(paymentIntentId: string): Promise<PaymentResponse | null>;
-
-  // Webhook handling
   abstract constructWebhookEvent(payload: Buffer | string, signature: string): Stripe.Event;
 }

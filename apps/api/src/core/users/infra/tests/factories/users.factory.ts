@@ -14,7 +14,6 @@ export class UserFactory extends Factory<User> {
       clientId: faker.string.uuid(),
       clientSecret: faker.string.alphanumeric(36).toUpperCase(),
       credits: faker.number.int({ min: 0, max: 10000 }),
-      paymentExternalId: faker.string.uuid(),
       email: faker.internet.email(),
       role: faker.helpers.arrayElement([UserRole.ADMIN, UserRole.CUSTOMER]),
       createdAt: faker.date.past(),

@@ -10,8 +10,8 @@ export class TopupCreditsDto {
   amount: number;
 
   @IsString()
-  @IsOptional()
-  paymentMethodId?: string;
+  @IsNotEmpty()
+  externalOperationId: string;
 
   @IsString()
   @IsOptional()

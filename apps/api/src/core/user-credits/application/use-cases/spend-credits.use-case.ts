@@ -1,13 +1,13 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { SpendCreditsDto } from '../dtos/spend-credits.dto';
-import { UserCreditsDbPort } from '../ports/user-credits-db.port';
 import { CreditTransactionDbPort } from '../ports/credit-transaction-db.port';
 import { TransactionStatus, TransactionType } from '../../domain/entities/credit-transaction.entity';
+import { UserDbPort } from '@/core/users/users.module';
 
 @Injectable()
 export class SpendCreditsUseCase {
   constructor(
-    private readonly userCreditRepository: UserCreditsDbPort,
+    private readonly userDbPort: UserDbPort,
     private readonly transactionRepository: CreditTransactionDbPort,
   ) {}
 
@@ -15,14 +15,14 @@ export class SpendCreditsUseCase {
     const { userId, amount, operationId, description, metadata } = params;
 
     // Find user's credit account
-    const userCredit = await this.userCreditRepository.findByUserId(userId);
-    if (!userCredit) {
+    const user = await this.userDbPort.findById(userId);
+    if (!user) {
       throw new BadRequestException(`No credit account found for user ${userId}`);
     }
 
     // Check if user has enough credits
-    const balanceBefore = userCredit.balance;
-    const success = userCredit.deductCredits(amount);
+    const balanceBefore = user.credits;
+    const success = user.deductCredits(amount);
 
     // Create transaction record
     this.transactionRepository.create({
@@ -41,7 +41,7 @@ export class SpendCreditsUseCase {
 
     // If successful, save the updated credit balance
     if (success) {
-      await this.userCreditRepository.save();
+      await this.userDbPort.save();
     }
 
     // Save the transaction record

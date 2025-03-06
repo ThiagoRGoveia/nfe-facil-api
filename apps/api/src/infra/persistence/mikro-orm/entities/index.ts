@@ -5,5 +5,17 @@ import { Template } from '@/core/templates/domain/entities/template.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
 import { WebhookDelivery } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
+import { CreditSubscription } from '@/core/user-credits/domain/entities/credit-subscription.entity';
+import { CreditTransaction } from '@/core/user-credits/domain/entities/credit-transaction.entity';
 
-export default [User, Template, BatchProcess, FileRecord, PublicFileProcess, Webhook, WebhookDelivery];
+export default [
+  User,
+  Template,
+  BatchProcess,
+  FileRecord,
+  PublicFileProcess,
+  Webhook,
+  WebhookDelivery,
+  CreditTransaction,
+  CreditSubscription,
+];
