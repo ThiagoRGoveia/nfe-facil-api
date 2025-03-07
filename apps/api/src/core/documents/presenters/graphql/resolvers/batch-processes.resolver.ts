@@ -1,6 +1,5 @@
 import { Args, Context, Mutation, Query, Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { BatchProcess } from '../../../domain/entities/batch-process.entity';
-import { SyncFileProcessUseCase } from '../../../application/use-cases/sync-file-process.use-case';
 import { BatchDbPort } from '../../../application/ports/batch-db.port';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 import { CreateBatchInput } from '../dtos/create-batch.input';
@@ -15,6 +14,8 @@ import { BadRequestException } from '@nestjs/common';
 import { Public } from '@/infra/auth/public.decorator';
 import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';
 import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
+import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
+import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
 
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
@@ -24,8 +25,9 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export class BatchProcessesResolver {
   constructor(
     private readonly batchDbPort: BatchDbPort,
-    private readonly syncBatchProcessUseCase: SyncFileProcessUseCase,
     private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
+    private readonly createBatchProcessUseCase: CreateBatchProcessUseCase,
+    private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })
@@ -49,7 +51,7 @@ export class BatchProcessesResolver {
   }
 
   @Mutation(() => BatchProcess)
-  async processBatchSync(
+  async createBatchProcess(
     @Context() context: GraphqlExpressContext,
     @Args('input') input: CreateBatchInput,
   ): Promise<BatchProcess> {
@@ -73,7 +75,7 @@ export class BatchProcessesResolver {
       }
     }
 
-    return this.syncBatchProcessUseCase.execute(context.req.user, {
+    const batchProcess = await this.createBatchProcessUseCase.execute(context.req.user, {
       templateId: input.templateId,
       files: fileBuffers.map((f) => ({
         data: f.buffer,
@@ -81,6 +83,10 @@ export class BatchProcessesResolver {
       })),
       outputFormats: input.outputFormats,
     });
+
+    await this.asyncBatchProcessUseCase.execute(batchProcess.id);
+
+    return batchProcess;
   }
 
   @Public()
