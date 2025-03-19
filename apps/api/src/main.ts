@@ -1,30 +1,23 @@
 declare const module: any;
 
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { RequestMethod } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common';
-import { graphqlUploadExpress } from 'graphql-upload-minimal';
-import { Logger } from 'nestjs-pino';
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { rawBody: true });
-  app.useLogger(app.get(Logger));
-  app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
-  app.setGlobalPrefix('api/v1', {
-    exclude: [
-      { path: 'graphql', method: RequestMethod.POST },
-      { path: 'graphql', method: RequestMethod.GET },
-    ],
-  });
-  app.enableCors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'apollo-require-preflight'],
-    credentials: true,
+import { Handler } from 'aws-lambda';
+import serverlessExpress from '@codegenie/serverless-express';
+import { bootstrap } from './bootstrap';
+
+let server: Handler;
+
+// Function to create and start a local development server
+async function startDevServer() {
+  const app = await bootstrap({
+    rawBody: true,
+    graphqlUploadOptions: {
+      maxFileSize: 1000000000,
+      maxFiles: 10,
+    },
   });
 
   await app.listen(process.env.PORT ?? 3000);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 
   if (module.hot) {
     module.hot.accept();
@@ -32,4 +25,36 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+// Function to create a serverless handler
+async function createServerlessHandler(): Promise<Handler> {
+  const app = await bootstrap({
+    graphqlUploadOptions: {
+      maxFileSize: 10000000,
+      maxFiles: 25,
+    },
+  });
+
+  await app.init();
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
+}
+
+// Determine execution mode based on NODE_ENV
+const isServerless = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging';
+
+// For local development, start the server immediately
+if (!isServerless) {
+  startDevServer().catch((err) => {
+    console.error('Error starting development server:', err);
+    process.exit(1);
+  });
+}
+
+// For serverless environments, export the handler
+export const handler: Handler = async (event, context, callback) => {
+  if (!server) {
+    server = await createServerlessHandler();
+  }
+  return server(event, context, callback);
+};

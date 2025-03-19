@@ -3,17 +3,8 @@
 
 export function DocsStack() {
   // Create a static site for API documentation
-  const site = new sst.aws.StaticSite('ApiDocs', {
-    // Path to the directory where api-docs are generated
-    path: 'src/public/api-docs',
-    // Configure how the site is built
-    build: {
-      // Command to generate the API documentation
-      command: 'npm run nfse-doc:generate',
-      // Where the build output is located (relative to path)
-      output: '.',
-    },
-    // Configure asset handling
+  const site = new sst.aws.StaticSite('NFeFacilDocs', {
+    path: 'docs/nfe-facil',
     assets: {
       // Configure caching for different file types
       fileOptions: [
@@ -33,7 +24,7 @@ export function DocsStack() {
       wait: false,
     },
     // Optional: Configure custom domain if available
-    domain: process.env.DOCS_DOMAIN,
+    domain: process.env.NFE_FACIL_DOCS_DOMAIN,
   });
 
   return {
