@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
 import { DocumentsController } from './presenters/http/controllers/documents.controller';
 import { DownloadsController } from './presenters/http/controllers/downloads.controller';
 import { CreateBatchProcessUseCase } from './application/use-cases/create-batch-process.use-case';
@@ -28,57 +28,74 @@ import { HandleOutputFormatUseCase } from './application/use-cases/handle-output
 import { FilesResolver } from './presenters/graphql/resolvers/files.resolver';
 import { PublicFileProcessDbPort } from './application/ports/public-file-process-db.port';
 import { PublicFileProcessMikroOrmDbRepository } from './infra/persistence/db/orm/public-file-process-mikro-orm-db.repository';
+import { NFSeController } from './presenters/http/controllers/nfse.controller';
+import { NFSeWebhooksController } from './presenters/http/controllers/nfse-webhooks.controller';
+
+const controllers = [DocumentsController, DownloadsController, NFSeController, NFSeWebhooksController];
+const resolvers = [BatchProcessesResolver, FilesResolver];
+const defaultProviders = [
+  CreateBatchProcessUseCase,
+  UpdateBatchTemplateUseCase,
+  AddFileToBatchUseCase,
+  CancelBatchProcessUseCase,
+  AsyncBatchProcessUseCase,
+  SyncFileProcessUseCase,
+  ProcessFileUseCase,
+  PublicSyncFileProcessUseCase,
+  HandleOutputFormatUseCase,
+  {
+    provide: BatchDbPort,
+    useClass: BatchMikroOrmRepository,
+  },
+  {
+    provide: FileProcessDbPort,
+    useClass: FileProcessMikroOrmDbRepository,
+  },
+  {
+    provide: WebhookNotifierPort,
+    useClass: WebhookNotifierAdapter,
+  },
+  {
+    provide: DocumentProcessorPort,
+    useClass: DocumentProcessorAdapter,
+  },
+  {
+    provide: PublicFileProcessDbPort,
+    useClass: PublicFileProcessMikroOrmDbRepository,
+  },
+];
+
+const exportValues = [
+  CreateBatchProcessUseCase,
+  UpdateBatchTemplateUseCase,
+  AddFileToBatchUseCase,
+  CancelBatchProcessUseCase,
+  AsyncBatchProcessUseCase,
+  SyncFileProcessUseCase,
+  ProcessFileUseCase,
+  PublicSyncFileProcessUseCase,
+  HandleOutputFormatUseCase,
+  BatchDbPort,
+  FileProcessDbPort,
+  WebhookNotifierPort,
+  DocumentProcessorPort,
+  PublicFileProcessDbPort,
+];
+
 @Global()
 @Module({
-  controllers: [DocumentsController, DownloadsController],
-  providers: [
-    BatchProcessesResolver,
-    FilesResolver,
-    CreateBatchProcessUseCase,
-    UpdateBatchTemplateUseCase,
-    AddFileToBatchUseCase,
-    CancelBatchProcessUseCase,
-    AsyncBatchProcessUseCase,
-    SyncFileProcessUseCase,
-    ProcessFileUseCase,
-    PublicSyncFileProcessUseCase,
-    HandleOutputFormatUseCase,
-    {
-      provide: BatchDbPort,
-      useClass: BatchMikroOrmRepository,
-    },
-    {
-      provide: FileProcessDbPort,
-      useClass: FileProcessMikroOrmDbRepository,
-    },
-    {
-      provide: WebhookNotifierPort,
-      useClass: WebhookNotifierAdapter,
-    },
-    {
-      provide: DocumentProcessorPort,
-      useClass: DocumentProcessorAdapter,
-    },
-    {
-      provide: PublicFileProcessDbPort,
-      useClass: PublicFileProcessMikroOrmDbRepository,
-    },
-  ],
-  exports: [
-    CreateBatchProcessUseCase,
-    UpdateBatchTemplateUseCase,
-    AddFileToBatchUseCase,
-    CancelBatchProcessUseCase,
-    AsyncBatchProcessUseCase,
-    SyncFileProcessUseCase,
-    ProcessFileUseCase,
-    PublicSyncFileProcessUseCase,
-    HandleOutputFormatUseCase,
-    BatchDbPort,
-    FileProcessDbPort,
-    WebhookNotifierPort,
-    DocumentProcessorPort,
-    PublicFileProcessDbPort,
-  ],
+  // providers: [...defaultProviders, ...resolvers],
+  // exports: exportValues,
 })
-export class DocumentsModule {}
+export class DocumentsModule {
+  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+    const providers = [...(apiType === 'graphql' || apiType === 'all' ? resolvers : []), ...defaultProviders];
+
+    return {
+      module: DocumentsModule,
+      controllers: apiType === 'rest' || apiType === 'all' ? controllers : [],
+      providers,
+      exports: exportValues,
+    };
+  }
+}

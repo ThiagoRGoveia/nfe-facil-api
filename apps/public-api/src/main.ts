@@ -2,22 +2,18 @@ declare const module: any;
 
 import { Handler } from 'aws-lambda';
 import serverlessExpress from '@codegenie/serverless-express';
-import { bootstrapGraphQL } from './bootstrap-graphql';
+import { bootstrapRest } from './bootstrap-rest';
 
 let server: Handler;
 
 // Function to create and start a local development server
 async function startDevServer() {
-  const app = await bootstrapGraphQL({
+  const app = await bootstrapRest({
     rawBody: true,
-    graphqlUploadOptions: {
-      maxFileSize: 1000000000,
-      maxFiles: 10,
-    },
   });
 
-  await app.listen(process.env.GRAPHQL_PORT ?? 4000);
-  console.log(`GraphQL API is running on: ${await app.getUrl()}`);
+  await app.listen(process.env.REST_PORT ?? 3000);
+  console.log(`REST API is running on: ${await app.getUrl()}`);
 
   if (module.hot) {
     module.hot.accept();
@@ -27,11 +23,8 @@ async function startDevServer() {
 
 // Function to create a serverless handler
 async function createServerlessHandler(): Promise<Handler> {
-  const app = await bootstrapGraphQL({
-    graphqlUploadOptions: {
-      maxFileSize: 10000000,
-      maxFiles: 25,
-    },
+  const app = await bootstrapRest({
+    rawBody: true,
   });
 
   await app.init();
@@ -46,7 +39,7 @@ const isServerless = process.env.NODE_ENV === 'production' || process.env.NODE_E
 // For local development, start the server immediately
 if (!isServerless) {
   startDevServer().catch((err) => {
-    console.error('Error starting GraphQL development server:', err);
+    console.error('Error starting REST development server:', err);
     process.exit(1);
   });
 }

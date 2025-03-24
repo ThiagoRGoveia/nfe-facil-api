@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
 import { UserDbPort } from './application/ports/users-db.port';
 import { UserMikroOrmDbRepository } from './infra/persistence/db/orm/users-mikro-orm-db.repository';
 import { UsersResolver } from './presenters/graphql/resolvers/users.resolver';
@@ -9,32 +9,46 @@ import { RefreshClientSecretUseCase } from './application/use-cases/refresh-clie
 import { UpdatePasswordUseCase } from './application/use-cases/update-password.use-case';
 import { CreateUserSocialUseCase } from './application/use-cases/create-user-social.use-case';
 
+const controllers = [];
+const resolvers = [UsersResolver];
+const defaultProviders = [
+  {
+    provide: UserDbPort,
+    useClass: UserMikroOrmDbRepository,
+  },
+  CreateUserUseCase,
+  UpdateUserUseCase,
+  DeleteUserUseCase,
+  RefreshClientSecretUseCase,
+  UpdatePasswordUseCase,
+  CreateUserSocialUseCase,
+];
+const exportValues = [
+  UserDbPort,
+  CreateUserUseCase,
+  UpdateUserUseCase,
+  DeleteUserUseCase,
+  RefreshClientSecretUseCase,
+  UpdatePasswordUseCase,
+  CreateUserSocialUseCase,
+];
+
 @Global()
 @Module({
-  providers: [
-    UsersResolver,
-    {
-      provide: UserDbPort,
-      useClass: UserMikroOrmDbRepository,
-    },
-    CreateUserUseCase,
-    UpdateUserUseCase,
-    DeleteUserUseCase,
-    RefreshClientSecretUseCase,
-    UpdatePasswordUseCase,
-    CreateUserSocialUseCase,
-  ],
-  exports: [
-    UserDbPort,
-    CreateUserUseCase,
-    RefreshClientSecretUseCase,
-    UpdateUserUseCase,
-    DeleteUserUseCase,
-    UpdatePasswordUseCase,
-    CreateUserSocialUseCase,
-  ],
+  // providers: [...defaultProviders, ...resolvers],
+  // exports: exportValues,
 })
-export class UsersModule {}
+export class UsersModule {
+  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+    const providers = [...(apiType === 'graphql' || apiType === 'all' ? resolvers : []), ...defaultProviders];
+    return {
+      module: UsersModule,
+      controllers: apiType === 'rest' || apiType === 'all' ? controllers : [],
+      providers,
+      exports: exportValues,
+    };
+  }
+}
 
 export {
   UserDbPort,

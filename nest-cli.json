@@ -13,7 +13,7 @@
     "api": {
       "type": "application",
       "root": "apps/api",
-      "entryFile": "main",
+      "entryFile": "main-graphql",
       "sourceRoot": "apps/api/src",
       "compilerOptions": {
         "tsConfigPath": "apps/api/tsconfig.app.json"
@@ -26,6 +26,15 @@
       "sourceRoot": "apps/process-document-job/src",
       "compilerOptions": {
         "tsConfigPath": "apps/process-document-job/tsconfig.app.json"
+      }
+    },
+    "public-api": {
+      "type": "application",
+      "root": "apps/public-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/public-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/public-api/tsconfig.app.json"
       }
     },
     "template-process": {

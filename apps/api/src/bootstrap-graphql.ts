@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { RequestMethod, ValidationPipe } from '@nestjs/common';
-import { graphqlUploadExpress } from 'graphql-upload-minimal';
+import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { INestApplication } from '@nestjs/common';
+import { graphqlUploadExpress } from 'graphql-upload-minimal';
 
-export interface BootstrapOptions {
+export interface BootstrapGraphQLOptions {
   rawBody?: boolean;
   graphqlUploadOptions?: {
     maxFileSize: number;
@@ -13,19 +13,22 @@ export interface BootstrapOptions {
   };
 }
 
-export async function bootstrap(options: BootstrapOptions = {}): Promise<INestApplication> {
-  const app = await NestFactory.create(AppModule, {
+export async function bootstrapGraphQL(options: BootstrapGraphQLOptions = {}): Promise<INestApplication> {
+  const app = await NestFactory.create(AppModule.forRoot({ apiType: 'graphql' }), {
     rawBody: options.rawBody ?? false,
   });
 
   app.useLogger(app.get(Logger));
 
-  app.use(
-    graphqlUploadExpress({
-      maxFileSize: options.graphqlUploadOptions?.maxFileSize ?? 10000000,
-      maxFiles: options.graphqlUploadOptions?.maxFiles ?? 10,
-    }),
-  );
+  if (options.graphqlUploadOptions) {
+    app.use(
+      graphqlUploadExpress({
+        maxFileSize: options.graphqlUploadOptions.maxFileSize,
+        maxFiles: options.graphqlUploadOptions.maxFiles,
+        environment: process.env.NODE_ENV === 'production' ? 'lambda' : undefined,
+      }),
+    );
+  }
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -34,13 +37,6 @@ export async function bootstrap(options: BootstrapOptions = {}): Promise<INestAp
       forbidNonWhitelisted: true,
     }),
   );
-
-  app.setGlobalPrefix('api/v1', {
-    exclude: [
-      { path: 'graphql', method: RequestMethod.POST },
-      { path: 'graphql', method: RequestMethod.GET },
-    ],
-  });
 
   app.enableCors({
     origin: '*',

@@ -1,5 +1,11 @@
 {
-  "include": ["apps/**/*.ts", "libs/**/*.ts", "sst/**/*.ts", "sst-env.d.ts", "sst.config.ts"],
+  "include": [
+    "apps/**/*.ts",
+    "libs/**/*.ts",
+    "sst/**/*.ts",
+    "sst-env.d.ts",
+    "sst.config.ts"
+  ],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -28,6 +34,8 @@
     }
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }
