@@ -15,8 +15,9 @@ import {
   Req,
   UploadedFiles,
   UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
 import { AddFileToBatchUseCase } from '@/core/documents/application/use-cases/add-file-to-batch.use-case';
 import { CancelBatchProcessUseCase } from '@/core/documents/application/use-cases/cancel-batch-process.use-case';
@@ -28,6 +29,9 @@ import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 import { ConfigService } from '@nestjs/config';
 import { FileUploadDto, OptionalFileUploadDto } from '../dtos/file-upload.dto';
+import { SingleFileUploadDto } from '../dtos/single-file-upload.dto';
+import { plainToInstance } from 'class-transformer';
+import { NfseResponseDto } from '../dtos/nfse-response.dto';
 
 /**
  * Controlador para processamento de Notas Fiscais de Serviço Eletrônicas (NFSe).
@@ -75,42 +79,58 @@ export class NFSeController {
 
   @Post('extrair')
   @ApiOperation({
-    summary: 'Processar NFSe de forma síncrona',
+    summary: 'Processar um único arquivo de NFSe de forma síncrona',
     description:
-      'Realiza a extração de dados de uma NFSe de forma síncrona. Este endpoint aguarda o processamento completo de todos os arquivos antes de retornar uma resposta, sendo ideal para processamento de poucos arquivos onde o tempo de resposta imediato é necessário. Suporta arquivos PDF e ZIP contendo múltiplos PDFs de NFSe. O diagrama do fluxo de processamento pode ser visualizado em /diagrams/nfse-flow-diagram.png. Somente 10 arquivos podem ser processados por vez.',
+      'Realiza a extração de dados de um único arquivo de NFSe de forma síncrona. Este endpoint aceita apenas um arquivo PDF e retorna os dados extraídos em formato camelCase. O processamento é realizado de forma imediata e a resposta contém os dados estruturados da NFSe.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'NFSe processada com sucesso. Retorna os dados extraídos diretamente na resposta.',
+    description: 'NFSe processada com sucesso. Retorna os dados extraídos em formato camelCase.',
+    type: NfseResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Erro de validação nos arquivos enviados ou formato incompatível.',
+    description: 'Erro de validação no arquivo enviado ou formato incompatível.',
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: FileUploadDto })
-  @UseInterceptors(FilesInterceptor('files', 10))
-  async processBatchSync(
+  @ApiBody({ type: SingleFileUploadDto })
+  @UseInterceptors(FileInterceptor('file'))
+  async processSingleFile(
     @Req() req: Request,
-    @UploadedFiles(
+    @UploadedFile(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: MAX_FILE_SIZE_BYTES, message: 'O arquivo enviado é muito grande.' }),
           new FileTypeValidator({
-            fileType: /^(application\/zip|application\/pdf|application\/octet-stream)$/,
+            fileType: /^(application\/pdf)$/,
           }),
         ],
         fileIsRequired: true,
       }),
     )
-    files: Express.Multer.File[],
+    file: Express.Multer.File,
   ) {
-    return await this.syncBatchProcessUseCase.execute(req.user, {
+    const result = await this.syncBatchProcessUseCase.execute(req.user, {
       templateId: this.templateId,
-      files: files.map((f) => ({
-        data: f.buffer,
-        fileName: f.originalname,
-      })),
+      files: [
+        {
+          data: file.buffer,
+          fileName: file.originalname,
+        },
+      ],
+    });
+
+    if (!result || !result.files || result.files.length === 0) {
+      throw new BadRequestException('Nenhum resultado de processamento encontrado');
+    }
+
+    const fileRecord = result.files[0];
+    if (!fileRecord.result) {
+      throw new BadRequestException('Falha ao processar o arquivo');
+    }
+
+    return plainToInstance(NfseResponseDto, fileRecord.result, {
+      excludeExtraneousValues: true,
     });
   }
 

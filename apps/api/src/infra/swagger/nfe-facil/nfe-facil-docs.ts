@@ -23,7 +23,7 @@ export function setupNFSeDocs() {
     .setTitle('NFe-Fácil API')
     .setDescription(
       `
-      API para gerenciamento de Notas Fiscais Eletrônicas de Serviço (NFSe).
+      API para extração de dados de Notas Fiscais Eletrônicas de Serviço (NFSe).
       Permite o processamento, consulta e gerenciamento de lotes de NFSe,
       incluindo operações síncronas e assíncronas.
       
@@ -31,8 +31,7 @@ export function setupNFSeDocs() {
       sendo obrigatório para empresas e profissionais autônomos.
       
       Principais funcionalidades:
-       - Extração de dados de NFSe de arquivos PDF e ZIP (Extração Síncrona)
-       - Gerenciamento de extração de NFSe por lotes (Extração Assíncrona)
+       - Extração de dados de NFSe de arquivos PDF e ZIP síncrona e assíncrona
        - Webhooks para notificação de status de processamento
     `,
     )
