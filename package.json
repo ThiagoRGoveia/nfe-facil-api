@@ -14,6 +14,8 @@
     "db-migrations:up": "mikro-orm migration:up",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "nfse-doc:build": "ts-node --project tsconfig.json apps/api/src/infra/swagger/nfe-facil/nfe-facil-docs.ts",
+    "nfse-doc:generate": "pnpm nfse-doc:build && npx @redocly/cli build-docs nfe-facil-docs.json  -o docs/nfe-facil/index.html -t mustache-templates/redoc.mustache",
     "seed:dev": "mikro-orm seeder:run --class DevSeeder",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
@@ -23,9 +25,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api/test/jest-e2e.json",
-    "test:watch": "jest --watch",
-    "nfse-doc:build": "ts-node --project tsconfig.json apps/api/src/infra/swagger/nfe-facil/nfe-facil-docs.ts",
-    "nfse-doc:generate": "pnpm nfse-doc:build && npx @redocly/cli build-docs nfe-facil-docs.json  -o docs/nfe-facil/index.html -t mustache-templates/redoc.mustache"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.750.0",
@@ -70,7 +70,7 @@
     "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "sst": "3.9.10",
+    "sst": "3.10.11",
     "stripe": "^17.7.0",
     "unzipper": "^0.12.3",
     "uuid": "^11.1.0"
@@ -88,7 +88,7 @@
     "@nestjs/testing": "^11.0.10",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.18",
-    "@types/aws-lambda": "8.10.147",
+    "@types/aws-lambda": "8.10.148",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",

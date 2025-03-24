@@ -5,10 +5,6 @@
 
 declare module "sst" {
   export interface Resource {
-    "ProcessDocumentQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
   }
 }
 /// <reference path="sst-env.d.ts" />

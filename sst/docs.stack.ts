@@ -24,7 +24,7 @@ export function DocsStack() {
       wait: false,
     },
     // Optional: Configure custom domain if available
-    domain: process.env.NFE_FACIL_DOCS_DOMAIN,
+    // domain: process.env.NFE_FACIL_DOCS_DOMAIN,
   });
 
   return {

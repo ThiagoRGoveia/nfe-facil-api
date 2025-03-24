@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 
-import { ProcessDocumentStack } from './sst/process-document.stack';
-import { ApiStack } from './sst/api.stack';
+// import { ProcessDocumentStack } from './sst/process-document.stack';
+// import { ApiStack } from './sst/api.stack';
 import { DocsStack } from './sst/docs.stack';
 
 export default $config({
@@ -15,13 +15,13 @@ export default $config({
     };
   },
   async run() {
-    const { api } = ApiStack();
-    const { processDocumentQueue } = ProcessDocumentStack();
+    // const { api } = ApiStack();
+    // const { processDocumentQueue } = ProcessDocumentStack();
     const { site, url } = DocsStack();
 
     return Promise.resolve({
-      api,
-      processDocumentQueue,
+      // api,
+      // processDocumentQueue,
       docsUrl: url,
       docsSite: site,
     });
