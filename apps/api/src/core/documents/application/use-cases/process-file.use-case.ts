@@ -9,6 +9,7 @@ import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
 
 export interface ProcessFileParams {
   fileId: FileRecord['id'];
+  shouldConsolidateOutput?: boolean;
 }
 
 @Injectable()
@@ -23,7 +24,7 @@ export class ProcessFileUseCase {
   ) {}
 
   async execute(params: ProcessFileParams): Promise<FileRecord> {
-    const { fileId } = params;
+    const { fileId, shouldConsolidateOutput = true } = params;
     const file = await this.fileProcessDbPort.findById(fileId);
 
     const user = await file?.user.load();
@@ -68,7 +69,9 @@ export class ProcessFileUseCase {
       const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
       if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
         updatedBatchProcess.markCompleted();
-        await this.handleOutputFormatUseCase.execute(updatedBatchProcess);
+        if (shouldConsolidateOutput) {
+          await this.handleOutputFormatUseCase.execute(updatedBatchProcess);
+        }
         await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
       }
     }

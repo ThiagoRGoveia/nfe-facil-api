@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { FileFormat } from '../../domain/constants/file-formats';
 
@@ -23,4 +23,8 @@ export class CreateBatchDto {
   @IsArray()
   @IsOptional()
   outputFormats?: OutputFormat[] = [FileFormat.JSON];
+
+  @IsBoolean()
+  @IsOptional()
+  consolidateOutput?: boolean = true;
 }

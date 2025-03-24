@@ -48,9 +48,10 @@ export class SyncFileProcessUseCase {
         try {
           await this.processFileUseCase.execute({
             fileId: doc.id,
+            shouldConsolidateOutput: dto.consolidateOutput,
           });
         } catch (error) {
-          this.logger.error(`Error processing file ${doc.filePath}:`, error);
+          this.logger.error(`Error processing file ${doc.filePath}: %o`, error);
         }
       }),
     );
