@@ -48,12 +48,6 @@ export class S3Client implements FileStoragePort {
     });
   }
 
-  private parsePath(path: string): { bucket: string; key: string } {
-    const [bucket, ...keyParts] = path.split('/');
-    const key = keyParts.join('/');
-    return { bucket, key };
-  }
-
   async uploadFromStream(key: string, stream: Readable, contentType?: string, expiresIn?: Date): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
@@ -99,8 +93,7 @@ export class S3Client implements FileStoragePort {
       return stream;
     }
 
-    const { bucket, key } = this.parsePath(path);
-    const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+    const command = new GetObjectCommand({ Bucket: this.bucketName, Key: path });
 
     try {
       const response = await this.s3Client.send(command);
@@ -118,8 +111,7 @@ export class S3Client implements FileStoragePort {
   }
 
   async delete(path: string): Promise<void> {
-    const { bucket, key } = this.parsePath(path);
-    const command = new DeleteObjectCommand({ Bucket: bucket, Key: key });
+    const command = new DeleteObjectCommand({ Bucket: this.bucketName, Key: path });
 
     try {
       await this.s3Client.send(command);
@@ -130,13 +122,11 @@ export class S3Client implements FileStoragePort {
   }
 
   async deleteFolder(path: string): Promise<void> {
-    const { bucket, key: prefix } = this.parsePath(path);
-
     try {
       // List all objects in the "folder" (objects with the prefix)
       const listCommand = new ListObjectsV2Command({
-        Bucket: bucket,
-        Prefix: prefix,
+        Bucket: this.bucketName,
+        Prefix: path,
       });
 
       let isTruncated = true;
