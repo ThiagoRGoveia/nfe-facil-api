@@ -16,12 +16,11 @@ import { FileStoragePort } from '../ports/file-storage.port';
 export class S3Client implements FileStoragePort {
   private readonly s3Client: AWSS3Client;
   private readonly bucketName: string;
-  private readonly bufferCache = new Map<string, Buffer>();
 
   constructor(private configService: ConfigService) {
-    const region = this.configService.get<string>('AWS_REGION');
-    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+    const region = this.configService.get<string>('AWS_REGION_ENV');
+    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID_ENV');
+    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY_ENV');
     const bucketName = this.configService.get<string>('DOCUMENT_BUCKET_NAME');
     if (!region || !accessKeyId || !secretAccessKey || !bucketName) {
       throw new Error('AWS credentials are not set');
@@ -77,7 +76,6 @@ export class S3Client implements FileStoragePort {
 
     try {
       await this.s3Client.send(command);
-      this.bufferCache.set(path, buffer);
       return path;
     } catch (error) {
       throw new InternalServerErrorException(`Failed to upload: ${error.message}`);
@@ -85,14 +83,6 @@ export class S3Client implements FileStoragePort {
   }
 
   async get(path: string): Promise<Readable> {
-    const cachedBuffer = this.bufferCache.get(path);
-    if (cachedBuffer) {
-      const stream = new Readable();
-      stream.push(cachedBuffer);
-      stream.push(null);
-      return stream;
-    }
-
     const command = new GetObjectCommand({ Bucket: this.bucketName, Key: path });
 
     try {
@@ -115,7 +105,6 @@ export class S3Client implements FileStoragePort {
 
     try {
       await this.s3Client.send(command);
-      this.bufferCache.delete(path);
     } catch (error) {
       throw new InternalServerErrorException(`Failed to delete: ${error.message}`);
     }

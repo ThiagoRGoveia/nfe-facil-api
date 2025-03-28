@@ -1,17 +1,34 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/nfse/processar": {
+    "/nfse/extrair": {
       "post": {
-        "description": "Realiza a extração de dados de uma NFSe de forma síncrona. Este endpoint aguarda o processamento completo de todos os arquivos antes de retornar uma resposta, sendo ideal para processamento de poucos arquivos onde o tempo de resposta imediato é necessário. Suporta arquivos PDF e ZIP contendo múltiplos PDFs de NFSe. O diagrama do fluxo de processamento pode ser visualizado em /diagrams/nfse-flow-diagram.png. Somente 10 arquivos podem ser processados por vez.",
-        "operationId": "NFSeController_processBatchSync",
+        "description": "Realiza a extração de dados de um único arquivo de NFSe de forma síncrona. Este endpoint aceita apenas um arquivo PDF e retorna os dados extraídos em formato camelCase. O processamento é realizado de forma imediata e a resposta contém os dados estruturados da NFSe.",
+        "operationId": "NFSeController_processSingleFile",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SingleFileUploadDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "NFSe processada com sucesso. Retorna os dados extraídos diretamente na resposta."
+            "description": "NFSe processada com sucesso. Retorna os dados extraídos em formato camelCase.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NfseResponseDto"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Erro de validação nos arquivos enviados ou formato incompatível."
+            "description": "Erro de validação no arquivo enviado ou formato incompatível."
           }
         },
         "security": [
@@ -19,17 +36,27 @@
             "basic": []
           }
         ],
-        "summary": "Processar NFSe de forma síncrona",
+        "summary": "Processar um único arquivo de NFSe de forma síncrona",
         "tags": [
           "NFSe"
         ]
       }
     },
-    "/nfse/processar/lote": {
+    "/nfse/extrair/lote": {
       "post": {
         "description": "Cria um novo lote para extração assíncrona de dados de arquivos de NFSe. Este endpoint permite iniciar um lote vazio ou com arquivos iniciais. É a primeira etapa do fluxo assíncrono, ideal para processamento em lote de grandes volumes de arquivos. Consulte o diagrama em /diagrams/nfse-flow-diagram.png para melhor entendimento.",
         "operationId": "NFSeController_createBatch",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/OptionalFileUploadDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Lote de NFSe criado com sucesso. Retorna o ID do lote para referência em operações subsequentes."
@@ -48,7 +75,7 @@
     },
     "/nfse/lote/{id}": {
       "get": {
-        "description": "Recupera informações detalhadas sobre um lote específico de NFSe, incluindo seu status atual, quantidade de arquivos, resultados de processamento (se concluído) e histórico de eventos.",
+        "description": "Recupera informações detalhadas sobre um lote específico de NFSe, incluindo seu status atual, quantidade de arquivos e resultados de processamento (se concluído).",
         "operationId": "NFSeController_getBatch",
         "parameters": [
           {
@@ -127,6 +154,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Arquivos adicionados ao lote com sucesso."
@@ -456,7 +493,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "status": "PROCESSED",
                       "fileName": "nfse_12345.pdf",
-                      "processedAt": "2025-03-03T21:02:28.896Z",
+                      "processedAt": "2025-03-26T14:59:24.869Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001",
                       "result": {
                         "chave_acesso_nfse": "12345678901234567890123456789012345678901234567890",
@@ -473,7 +510,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "error": "Não foi possível extrair os dados do documento: formato inválido",
                       "fileName": "nfse_12345.pdf",
-                      "failedAt": "2025-03-03T21:02:28.896Z",
+                      "failedAt": "2025-03-26T14:59:24.869Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001"
                     }
                   }
@@ -513,19 +550,19 @@
   },
   "info": {
     "title": "NFe-Fácil API",
-    "description": "\n      API para gerenciamento de Notas Fiscais Eletrônicas de Serviço (NFSe).\n      Permite o processamento, consulta e gerenciamento de lotes de NFSe,\n      incluindo operações síncronas e assíncronas.\n      \n      A NFSe é o documento fiscal eletrônico que comprova a prestação de serviços,\n      sendo obrigatório para empresas e profissionais autônomos.\n      \n      Principais funcionalidades:\n       - Extração de dados de NFSe de arquivos PDF e ZIP (Extração Síncrona)\n       - Gerenciamento de extração de NFSe por lotes (Extração Assíncrona)\n       - Webhooks para notificação de status de processamento\n    ",
+    "description": "\n      API para extração de dados de Notas Fiscais Eletrônicas de Serviço (NFSe).\n      Permite o processamento, consulta e gerenciamento de lotes de NFSe,\n      incluindo operações síncronas e assíncronas.\n      \n      A NFSe é o documento fiscal eletrônico que comprova a prestação de serviços,\n      sendo obrigatório para empresas e profissionais autônomos.\n      \n      Principais funcionalidades:\n       - Extração de dados de NFSe de arquivos PDF e ZIP síncrona e assíncrona\n       - Webhooks para notificação de status de processamento\n    ",
     "version": "1.0.0",
     "contact": {},
     "x-logo": {
-      "url": "https://logo.png",
-      "backgroundColor": "#EFEFF2",
-      "altText": "NFe-Fácil logo"
+      "url": "https://tera-dev.com/logo-s.svg",
+      "altText": "NFe-Fácil logo",
+      "href": "https://nfe-facil.com"
     }
   },
   "tags": [
     {
       "name": "Autenticação",
-      "description": "Utilize API Key and Secret gerados no Dashboard da NFe-Fácil para autenticação."
+      "description": "Utilize API Key and Secret gerados no Dashboard da NFe-Fácil para autenticação no formato Basic.\n      As requisições devem ser feitas no formato:\n      Authorization: Basic {base64(API_KEY:SECRET)}"
     },
     {
       "name": "NFSe",
@@ -534,7 +571,7 @@
   ],
   "servers": [
     {
-      "url": "https://api.nfe-facil.com.br"
+      "url": "http://127.0.0.1:4000"
     }
   ],
   "components": {
@@ -545,6 +582,193 @@
       }
     },
     "schemas": {
+      "SingleFileUploadDto": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Arquivo PDF contendo a NFSe a ser processada"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "NfseResponseDto": {
+        "type": "object",
+        "properties": {
+          "dataEmissao": {
+            "type": "object",
+            "description": "Data e hora de emissão da NFSe",
+            "example": "2023-07-15T14:30:00"
+          },
+          "prestadorCnpjCpf": {
+            "type": "object",
+            "description": "CNPJ/CPF/NIF do prestador emitente da NFSe",
+            "example": "12345678901234"
+          },
+          "prestadorInscricaoMunicipal": {
+            "type": "object",
+            "description": "Inscrição Municipal do prestador emitente da NFSe",
+            "example": "123456789"
+          },
+          "prestadorTelefone": {
+            "type": "object",
+            "description": "Telefone do prestador emitente da NFSe",
+            "example": "11912345678"
+          },
+          "prestadorNomeEmpresarial": {
+            "type": "object",
+            "description": "Nome/Nome empresarial do prestador emitente da NFSe",
+            "example": "Empresa XYZ Ltda"
+          },
+          "prestadorEmail": {
+            "type": "object",
+            "description": "Email do prestador emitente da NFSe",
+            "example": "contato@empresa.com.br"
+          },
+          "prestadorEndereco": {
+            "type": "object",
+            "description": "Endereço completo do prestador emitente da NFSe",
+            "example": "Rua Exemplo, 123, Sala 45"
+          },
+          "prestadorMunicipio": {
+            "type": "object",
+            "description": "Município do prestador emitente da NFSe",
+            "example": "São Paulo"
+          },
+          "prestadorCep": {
+            "type": "object",
+            "description": "CEP do prestador emitente da NFSe",
+            "example": "01234-567"
+          },
+          "tomadorCnpjCpf": {
+            "type": "object",
+            "description": "CNPJ/CPF/NIF do tomador do serviço",
+            "example": "98765432109876"
+          },
+          "tomadorInscricaoMunicipal": {
+            "type": "object",
+            "description": "Inscrição Municipal do tomador do serviço",
+            "example": "987654321"
+          },
+          "tomadorTelefone": {
+            "type": "object",
+            "description": "Telefone do tomador do serviço",
+            "example": "11987654321"
+          },
+          "tomadorNomeEmpresarial": {
+            "type": "object",
+            "description": "Nome/Nome empresarial do tomador do serviço",
+            "example": "Cliente ABC S/A"
+          },
+          "tomadorEmail": {
+            "type": "object",
+            "description": "Email do tomador do serviço",
+            "example": "financeiro@cliente.com.br"
+          },
+          "tomadorEndereco": {
+            "type": "object",
+            "description": "Endereço completo do tomador do serviço",
+            "example": "Avenida Cliente, 456, Andar 10"
+          },
+          "tomadorMunicipio": {
+            "type": "object",
+            "description": "Município do tomador do serviço",
+            "example": "Rio de Janeiro"
+          },
+          "tomadorCep": {
+            "type": "object",
+            "description": "CEP do tomador do serviço",
+            "example": "20000-000"
+          },
+          "servicoPrestadoCodigo": {
+            "type": "object",
+            "description": "Código do serviço prestado",
+            "example": "01.01"
+          },
+          "servicoPrestadoDescricaoServico": {
+            "type": "object",
+            "description": "Descrição do serviço prestado",
+            "example": "Desenvolvimento de software sob encomenda"
+          },
+          "valorTotalNfseValorLiquidoNfse": {
+            "type": "object",
+            "description": "Valor total líquido da NFSe",
+            "example": "950.00"
+          },
+          "totaisAproximadosTributosFederais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos federais",
+            "example": "142.50"
+          },
+          "totaisAproximadosTributosEstaduais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos estaduais",
+            "example": "47.50"
+          },
+          "totaisAproximadosTributosMunicipais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos municipais",
+            "example": "95.00"
+          }
+        },
+        "required": [
+          "dataEmissao",
+          "prestadorCnpjCpf",
+          "prestadorInscricaoMunicipal",
+          "prestadorTelefone",
+          "prestadorNomeEmpresarial",
+          "prestadorEmail",
+          "prestadorEndereco",
+          "prestadorMunicipio",
+          "prestadorCep",
+          "tomadorCnpjCpf",
+          "tomadorInscricaoMunicipal",
+          "tomadorTelefone",
+          "tomadorNomeEmpresarial",
+          "tomadorEmail",
+          "tomadorEndereco",
+          "tomadorMunicipio",
+          "tomadorCep",
+          "servicoPrestadoCodigo",
+          "servicoPrestadoDescricaoServico",
+          "valorTotalNfseValorLiquidoNfse",
+          "totaisAproximadosTributosFederais",
+          "totaisAproximadosTributosEstaduais",
+          "totaisAproximadosTributosMunicipais"
+        ]
+      },
+      "OptionalFileUploadDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "description": "Lista opcional de arquivos a serem processados. Aceita PDFs e ZIPs contendo PDFs."
+          }
+        }
+      },
+      "FileUploadDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "description": "Lista de arquivos a serem processados. Aceita PDFs e ZIPs contendo PDFs."
+          }
+        },
+        "required": [
+          "files"
+        ]
+      },
       "BasicAuthConfigInput": {
         "type": "object",
         "properties": {
@@ -785,64 +1009,112 @@
       "NfseDto": {
         "type": "object",
         "properties": {
-          "chave_acesso_nfse": {
-            "type": "object",
-            "description": "Chave de acesso da NFSe - Código de validação",
-            "example": "12345678901234567890123456789012345678901234567890",
-            "nullable": true
-          },
-          "numero_nfse": {
-            "type": "object",
-            "description": "Número da NFSe",
-            "example": "123456",
-            "nullable": true
-          },
-          "competencia_nfse": {
-            "type": "object",
-            "description": "Competência da NFSe (período)",
-            "example": "07/2023",
-            "nullable": true
-          },
-          "data_hora_emissao_nfse": {
+          "data_emissao": {
             "type": "object",
             "description": "Data e hora de emissão da NFSe",
             "example": "2023-07-15T14:30:00",
             "nullable": true
           },
-          "numeroDps": {
+          "prestador_cnpj_cpf": {
             "type": "object",
-            "description": "Número do DPS (Documento de Prestação de Serviço)",
-            "example": "1234",
-            "nullable": true
-          },
-          "emitente_nfse_prestador_servico_cnpj_cpf_nif": {
-            "type": "object",
-            "description": "CNPJ/CPF/NIF do emitente da NFSe (prestador de serviço)",
+            "description": "CNPJ/CPF/NIF do prestador emitente da NFSe (prestador de serviço). CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)",
             "example": "12345678901234",
             "nullable": true
           },
-          "emitente_nfse_nome_nome_empresarial": {
+          "prestador_inscricao_municipal": {
             "type": "object",
-            "description": "Nome/Nome empresarial do emitente da NFSe",
+            "description": "Inscrição Municipal do prestador emitente da NFSe",
+            "example": "123456789",
+            "nullable": true
+          },
+          "prestador_telefone": {
+            "type": "object",
+            "description": "Telefone do prestador emitente da NFSe",
+            "example": "11912345678",
+            "nullable": true
+          },
+          "prestador_nome_empresarial": {
+            "type": "object",
+            "description": "Nome/Nome empresarial do prestador emitente da NFSe",
             "example": "Empresa XYZ Ltda",
             "nullable": true
           },
-          "emitente_nfse_email": {
+          "prestador_email": {
             "type": "object",
-            "description": "Email do emitente da NFSe",
+            "description": "Email do prestador emitente da NFSe",
             "example": "contato@empresa.com.br",
             "nullable": true
           },
-          "tomador_servico_cnpj_cpf_nif": {
+          "prestador_endereco": {
             "type": "object",
-            "description": "CNPJ/CPF/NIF do tomador do serviço",
+            "description": "Endereço completo do prestador emitente da NFSe",
+            "example": "Rua Exemplo, 123, Sala 45",
+            "nullable": true
+          },
+          "prestador_municipio": {
+            "type": "object",
+            "description": "Município do prestador emitente da NFSe",
+            "example": "São Paulo",
+            "nullable": true
+          },
+          "prestador_cep": {
+            "type": "object",
+            "description": "CEP do prestador emitente da NFSe no formato XXXXX-XXX",
+            "example": "01234-567",
+            "nullable": true
+          },
+          "tomador_cnpj_cpf": {
+            "type": "object",
+            "description": "CNPJ/CPF/NIF do tomador do serviço. CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)",
             "example": "98765432109876",
             "nullable": true
           },
-          "tomadorServicoNomeNomeEmpresarial": {
+          "tomador_inscricao_municipal": {
+            "type": "object",
+            "description": "Inscrição Municipal do tomador do serviço",
+            "example": "987654321",
+            "nullable": true
+          },
+          "tomador_telefone": {
+            "type": "object",
+            "description": "Telefone do tomador do serviço",
+            "example": "11987654321",
+            "nullable": true
+          },
+          "tomador_nome_empresarial": {
             "type": "object",
             "description": "Nome/Nome empresarial do tomador do serviço",
             "example": "Cliente ABC S/A",
+            "nullable": true
+          },
+          "tomador_email": {
+            "type": "object",
+            "description": "Email do tomador do serviço",
+            "example": "financeiro@cliente.com.br",
+            "nullable": true
+          },
+          "tomador_endereco": {
+            "type": "object",
+            "description": "Endereço completo do tomador do serviço",
+            "example": "Avenida Cliente, 456, Andar 10",
+            "nullable": true
+          },
+          "tomador_municipio": {
+            "type": "object",
+            "description": "Município do tomador do serviço",
+            "example": "Rio de Janeiro",
+            "nullable": true
+          },
+          "tomador_cep": {
+            "type": "object",
+            "description": "CEP do tomador do serviço no formato XXXXX-XXX",
+            "example": "20000-000",
+            "nullable": true
+          },
+          "servico_prestado_codigo": {
+            "type": "object",
+            "description": "Código do serviço prestado conforme Lista de Serviços da LC 116/2003",
+            "example": "01.01",
             "nullable": true
           },
           "servico_prestado_descricao_servico": {
@@ -851,16 +1123,28 @@
             "example": "Desenvolvimento de software sob encomenda",
             "nullable": true
           },
-          "tributacao_municipal_valor_servico": {
-            "type": "object",
-            "description": "Valor do serviço",
-            "example": "1000.00",
-            "nullable": true
-          },
           "valor_total_nfse_valor_liquido_nfse": {
             "type": "object",
             "description": "Valor total líquido da NFSe",
             "example": "950.00",
+            "nullable": true
+          },
+          "totais_aproximados_tributos_federais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos federais incidentes sobre o serviço",
+            "example": "142.50",
+            "nullable": true
+          },
+          "totais_aproximados_tributos_estaduais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos estaduais incidentes sobre o serviço",
+            "example": "47.50",
+            "nullable": true
+          },
+          "totais_aproximados_tributos_municipais": {
+            "type": "object",
+            "description": "Valor aproximado dos tributos municipais incidentes sobre o serviço (ex: ISS)",
+            "example": "95.00",
             "nullable": true
           }
         }

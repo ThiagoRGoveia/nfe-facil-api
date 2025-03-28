@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
 import { Controller, Get } from '@nestjs/common';
 import { Public } from '../public.decorator';
-import * as request from 'supertest';
+import request from 'supertest';
 import { APP_GUARD } from '@nestjs/core';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbDrop, useDbSchema } from '../../tests/db-schema.seed';

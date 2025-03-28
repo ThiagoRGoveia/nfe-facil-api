@@ -13,7 +13,12 @@ export interface BootstrapGraphQLOptions {
   };
 }
 
+declare const module: any;
 export async function bootstrapGraphQL(options: BootstrapGraphQLOptions = {}): Promise<INestApplication> {
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
   const app = await NestFactory.create(AppModule.forRoot({ apiType: 'graphql' }), {
     rawBody: options.rawBody ?? false,
   });

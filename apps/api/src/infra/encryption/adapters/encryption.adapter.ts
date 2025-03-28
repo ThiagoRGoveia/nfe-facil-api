@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EncryptionPort } from '../ports/encryption.port';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 @Injectable()
 export class EncryptionAdapter implements EncryptionPort {

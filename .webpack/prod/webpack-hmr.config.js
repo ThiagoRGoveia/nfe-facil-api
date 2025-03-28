@@ -1,40 +1,38 @@
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = function (options) {
   const { plugins, ...config } = options;
   return {
     ...config,
-    entry: ['webpack/hot/poll?100', options.entry],
+    mode: 'production',
+    target: 'node',
+    entry: [options.entry],
     externals: [
-      nodeExternals({
-        allowlist: ['webpack/hot/poll?100'],
-      }),
+      nodeExternals()
     ],
+    optimization: {
+      ...config.optimization,
+      minimize: true,
+      usedExports: true,
+      minimizer: [new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          keep_fnames: true,
+        },
+      })],
+    },
+    output: {
+      ...config.output,
+      chunkFormat: false
+    },
     plugins: [
       ...plugins,
-      new webpack.IgnorePlugin({
-        checkResource(resource) {
-          const lazyImports = [
-            '@nestjs/microservices',
-            'cache-manager',
-            '@nestjs/websockets/socket-module',
-            '@nestjs/microservices/microservices-module',
-            'fastify-swagger',
-          ];
-          if (!lazyImports.includes(resource)) {
-            return false;
-          }
-          try {
-            require.resolve(resource, {
-              paths: [process.cwd()],
-            });
-          } catch (err) {
-            return true;
-          }
-          return false;
-        },
-      }),
     ],
+    node: {
+      __dirname: false,
+      __filename: false,
+    },
   };
 };

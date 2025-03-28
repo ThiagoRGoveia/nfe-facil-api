@@ -20,6 +20,8 @@ import { OllamaClient } from '@doc/workflows/clients/ollama-client';
 import { DateAdapter } from './adapters/date.adapter';
 import { DatePort } from './adapters/date.adapter';
 import { TogetherClient } from '@doc/workflows/clients/together-client';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/core';
 
 @Global()
 @Module({
@@ -57,6 +59,11 @@ import { TogetherClient } from '@doc/workflows/clients/together-client';
     },
     OllamaClient,
     TogetherClient,
+    {
+      provide: SqlEntityManager,
+      useFactory: (em: EntityManager) => em,
+      inject: [EntityManager],
+    },
   ],
   exports: [
     EncryptionPort,
@@ -70,6 +77,7 @@ import { TogetherClient } from '@doc/workflows/clients/together-client';
     OllamaClient,
     DatePort,
     TogetherClient,
+    SqlEntityManager,
   ],
 })
 export class ToolingModule {}

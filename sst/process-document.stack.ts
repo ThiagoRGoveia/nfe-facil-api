@@ -10,7 +10,7 @@ export function ProcessDocumentStack() {
   processDocumentQueue.subscribe(
     {
       bundle: 'dist/apps/process-document-job',
-      handler: 'lambda.handler',
+      handler: 'index.handler',
       runtime: 'nodejs20.x',
     },
     {

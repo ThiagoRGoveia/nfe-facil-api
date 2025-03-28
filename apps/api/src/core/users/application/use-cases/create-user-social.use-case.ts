@@ -30,7 +30,7 @@ export class CreateUserSocialUseCase {
         clientSecret: this.secretAdapter.generate(),
         role: UserRole.CUSTOMER,
         credits: 0,
-        isSocial: true,
+        isSocial: !data.auth0Id.includes('auth0'),
       });
 
       await this.userDb.save();

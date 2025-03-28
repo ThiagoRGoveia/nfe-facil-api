@@ -52,7 +52,7 @@ describe('CreateUserSocialUseCase', () => {
     // Arrange
     const user = useUserFactory({ id: '1', isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
-      auth0Id: 'auth0|123456789',
+      auth0Id: 'google-oauth2|123456789',
     };
 
     const generatedUuid = 'generated-uuid';
@@ -79,7 +79,7 @@ describe('CreateUserSocialUseCase', () => {
       name: 'John',
       surname: 'Doe',
       email: 'john.doe@example.com',
-      auth0Id: 'auth0|123456789',
+      auth0Id: 'google-oauth2|123456789',
       clientId: generatedUuid,
       clientSecret: generatedSecret,
       role: UserRole.CUSTOMER,
@@ -94,7 +94,7 @@ describe('CreateUserSocialUseCase', () => {
     // Arrange
     const user = useUserFactory({ id: '1', isSocial: true }, em);
     const createUserSocialDto: CreateUserSocialDto = {
-      auth0Id: 'auth0|987654321',
+      auth0Id: 'google-oauth2|987654321',
     };
 
     // Mock minimal Auth0 response
@@ -120,7 +120,7 @@ describe('CreateUserSocialUseCase', () => {
       name: 'John Smith', // From name field
       surname: undefined, // No family_name provided
       email: 'john@email.com',
-      auth0Id: 'auth0|987654321',
+      auth0Id: 'google-oauth2|987654321',
       clientId: generatedUuid,
       clientSecret: generatedSecret,
       role: UserRole.CUSTOMER,
@@ -137,7 +137,7 @@ describe('CreateUserSocialUseCase', () => {
     const createUserSocialDto: CreateUserSocialDto = {
       name: 'John',
       email: 'john.doe@example.com',
-      auth0Id: 'auth0|123456789',
+      auth0Id: 'google-oauth2|123456789',
     };
 
     userDbPort.save.mockRejectedValue(error);

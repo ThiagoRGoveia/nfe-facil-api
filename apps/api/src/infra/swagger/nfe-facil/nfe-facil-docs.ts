@@ -1,6 +1,6 @@
 import { DocumentBuilder, OpenAPIObject } from '@nestjs/swagger';
-import * as fs from 'fs';
-import * as dotenv from 'dotenv';
+import fs from 'fs';
+import dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { NFSeDocModule } from './nfse-doc.module';
 import { SwaggerModule } from '@nestjs/swagger';
@@ -11,8 +11,8 @@ type CustomDocument = Omit<OpenAPIObject, 'paths'> & {
   info: OpenAPIObject['info'] & {
     'x-logo'?: {
       url: string;
-      backgroundColor: string;
       altText: string;
+      href: string;
     };
   };
 };
@@ -35,7 +35,12 @@ export function setupNFSeDocs() {
        - Webhooks para notificação de status de processamento
     `,
     )
-    .addTag('Autenticação', `Utilize API Key and Secret gerados no Dashboard da NFe-Fácil para autenticação.`)
+    .addTag(
+      'Autenticação',
+      `Utilize API Key and Secret gerados no Dashboard da NFe-Fácil para autenticação no formato Basic.
+      As requisições devem ser feitas no formato:
+      Authorization: Basic {base64(API_KEY:SECRET)}`,
+    )
     .addTag(
       'NFSe',
       `Módulo para processamento de Notas Fiscais de Serviço Eletrônicas (NFSe). 
@@ -49,8 +54,8 @@ export function setupNFSeDocs() {
 
   config.info['x-logo'] = {
     url: process.env.LOGO_URL || '',
-    backgroundColor: '#EFEFF2',
     altText: 'NFe-Fácil logo',
+    href: process.env.SITE_URL || '',
   };
   return config;
 }

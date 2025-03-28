@@ -5,6 +5,18 @@
 
 declare module "sst" {
   export interface Resource {
+    "Api": {
+      "type": "sst.aws.ApiGatewayV2"
+      "url": string
+    }
+    "NFeFacilDocs": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
+    "ProcessDocumentQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />

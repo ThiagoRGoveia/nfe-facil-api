@@ -4,13 +4,12 @@ import { BaseIntegrationTestModule } from '../../tests/base-integration-test.mod
 import { ApiKeyAuthGuard } from '../api-key.guard';
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { Public } from '../public.decorator';
-import * as request from 'supertest';
+import request from 'supertest';
 import { ApiKeyStrategy } from '../api-key.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbDrop, useDbSchema } from '../../tests/db-schema.seed';
-import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { UsersModule } from '@/core/users/users.module';
 
 jest.setTimeout(10000);
@@ -33,11 +32,14 @@ class TestController {
 describe('ApiKeyAuthGuard (integration)', () => {
   let app: INestApplication;
   let em: EntityManager;
-  let orm: MikroORM;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [BaseIntegrationTestModule, PassportModule.register({ defaultStrategy: 'api-key' }), UsersModule],
+      imports: [
+        BaseIntegrationTestModule,
+        PassportModule.register({ defaultStrategy: 'api-key' }),
+        UsersModule.register('none'),
+      ],
       controllers: [TestController],
       providers: [
         ApiKeyStrategy,
@@ -50,7 +52,6 @@ describe('ApiKeyAuthGuard (integration)', () => {
 
     app = module.createNestApplication();
     em = module.get<EntityManager>(EntityManager);
-    orm = module.get<MikroORM>(MikroORM);
     await app.init();
 
     await useDbUser(

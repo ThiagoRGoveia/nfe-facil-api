@@ -52,9 +52,7 @@ export class ProcessFileUseCase {
     }
 
     const pdfBuffer = await this.fileStoragePort.getBuffer(file.filePath);
-
     const result = await this.documentProcessorPort.process(pdfBuffer, template);
-
     if (result.isSuccess()) {
       file.setResult(result.payload);
       file.markCompleted();

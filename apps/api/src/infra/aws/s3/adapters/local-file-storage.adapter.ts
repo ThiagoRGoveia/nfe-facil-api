@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import fs from 'fs/promises';
+import path from 'path';
 import { createReadStream, createWriteStream } from 'fs';
 import { FileStoragePort } from '../ports/file-storage.port';
 

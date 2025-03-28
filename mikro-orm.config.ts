@@ -1,7 +1,7 @@
 import { defineConfig } from '@mikro-orm/postgresql';
 import entities from './apps/api/src/infra/persistence/mikro-orm/entities';
 import { Migrator } from '@mikro-orm/migrations';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 dotenv.config();
 

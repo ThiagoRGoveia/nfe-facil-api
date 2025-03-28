@@ -1,7 +1,7 @@
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'apps',
-  testRegex: '.*\\.(spec|test)\\.ts$',
+  testRegex: '.*\\.e2e.test\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
@@ -14,9 +14,8 @@ module.exports = {
     '!**/*.module.ts',
     '!**/*.dto.ts',
     '!**/main.ts',
-    '!**/*.e2e.test.ts',
   ],
-  coverageDirectory: '../coverage',
+  coverageDirectory: '../coverage-e2e',
   testEnvironment: 'node',
   moduleDirectories: ['node_modules', __dirname],
   moduleNameMapper: {
@@ -24,4 +23,7 @@ module.exports = {
     '^@doc/(.*)$': '<rootDir>/template-process/src/$1',
   },
   maxWorkers: 3,
-};
+  globalSetup: '<rootDir>/_scripts/jestGlobalSetup.ts',
+  forceExit: true,
+  detectOpenHandles: true,
+}; 

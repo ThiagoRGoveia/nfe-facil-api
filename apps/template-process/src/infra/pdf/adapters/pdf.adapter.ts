@@ -1,4 +1,4 @@
-import * as pdfParse from 'pdf-parse';
+import pdfParse from 'pdf-parse/lib/pdf-parse';
 import { PdfPort } from '../ports/pdf.port';
 import type { Options } from 'pdf-to-img';
 

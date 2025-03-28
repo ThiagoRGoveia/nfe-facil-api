@@ -25,13 +25,13 @@ const defaultProviders = [
   // exports: [TemplateDbPort, CreateTemplateUseCase, UpdateTemplateUseCase, DeleteTemplateUseCase],
 })
 export class TemplatesModule {
-  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' | 'none' = 'all'): DynamicModule {
     // Combine resolvers and other providers
     const providers = [...(apiType === 'graphql' || apiType === 'all' ? resolvers : []), ...defaultProviders];
 
     return {
       module: TemplatesModule,
-      controllers: apiType === 'rest' || apiType === 'all' ? controllers : [],
+      controllers: apiType !== 'none' && apiType !== 'graphql' ? controllers : [],
       providers,
       exports: [TemplateDbPort, CreateTemplateUseCase, UpdateTemplateUseCase, DeleteTemplateUseCase],
     };

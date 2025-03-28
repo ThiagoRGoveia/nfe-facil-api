@@ -110,29 +110,34 @@ export class NFSeController {
     )
     file: Express.Multer.File,
   ) {
-    const result = await this.syncBatchProcessUseCase.execute(req.user, {
-      templateId: this.templateId,
-      consolidateOutput: false,
-      files: [
-        {
-          data: file.buffer,
-          fileName: file.originalname,
-        },
-      ],
-    });
+    try {
+      const result = await this.syncBatchProcessUseCase.execute(req.user, {
+        templateId: this.templateId,
+        consolidateOutput: false,
+        files: [
+          {
+            data: file.buffer,
+            fileName: file.originalname,
+          },
+        ],
+      });
 
-    if (!result || !result.files || result.files.length === 0) {
-      throw new BadRequestException('Nenhum resultado de processamento encontrado');
+      if (!result || !result.files || result.files.length === 0) {
+        throw new BadRequestException('Nenhum resultado de processamento encontrado');
+      }
+
+      const fileRecord = result.files[0];
+      if (!fileRecord.result) {
+        throw new BadRequestException('Falha ao processar o arquivo');
+      }
+
+      return plainToInstance(NfseResponseDto, fileRecord.result, {
+        excludeExtraneousValues: true,
+      });
+    } catch (error) {
+      console.error('Error processing single file', error);
+      throw error;
     }
-
-    const fileRecord = result.files[0];
-    if (!fileRecord.result) {
-      throw new BadRequestException('Falha ao processar o arquivo');
-    }
-
-    return plainToInstance(NfseResponseDto, fileRecord.result, {
-      excludeExtraneousValues: true,
-    });
   }
 
   @Post('extrair/lote')

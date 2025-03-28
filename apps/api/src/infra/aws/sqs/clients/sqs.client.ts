@@ -7,9 +7,9 @@ export class SQSClient {
   private readonly sqsClient: AwsSqsClient;
 
   constructor(private configService: ConfigService) {
-    const region = this.configService.get<string>('AWS_REGION');
-    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
-    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY');
+    const region = this.configService.get<string>('AWS_REGION_ENV');
+    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID_ENV');
+    const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY_ENV');
 
     if (!region || !accessKeyId || !secretAccessKey) {
       throw new Error('AWS SQS credentials are not set');

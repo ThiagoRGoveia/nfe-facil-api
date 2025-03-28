@@ -11,7 +11,7 @@ import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { FileFormat } from '../../domain/constants/file-formats';
-
+import { PinoLogger } from 'nestjs-pino';
 @Injectable()
 export class CreateBatchProcessUseCase {
   constructor(
@@ -21,6 +21,7 @@ export class CreateBatchProcessUseCase {
     private readonly fileStorage: FileStoragePort,
     private readonly zipService: ZipPort,
     private readonly uuidAdapter: UuidAdapter,
+    private readonly logger: PinoLogger,
   ) {}
 
   async execute(user: User, dto: CreateBatchDto): Promise<BatchProcess> {
@@ -107,6 +108,7 @@ export class CreateBatchProcessUseCase {
     try {
       await this.batchProcessRepository.save();
     } catch (error) {
+      this.logger.error(`Error creating batch process: %o`, error);
       await this.fileStorage.deleteFolder(`uploads/${user.id}/batch/${batch.id}`);
       throw error;
     }

@@ -2,9 +2,6 @@
   "include": [
     "apps/**/*.ts",
     "libs/**/*.ts",
-    "sst/**/*.ts",
-    "sst-env.d.ts",
-    "sst.config.ts"
   ],
   "compilerOptions": {
     "module": "commonjs",
@@ -13,6 +10,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",

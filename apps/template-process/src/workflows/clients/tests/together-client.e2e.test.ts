@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TogetherClient } from '../together-client';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -64,7 +64,6 @@ describe('TogetherClient (e2e)', () => {
 
     // Call the service
     const result = await togetherClient.generate(prompt, config);
-    console.log(result);
     // Basic validation
     expect(result).toBeDefined();
     expect(typeof result).toBe('string');

@@ -45,7 +45,12 @@ describe('PublicSyncFileProcessUseCase', () => {
         {
           provide: PublicFileProcessDbPort,
           useValue: createMock<PublicFileProcessDbPort>({
-            create: jest.fn().mockImplementation((data) => data),
+            create: jest.fn().mockImplementation((data) => ({
+              ...data,
+              markCompleted: jest.fn(),
+              markFailed: jest.fn(),
+              setResult: jest.fn(),
+            })),
             save: jest.fn().mockResolvedValue(undefined),
           }),
         },
@@ -133,6 +138,7 @@ describe('PublicSyncFileProcessUseCase', () => {
     expect(fileStorage.uploadFromBuffer).toHaveBeenCalledTimes(5); // 2 source files + 3 output formats
     expect(publicFileProcessRepo.save).toHaveBeenCalled();
     expect(result).toEqual({
+      errors: [],
       json: expect.stringContaining('/downloads/results/mock-uuid/mock-uuid.json'),
       csv: expect.stringContaining('/downloads/results/mock-uuid/mock-uuid.csv'),
       excel: expect.stringContaining('/downloads/results/mock-uuid/mock-uuid.xlsx'),

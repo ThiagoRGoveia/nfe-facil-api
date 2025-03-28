@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/core';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 
 import { NfeTextWorkflow } from '../nfse-text.workflow';
 import { BaseE2eTestModule } from '../../../testing/base-e2e-test.module';

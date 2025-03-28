@@ -26,7 +26,7 @@ const exportValues = [CreditTransactionDbPort, PaymentServicePort, HandleStripeE
   // exports,
 })
 export class UserCreditsModule {
-  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' | 'none' = 'all'): DynamicModule {
     return {
       module: UserCreditsModule,
       controllers: apiType === 'rest' || apiType === 'all' ? controllers : [],

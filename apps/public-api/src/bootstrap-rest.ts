@@ -8,7 +8,12 @@ export interface BootstrapRestOptions {
   rawBody?: boolean;
 }
 
+declare const module: any;
 export async function bootstrapRest(options: BootstrapRestOptions = {}): Promise<INestApplication> {
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
   const app = await NestFactory.create(AppModule.forRoot({ apiType: 'rest' }), {
     rawBody: options.rawBody ?? false,
   });

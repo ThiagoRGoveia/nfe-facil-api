@@ -9,7 +9,7 @@ import { UserCreditsModule } from './user-credits/user-credits.module';
   // imports: [DocumentsModule, TemplatesModule, WebhooksModule, UsersModule, UserCreditsModule],
 })
 export class FeatureModule {
-  static register(apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+  static register(apiType: 'rest' | 'graphql' | 'all' | 'none' = 'all'): DynamicModule {
     return {
       module: FeatureModule,
       imports: [

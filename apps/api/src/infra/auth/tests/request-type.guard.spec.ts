@@ -4,7 +4,7 @@ import { BaseIntegrationTestModule } from '../../tests/base-integration-test.mod
 import { RequestTypeGuard } from '../request-type.guard';
 import { Controller, Get } from '@nestjs/common';
 import { Public } from '../public.decorator';
-import * as request from 'supertest';
+import request from 'supertest';
 import { ApiKeyStrategy } from '../api-key.strategy';
 import { JwtStrategy } from '../jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
@@ -60,7 +60,7 @@ describe('RequestTypeGuard (integration)', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         BaseIntegrationTestModule,
-        UsersModule,
+        UsersModule.register('none'),
         GraphQLModule.forRoot<YogaDriverConfig>({
           driver: YogaDriver,
           autoSchemaFile: true,

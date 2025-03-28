@@ -91,7 +91,7 @@ describe('CreateWebhookUseCase', () => {
     const dto: CreateWebhookDto = {
       ...validDto,
       authType: WebhookAuthType.OAUTH2,
-      authConfig: { clientId: 'client', clientSecret: 'secret' },
+      authConfig: { username: 'client', password: 'secret' },
     };
 
     await useCase.execute({ user: testUser, data: dto });

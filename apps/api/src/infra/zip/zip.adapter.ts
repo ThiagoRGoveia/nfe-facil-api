@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ZipPort, ExtractedFile } from './zip.port';
-import * as unzipper from 'unzipper';
+import unzipper from 'unzipper';
 
 @Injectable()
 export class ZipAdapter implements ZipPort {

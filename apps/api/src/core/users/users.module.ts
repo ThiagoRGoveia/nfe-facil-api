@@ -34,12 +34,9 @@ const exportValues = [
 ];
 
 @Global()
-@Module({
-  // providers: [...defaultProviders, ...resolvers],
-  // exports: exportValues,
-})
+@Module({})
 export class UsersModule {
-  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' = 'all'): DynamicModule {
+  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' | 'none' = 'all'): DynamicModule {
     const providers = [...(apiType === 'graphql' || apiType === 'all' ? resolvers : []), ...defaultProviders];
     return {
       module: UsersModule,

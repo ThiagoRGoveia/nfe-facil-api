@@ -1,6 +1,6 @@
-import * as request from 'supertest';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import request from 'supertest';
+import fs from 'fs/promises';
+import path from 'path';
 import { Global, HttpStatus, INestApplication, Module, ValidationPipe } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';

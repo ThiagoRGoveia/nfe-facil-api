@@ -1,35 +1,108 @@
 <html>
-
-
  <head>
    <meta charset='utf8' />
    <title>{{title}}</title>
    <link
      rel='icon'
      type='image/x-icon'
-     href='logo.com'
+     href='https://tera-dev.com/site-icon.svg'
    />
    <!-- needed for adaptive design -->
    <meta name='viewport' content='width=device-width, initial-scale=1' />
    <style>
-     body { padding: 0; margin: 0; } .scrollbar-container .-depth1.active,
-     .scrollbar-container .-depth2.active { background-color:
-     #A4D7ED!important; } .-depth2 {background-color: #D2EBF5!important;}
-     svg.search-icon ~ input { border-bottom: 1px solid #F97134; } h1 {color:
-     #134788!important;} .menu-content div:first-child { padding-top: 10px;
-     padding-left:30px; }
+     body { 
+       padding: 0; 
+       margin: 0; 
+     } 
+     
+     /* Light Mode Theme */
+     :root {
+       --theme-color: #F97134;
+       --background-color: hsl(40, 100%, 97%);
+       --text-color: hsl(20, 30%, 15%);
+       --sidebar-bg: hsl(36, 100%, 99%);
+       --sidebar-text: hsl(20, 30%, 15%);
+       --sidebar-active:rgb(189, 240, 247);
+       --link-color: hsl(25, 95%, 53%);
+       --heading-color: #1AAFCB;
+     }
+     
+     /* Logo sizing */
+     .logo img {
+       max-height: 100px;
+       max-width: 260px;
+       padding: 10px;
+     }
+     
+     /* Sidebar styles */
+     .scrollbar-container .-depth1.active,
+     .scrollbar-container .-depth2.active { 
+       background-color: var(--sidebar-active) !important; 
+     } 
+     
+     .-depth2 {
+       background-color: #D2EBF5 !important;
+     }
+     
+     svg.search-icon ~ input { 
+       border-bottom: 1px solid var(--theme-color); 
+     } 
+     
+     h1 {
+       color: var(--heading-color) !important;
+     } 
+     
+     .menu-content div:first-child { 
+       padding-top: 10px;
+       padding-left: 30px; 
+     }
+     
+     /* Font customization */
+     body {
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+     }
    </style>
    {{{redocHead}}}
-   {{#unless disableGoogleFont}}<link
-       href='https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700'
-       rel='stylesheet'
-     />{{/unless}}
  </head>
 
-
  <body>
+   <script>
+     // Redoc theme customization
+     window.onload = function() {
+       const redocSettings = {
+         theme: {
+           colors: {
+             primary: { main: '#F97134' },
+             text: { primary: 'hsl(20, 30%, 15%)' },
+           },
+           typography: {
+             fontSize: '14px',
+             lineHeight: '1.5em',
+             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+             headings: {
+               fontFamily: 'Montserrat, sans-serif',
+               fontWeight: '400',
+             }
+           },
+           sidebar: {
+             backgroundColor: 'hsl(36, 100%, 99%)',
+             textColor: 'hsl(20, 30%, 15%)',
+             activeTextColor: '#134788',
+           },
+           logo: {
+             maxHeight: '100px',
+             maxWidth: '260px',
+             gutter: '10px'
+           }
+         }
+       };
+       
+       // Apply Redoc settings
+       if (window.Redoc) {
+         Redoc.init(undefined, redocSettings);
+       }
+     };
+   </script>
    {{{redocHTML}}}
  </body>
-
-
 </html>

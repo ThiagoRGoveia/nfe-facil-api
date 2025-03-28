@@ -1,6 +1,6 @@
 import { ZipAdapter } from '../zip.adapter';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import fs from 'fs/promises';
+import path from 'path';
 
 describe('ZipAdapter', () => {
   let adapter: ZipAdapter;

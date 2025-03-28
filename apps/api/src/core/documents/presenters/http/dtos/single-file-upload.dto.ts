@@ -4,7 +4,7 @@ export class SingleFileUploadDto {
   @ApiProperty({
     type: 'string',
     format: 'binary',
-    description: 'PDF file containing the NFSe to be processed',
+    description: 'Arquivo PDF contendo a NFSe a ser processada',
   })
   file: Express.Multer.File;
 }

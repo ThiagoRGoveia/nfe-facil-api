@@ -66,7 +66,6 @@ export class TogetherClient {
           },
         ),
       );
-
       return response.data.choices[0]?.message?.content || '';
     } catch (error) {
       throw new Error(`Together API error: ${error.message}`);

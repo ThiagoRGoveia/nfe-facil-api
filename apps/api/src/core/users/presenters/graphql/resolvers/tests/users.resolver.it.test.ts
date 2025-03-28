@@ -1,12 +1,11 @@
-import * as request from 'supertest';
+import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { UsersResolver } from '../users.resolver';
 import { UsersModule } from '@/core/users/users.module';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { faker } from '@faker-js/faker';
@@ -15,7 +14,6 @@ import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
 jest.setTimeout(100000);
 describe('UsersResolver (Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let user: User;
   let authPort: jest.Mocked<AuthPort>;
@@ -26,7 +24,6 @@ describe('UsersResolver (Integration)', () => {
       providers: [UsersResolver],
     }).compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     authPort = module.get<jest.Mocked<AuthPort>>(AuthPort);

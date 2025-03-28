@@ -1,5 +1,5 @@
 import { PdfAdapter } from '../pdf.adapter';
-import * as fs from 'fs';
+import fs from 'fs';
 
 const document = fs.readFileSync(__dirname + '/test.pdf');
 // const pdfBuffer = Buffer.from(document);

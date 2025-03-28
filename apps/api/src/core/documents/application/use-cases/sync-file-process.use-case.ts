@@ -25,7 +25,6 @@ export class SyncFileProcessUseCase {
   async execute(user: User, dto: CreateBatchDto) {
     // First create the batch process
     const batch = await this.createBatchUseCase.execute(user, dto);
-
     if (batch.totalFiles > this.MAX_FILES) {
       await this.cancelBatchUseCase.execute(batch.id);
       throw new BadRequestException(`Up to ${this.MAX_FILES} files are allowed to be processed at once`);
