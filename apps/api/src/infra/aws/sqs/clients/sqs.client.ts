@@ -30,7 +30,7 @@ export class SQSClient {
       QueueUrl: queueUrl,
       MessageBody: messageBody,
       MessageGroupId: options?.fifo ? options.groupId : undefined,
-      MessageDeduplicationId: new UuidAdapter().generate(),
+      MessageDeduplicationId: options?.fifo ? new UuidAdapter().generate() : undefined,
     });
 
     await this.sqsClient.send(command);
