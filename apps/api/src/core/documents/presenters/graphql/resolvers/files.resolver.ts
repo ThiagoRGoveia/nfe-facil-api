@@ -1,4 +1,4 @@
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { FileRecord } from '../../../domain/entities/file-records.entity';
 import { FileProcessDbPort } from '../../../application/ports/file-process-db.port';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
@@ -8,12 +8,15 @@ import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
-
+import { ConfigService } from '@nestjs/config';
 const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 
 @Resolver(() => FileRecord)
 export class FilesResolver {
-  constructor(private readonly fileProcessDbPort: FileProcessDbPort) {}
+  constructor(
+    private readonly fileProcessDbPort: FileProcessDbPort,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Query(() => PaginatedFiles)
   findAllFiles(
@@ -27,5 +30,11 @@ export class FilesResolver {
     } else {
       return this.fileProcessDbPort.findByUser(context.req.user.id, filters?.filters, pagination, sort);
     }
+  }
+
+  @ResolveField(() => String)
+  filePath(@Parent() file: FileRecord) {
+    const baseUrl = this.configService.get('API_URL');
+    return `${baseUrl}/downloads/${file.filePath}`;
   }
 }

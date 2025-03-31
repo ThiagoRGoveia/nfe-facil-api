@@ -16,7 +16,7 @@ import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/pub
 import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
 import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
-
+import { ConfigService } from '@nestjs/config';
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
 @Resolver(() => BatchProcess)
@@ -26,6 +26,7 @@ export class BatchProcessesResolver {
     private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
     private readonly createBatchProcessUseCase: CreateBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
+    private readonly configService: ConfigService,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })
@@ -130,6 +131,34 @@ export class BatchProcessesResolver {
     return batch.template.load();
   }
 
+  @ResolveField(() => String)
+  jsonResults(@Parent() batch: BatchProcess) {
+    if (!batch.jsonResults) {
+      return null;
+    }
+    const baseUrl = this.configService.get('API_URL');
+    return `${baseUrl}/downloads/${batch.jsonResults}`;
+  }
+
+  @ResolveField(() => String)
+  csvResults(@Parent() batch: BatchProcess) {
+    if (!batch.csvResults) {
+      return null;
+    }
+    const baseUrl = this.configService.get('API_URL');
+    return `${baseUrl}/downloads/${batch.csvResults}`;
+  }
+
+  @ResolveField(() => String)
+  excelResults(@Parent() batch: BatchProcess) {
+    if (!batch.excelResults) {
+      return null;
+    }
+    const baseUrl = this.configService.get('API_URL');
+    return `${baseUrl}/downloads/${batch.excelResults}`;
+  }
+
+  @ResolveField(() => String)
   private async streamToBuffer(stream: () => NodeJS.ReadableStream): Promise<Buffer> {
     const chunks: Buffer[] = [];
     const readStream = stream();

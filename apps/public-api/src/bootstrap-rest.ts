@@ -28,7 +28,9 @@ export async function bootstrapRest(options: BootstrapRestOptions = {}): Promise
     }),
   );
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['downloads/*'],
+  });
 
   app.enableCors({
     origin: '*',
