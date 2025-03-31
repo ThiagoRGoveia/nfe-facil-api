@@ -10,13 +10,15 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { User, UserRole } from '@/core/users/domain/entities/user.entity';
 import { Template } from '@/core/templates/domain/entities/template.entity';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Public } from '@/infra/auth/public.decorator';
 import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';
 import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
 import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
 import { ConfigService } from '@nestjs/config';
+import { HandleOutputFormatUseCase } from '@/core/documents/application/use-cases/handle-output-format.use-case';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
 @Resolver(() => BatchProcess)
@@ -27,6 +29,8 @@ export class BatchProcessesResolver {
     private readonly createBatchProcessUseCase: CreateBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
     private readonly configService: ConfigService,
+    private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
+    private readonly fileStorage: FileStoragePort,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })
@@ -86,6 +90,25 @@ export class BatchProcessesResolver {
     return batchProcess;
   }
 
+  @Mutation(() => BatchProcess)
+  async processBatch(@Args('batchId', { type: () => String }) batchId: string): Promise<BatchProcess> {
+    await this.asyncBatchProcessUseCase.execute(batchId);
+    return this.batchDbPort.findByIdOrFail(batchId);
+  }
+
+  @Mutation(() => BatchProcess)
+  async processOutputConsolidation(@Args('batchId', { type: () => String }) batchId: string): Promise<BatchProcess> {
+    const batch = await this.batchDbPort.findById(batchId);
+
+    if (!batch) {
+      throw new NotFoundException(`Batch with ID ${batchId} not found`);
+    }
+
+    await this.handleOutputFormatUseCase.execute(batch);
+
+    return this.batchDbPort.findByIdOrFail(batchId);
+  }
+
   @Public()
   @Mutation(() => PublicSyncProcessResponse)
   async publicProcessBatchSync(@Args('input') input: CreateBatchInput) {
@@ -131,31 +154,28 @@ export class BatchProcessesResolver {
     return batch.template.load();
   }
 
-  @ResolveField(() => String)
-  jsonResults(@Parent() batch: BatchProcess) {
+  @ResolveField(() => String, { nullable: true })
+  async jsonResults(@Parent() batch: BatchProcess) {
     if (!batch.jsonResults) {
       return null;
     }
-    const baseUrl = this.configService.get('API_URL');
-    return `${baseUrl}/downloads/${batch.jsonResults}`;
+    return this.fileStorage.createSignedUrl(batch.jsonResults);
   }
 
-  @ResolveField(() => String)
-  csvResults(@Parent() batch: BatchProcess) {
+  @ResolveField(() => String, { nullable: true })
+  async csvResults(@Parent() batch: BatchProcess) {
     if (!batch.csvResults) {
       return null;
     }
-    const baseUrl = this.configService.get('API_URL');
-    return `${baseUrl}/downloads/${batch.csvResults}`;
+    return this.fileStorage.createSignedUrl(batch.csvResults);
   }
 
-  @ResolveField(() => String)
-  excelResults(@Parent() batch: BatchProcess) {
+  @ResolveField(() => String, { nullable: true })
+  async excelResults(@Parent() batch: BatchProcess) {
     if (!batch.excelResults) {
       return null;
     }
-    const baseUrl = this.configService.get('API_URL');
-    return `${baseUrl}/downloads/${batch.excelResults}`;
+    return this.fileStorage.createSignedUrl(batch.excelResults);
   }
 
   @ResolveField(() => String)

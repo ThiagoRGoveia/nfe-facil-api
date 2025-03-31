@@ -40,6 +40,7 @@ export function getConfig(handler: string, bundle: string) {
       AWS_REGION_ENV: process.env.AWS_REGION_ENV || '',
       DOCUMENT_BUCKET_NAME: process.env.DOCUMENT_BUCKET_NAME || '',
       DOCUMENT_PROCESSING_QUEUE: process.env.DOCUMENT_PROCESSING_QUEUE || '',
+      OUTPUT_CONSOLIDATION_QUEUE: process.env.OUTPUT_CONSOLIDATION_QUEUE || '',
       TOGETHER_API_KEY: process.env.TOGETHER_API_KEY || '',
       NFSE_TEMPLATE_ID: process.env.NFSE_TEMPLATE_ID || '',
       STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',

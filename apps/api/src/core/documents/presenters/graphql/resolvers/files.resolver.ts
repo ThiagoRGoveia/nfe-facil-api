@@ -1,4 +1,4 @@
-import { Args, Context, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { FileRecord } from '../../../domain/entities/file-records.entity';
 import { FileProcessDbPort } from '../../../application/ports/file-process-db.port';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
@@ -9,6 +9,8 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { UserRole } from '@/core/users/domain/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { ProcessFileUseCase } from '../../../application/use-cases/process-file.use-case';
+import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 
 @Resolver(() => FileRecord)
@@ -16,6 +18,8 @@ export class FilesResolver {
   constructor(
     private readonly fileProcessDbPort: FileProcessDbPort,
     private readonly configService: ConfigService,
+    private readonly processFileUseCase: ProcessFileUseCase,
+    private readonly fileStorage: FileStoragePort,
   ) {}
 
   @Query(() => PaginatedFiles)
@@ -32,9 +36,16 @@ export class FilesResolver {
     }
   }
 
-  @ResolveField(() => String)
-  filePath(@Parent() file: FileRecord) {
-    const baseUrl = this.configService.get('API_URL');
-    return `${baseUrl}/downloads/${file.filePath}`;
+  @Mutation(() => FileRecord)
+  async processFile(@Args('fileId', { type: () => String }) fileId: string): Promise<FileRecord> {
+    return this.processFileUseCase.execute({ fileId });
+  }
+
+  @ResolveField(() => String, { nullable: true })
+  async filePath(@Parent() file: FileRecord) {
+    if (!file.filePath) {
+      return null;
+    }
+    return this.fileStorage.createSignedUrl(file.filePath);
   }
 }

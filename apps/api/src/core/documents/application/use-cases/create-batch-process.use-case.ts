@@ -63,7 +63,7 @@ export class CreateBatchProcessUseCase {
 
               await Promise.all(
                 files.map(async (file) => {
-                  const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
+                  const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}.pdf`;
                   await this.fileStorage.uploadFromBuffer(path, file.content);
                   this.fileProcessRepository.create({
                     fileName: file.name,
@@ -78,7 +78,7 @@ export class CreateBatchProcessUseCase {
 
               totalFiles += files.length;
             } else if (fileName.endsWith('.pdf')) {
-              const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
+              const path = `uploads/${user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}.pdf`;
               await this.fileStorage.uploadFromBuffer(path, file.data);
               this.fileProcessRepository.create({
                 fileName: file.fileName,

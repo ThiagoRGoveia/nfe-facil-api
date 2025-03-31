@@ -11,11 +11,11 @@ export function ProcessDocumentStack() {
 
   processDocumentQueue.subscribe(
     {
-      ...getConfig('index.handler', 'dist/apps/process-document-job'),
+      ...getConfig('main.handler', 'dist/apps/process-document-job'),
     },
     {
       batch: {
-        size: 10,
+        size: 1,
       },
     },
   );

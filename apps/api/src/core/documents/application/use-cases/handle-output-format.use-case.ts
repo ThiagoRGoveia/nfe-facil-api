@@ -59,37 +59,29 @@ export class HandleOutputFormatUseCase {
         // Pipe clone stream to conversion stream.
         const formatStream = cloneStream.pipe(jsonArrayStream);
         batchProcess.jsonResults = downloadPath.forUserExtension('json');
-        return this.fileStoragePort
-          .uploadFromStream(downloadPath.forUserExtension('json'), formatStream, 'application/json')
-          .then((jsonPath) => {
-            batchProcess.jsonResults = jsonPath;
-          });
+        return this.fileStoragePort.uploadFromStream(
+          downloadPath.forUserExtension('json'),
+          formatStream,
+          'application/json',
+        );
       } else if (format === FileFormat.CSV) {
         const csvStream = this.csvConverterPort.convertStreamToCsv(cloneStream, {
           expandNestedObjects: true,
           unwindArrays: true,
         });
         batchProcess.csvResults = downloadPath.forUserExtension('csv');
-        return this.fileStoragePort
-          .uploadFromStream(downloadPath.forUserExtension('csv'), csvStream, 'text/csv')
-          .then((csvPath) => {
-            batchProcess.csvResults = csvPath;
-          });
+        return this.fileStoragePort.uploadFromStream(downloadPath.forUserExtension('csv'), csvStream, 'text/csv');
       } else if (format === FileFormat.XLSX) {
         const excelStream = this.excelPort.convertStreamToExcel(cloneStream, {
           expandNestedObjects: true,
           unwindArrays: true,
         });
         batchProcess.excelResults = downloadPath.forUserExtension('xlsx');
-        return this.fileStoragePort
-          .uploadFromStream(
-            downloadPath.forUserExtension('xlsx'),
-            excelStream,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          )
-          .then((excelPath) => {
-            batchProcess.excelResults = excelPath;
-          });
+        return this.fileStoragePort.uploadFromStream(
+          downloadPath.forUserExtension('xlsx'),
+          excelStream,
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        );
       }
     });
 

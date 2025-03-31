@@ -5,7 +5,9 @@ import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-
 import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { HandleOutputFormatUseCase } from './handle-output-format.use-case';
+import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
+import { ConfigService } from '@nestjs/config';
+import { PinoLogger } from 'nestjs-pino';
 
 export interface ProcessFileParams {
   fileId: FileRecord['id'];
@@ -14,14 +16,24 @@ export interface ProcessFileParams {
 
 @Injectable()
 export class ProcessFileUseCase {
+  private readonly outputConsolidationQueue: string;
+
   constructor(
     private readonly fileProcessDbPort: FileProcessDbPort,
     private readonly documentProcessorPort: DocumentProcessorPort,
     private readonly webhookNotifierPort: WebhookNotifierPort,
     private readonly batchDbPort: BatchDbPort,
     private readonly fileStoragePort: FileStoragePort,
-    private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
-  ) {}
+    private readonly queuePort: QueuePort,
+    private readonly configService: ConfigService,
+    private readonly logger: PinoLogger,
+  ) {
+    const queueName = this.configService.get<string>('OUTPUT_CONSOLIDATION_QUEUE');
+    if (!queueName) {
+      throw new Error('OUTPUT_CONSOLIDATION_QUEUE is not set');
+    }
+    this.outputConsolidationQueue = queueName;
+  }
 
   async execute(params: ProcessFileParams): Promise<FileRecord> {
     const { fileId, shouldConsolidateOutput = true } = params;
@@ -56,11 +68,15 @@ export class ProcessFileUseCase {
     if (result.isSuccess()) {
       file.setResult(result.payload);
       file.markCompleted();
-      await this.webhookNotifierPort.notifySuccess(file);
+      this.webhookNotifierPort.notifySuccess(file).catch((error) => {
+        this.logger.error('Error notifying webhook', error);
+      });
       file.markNotified();
     } else if (result.isError()) {
       file.markFailed(result.errorMessage);
-      await this.webhookNotifierPort.notifyFailure(file);
+      this.webhookNotifierPort.notifyFailure(file).catch((error) => {
+        this.logger.error('Error notifying webhook', error);
+      });
       file.markNotified();
     }
     await this.fileProcessDbPort.save();
@@ -69,7 +85,9 @@ export class ProcessFileUseCase {
       if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
         updatedBatchProcess.markCompleted();
         if (shouldConsolidateOutput) {
-          await this.handleOutputFormatUseCase.execute(updatedBatchProcess);
+          await this.queuePort.sendMessage(this.outputConsolidationQueue, {
+            batchId: updatedBatchProcess.id,
+          });
         }
         await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
       }

@@ -47,6 +47,10 @@ export class BaseMikroOrmDbRepository<T extends { id: string | number }, S> impl
     await this.em.flush();
   }
 
+  async commit(): Promise<void> {
+    await this.em.commit();
+  }
+
   findById(id: T['id']): Promise<T | null> {
     return this.em.findOne(this.entity, { id });
   }

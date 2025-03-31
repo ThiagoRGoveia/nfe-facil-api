@@ -47,7 +47,7 @@ export const baseImports = [
           expiration: 1000,
           global: true,
         },
-        debug: false,
+        debug: true,
         migrations: {
           tableName: 'mikro_orm_migrations',
           path: `./dist/infra/db/mikro-orm/migrations`,

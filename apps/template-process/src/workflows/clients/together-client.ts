@@ -31,7 +31,8 @@ export class TogetherClient {
       throw new Error('Together API key is required');
     }
     this.apiKey = apiKeyValue;
-    this.mockMode = this.configService.get('MOCK_MODE') === 'true';
+    this.mockMode =
+      this.configService.get('MOCK_MODE') === 'true' && this.configService.get('NODE_ENV') !== 'production';
   }
 
   async generate(prompt: string, config: LLMConfig): Promise<string> {

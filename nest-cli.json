@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
+    "output-consolidation-job": {
+      "type": "application",
+      "root": "apps/output-consolidation-job",
+      "entryFile": "main",
+      "sourceRoot": "apps/output-consolidation-job/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/output-consolidation-job/tsconfig.app.json"
+      }
+    },
     "process-document-job": {
       "type": "application",
       "root": "apps/process-document-job",

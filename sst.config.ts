@@ -5,6 +5,7 @@ import { ApiStack } from './sst/api.stack';
 import { AppStack } from './sst/app.stack';
 import { DocsStack } from './sst/docs.stack';
 import { ProcessDocumentStack } from './sst/process-document.stack';
+import { OutputConsolidationStack } from './sst/output-consolidation.stack';
 
 export default $config({
   app(input) {
@@ -18,11 +19,13 @@ export default $config({
   async run() {
     const { api } = ApiStack();
     const { processDocumentQueue } = ProcessDocumentStack();
+    const { outputConsolidationQueue } = OutputConsolidationStack();
     const doc = DocsStack();
     const app = AppStack();
     return Promise.resolve({
-      api,
-      processDocumentQueue,
+      api: api.url,
+      processDocumentQueue: processDocumentQueue.url,
+      outputConsolidationQueue: outputConsolidationQueue.url,
       docsUrl: doc.url,
       appUrl: app.url,
     });

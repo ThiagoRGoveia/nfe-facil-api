@@ -70,7 +70,7 @@ export class AddFileToBatchUseCase {
           try {
             uploadedPaths = await Promise.all(
               extractedFiles.map(async (file) => {
-                const path = `uploads/${params.user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}`;
+                const path = `uploads/${params.user.id}/batch/${batch.id}/${this.uuidAdapter.generate()}.pdf`;
                 await this.fileStoragePort.uploadFromBuffer(path, file.content, 'application/pdf');
                 return path;
               }),

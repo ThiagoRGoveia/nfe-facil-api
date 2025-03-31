@@ -17,6 +17,10 @@ declare module "sst" {
       "type": "sst.aws.StaticSite"
       "url": string
     }
+    "OutputConsolidationQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
     "ProcessDocumentQueue": {
       "type": "sst.aws.Queue"
       "url": string

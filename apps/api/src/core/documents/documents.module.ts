@@ -1,6 +1,5 @@
 import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
 import { DocumentsController } from './presenters/http/controllers/documents.controller';
-import { DownloadsController } from './presenters/http/controllers/downloads.controller';
 import { CreateBatchProcessUseCase } from './application/use-cases/create-batch-process.use-case';
 import { UpdateBatchTemplateUseCase } from './application/use-cases/update-batch-template.use-case';
 import { AddFileToBatchUseCase } from './application/use-cases/add-file-to-batch.use-case';
@@ -31,7 +30,7 @@ import { PublicFileProcessMikroOrmDbRepository } from './infra/persistence/db/or
 import { NFSeController } from './presenters/http/controllers/nfse.controller';
 import { NFSeWebhooksController } from './presenters/http/controllers/nfse-webhooks.controller';
 
-const controllers = [DocumentsController, DownloadsController, NFSeController, NFSeWebhooksController];
+const controllers = [DocumentsController, NFSeController, NFSeWebhooksController];
 const resolvers = [BatchProcessesResolver, FilesResolver];
 const defaultProviders = [
   CreateBatchProcessUseCase,

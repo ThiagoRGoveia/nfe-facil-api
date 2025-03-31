@@ -6,6 +6,9 @@ import { FileStoragePort } from '../ports/file-storage.port';
 
 // NOTICE: This is a test adapter, it is not used in production
 export class LocalFileStorageAdapter extends FileStoragePort {
+  createSignedUrl(_path: string, _expiresIn?: number): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
   async getBuffer(pathString: string): Promise<Buffer> {
     const filePath = path.join(process.cwd(), '/test-files', pathString);
     return fs.readFile(filePath);

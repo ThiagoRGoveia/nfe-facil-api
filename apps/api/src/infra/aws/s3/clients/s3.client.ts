@@ -9,8 +9,10 @@ import {
   DeleteObjectsCommand,
   _Object,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 import { FileStoragePort } from '../ports/file-storage.port';
+import { Upload } from '@aws-sdk/lib-storage';
 
 @Injectable()
 export class S3Client implements FileStoragePort {
@@ -48,16 +50,19 @@ export class S3Client implements FileStoragePort {
   }
 
   async uploadFromStream(key: string, stream: Readable, contentType?: string, expiresIn?: Date): Promise<string> {
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-      Body: stream,
-      ContentType: contentType,
-      Expires: expiresIn,
-    });
-
     try {
-      await this.s3Client.send(command);
+      const upload = new Upload({
+        client: this.s3Client,
+        params: {
+          Bucket: this.bucketName,
+          Key: key,
+          Body: stream,
+          ContentType: contentType,
+          Expires: expiresIn,
+        },
+      });
+
+      await upload.done();
       return `${this.bucketName}/${key}`;
     } catch (error) {
       throw new InternalServerErrorException(`Failed to upload: ${error.message}`);
@@ -144,6 +149,16 @@ export class S3Client implements FileStoragePort {
       }
     } catch (error) {
       throw new InternalServerErrorException(`Failed to delete folder: ${error.message}`);
+    }
+  }
+
+  async createSignedUrl(path: string, expiresIn: number = 3600): Promise<string> {
+    try {
+      const command = new GetObjectCommand({ Bucket: this.bucketName, Key: path });
+      const signedUrl = await getSignedUrl(this.s3Client, command, { expiresIn });
+      return signedUrl;
+    } catch (error) {
+      throw new InternalServerErrorException(`Failed to create signed URL: ${error.message}`);
     }
   }
 }

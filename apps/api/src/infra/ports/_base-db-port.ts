@@ -12,6 +12,8 @@ export abstract class BaseDbPort<T extends { id: string | number }> {
    */
   abstract save(): Promise<void>;
 
+  abstract commit(): Promise<void>;
+
   /**
    * Retrieves all entities matching the specified criteria
    * @param filter - Optional array of filters to apply to the query

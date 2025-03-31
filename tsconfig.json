@@ -1,7 +1,7 @@
 {
   "include": [
     "apps/**/*.ts",
-    "libs/**/*.ts",
+    "libs/**/*.ts"
   ],
   "compilerOptions": {
     "module": "commonjs",

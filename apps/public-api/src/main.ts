@@ -12,7 +12,7 @@ async function startDevServer() {
     rawBody: true,
   });
 
-  await app.listen(process.env.REST_PORT ?? 3000);
+  await app.listen(process.env.REST_PORT ?? 4001);
   console.log(`REST API is running on: ${await app.getUrl()}`);
 
   if (module.hot) {

@@ -44,4 +44,12 @@ export abstract class FileStoragePort {
    * @param path Full storage path in format "path/to/folder/"
    */
   abstract deleteFolder(path: string): Promise<void>;
+
+  /**
+   * Creates a signed URL for temporary file download
+   * @param path Full storage path in format "path/to/file"
+   * @param expiresIn Time in seconds until the URL expires (default: 3600)
+   * @returns Promise resolving to a signed URL string
+   */
+  abstract createSignedUrl(path: string, expiresIn?: number): Promise<string>;
 }
