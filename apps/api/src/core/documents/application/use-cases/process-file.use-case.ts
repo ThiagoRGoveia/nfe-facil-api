@@ -82,7 +82,8 @@ export class ProcessFileUseCase {
     await this.fileProcessDbPort.save();
     if (batchProcess) {
       const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
-      if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
+      if (updatedBatchProcess.processedFiles >= updatedBatchProcess.totalFiles) {
+        updatedBatchProcess.processedFiles = updatedBatchProcess.totalFiles;
         updatedBatchProcess.markCompleted();
         if (shouldConsolidateOutput) {
           await this.queuePort.sendMessage(this.outputConsolidationQueue, {

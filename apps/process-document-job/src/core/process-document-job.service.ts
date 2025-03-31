@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProcessFileUseCase } from 'apps/api/src/core/documents/application/use-cases/process-file.use-case';
 import { DatePort } from '@/infra/adapters/date.adapter';
 import { PinoLogger } from 'nestjs-pino';
-import { MikroORM } from '@mikro-orm/core';
+import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
 type MessageParam = {
   fileId: string;
 };
@@ -27,9 +27,7 @@ export class ProcessDocumentJobService {
       const { fileId } = message;
 
       // Process the file using the ProcessFileUseCase
-      await this.runInRequestContext(async () => {
-        await this.processFileUseCase.execute({ fileId });
-      });
+      await this.runInRequestContext(fileId);
 
       this.logger.info(`File processed successfully: ${fileId}`);
 
@@ -43,9 +41,9 @@ export class ProcessDocumentJobService {
     }
   }
 
-  private async runInRequestContext(callback: () => Promise<void>) {
-    const em = this.orm.em.fork();
-    await em.transactional(callback);
+  @CreateRequestContext()
+  private async runInRequestContext(fileId: string) {
+    await this.processFileUseCase.execute({ fileId });
   }
 
   private validateMessage(message: object): message is MessageParam {
