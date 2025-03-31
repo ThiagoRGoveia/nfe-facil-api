@@ -44,7 +44,7 @@ import { BatchProcessResponseDto } from '../dtos/batch-process-response.dto';
  * - Cancelamento de processamento de lotes
  *
  * Os dados extraídos do processamento seguem a estrutura definida em {@link NfseDto},
- * disponível em "apps/template-process/src/workflows/nfe/dto/nfse.dto.ts".
+ * disponível em "apps/document-process/src/workflows/nfe/dto/nfse.dto.ts".
  *
  * Para receber notificações sobre o processamento de NFSe, consulte o controlador
  * de webhooks em {@link NFSeWebhooksController}.

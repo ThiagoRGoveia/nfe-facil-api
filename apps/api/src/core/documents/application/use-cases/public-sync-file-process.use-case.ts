@@ -3,7 +3,7 @@ import { CreateBatchDto, FileDto } from '../dtos/create-batch.dto';
 import { PinoLogger } from 'nestjs-pino';
 import { DocumentProcessorPort } from '../ports/document-processor.port';
 import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
 import { ExcelPort } from '@/infra/excel/ports/excel.port';

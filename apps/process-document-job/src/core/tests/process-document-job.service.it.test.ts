@@ -5,7 +5,7 @@ import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.m
 import { ProcessDocumentJobService } from '../process-document-job.service';
 import { DocumentsModule } from 'apps/api/src/core/documents/documents.module';
 import { DocumentProcessorPort } from 'apps/api/src/core/documents/application/ports/document-processor.port';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';

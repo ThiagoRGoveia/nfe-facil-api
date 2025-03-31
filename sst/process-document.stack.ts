@@ -5,17 +5,19 @@ import { getConfig } from "./api.stack";
 
 export function ProcessDocumentStack() {
   const processDocumentQueue = new sst.aws.Queue('ProcessDocumentQueue', {
-    fifo: false,
-    visibilityTimeout: '5 minutes',
+    fifo: true,
+    visibilityTimeout: '40 seconds',
   });
 
   processDocumentQueue.subscribe(
     {
-      ...getConfig('main.handler', 'dist/apps/process-document-job'),
+      ...getConfig('index.handler', 'dist/apps/process-document-job'),
+      timeout: '40 seconds',
     },
     {
       batch: {
         size: 1,
+        partialResponses: true,
       },
     },
   );

@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
-import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
+import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
 import { PinoLogger } from 'nestjs-pino';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
 import { NfseDto } from './dto/nfse.dto';
 import { BaseWorkflow } from '../_base.workflow';
 import { TogetherClient } from '../clients/together-client';
-import { ConfigService } from '@nestjs/config';
 
 type ModelConfig = {
   model: string;
@@ -41,7 +40,6 @@ export class NfeTextWorkflow extends BaseWorkflow {
     private readonly pdfExtractor: PdfPort,
     private readonly togetherClient: TogetherClient,
     private readonly logger: PinoLogger,
-    private readonly configService: ConfigService,
   ) {
     super();
   }
@@ -64,10 +62,10 @@ export class NfeTextWorkflow extends BaseWorkflow {
       }
 
       if (text.length > 0) {
-        return this.processWithText(text, template, warnings);
+        return await this.processWithText(text, template, warnings);
       }
 
-      return this.processWithImage(fileBuffer, template, warnings);
+      return await this.processWithImage(fileBuffer, template, warnings);
     } catch (error) {
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',

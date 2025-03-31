@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SQSClient as AwsSqsClient, SendMessageCommand } from '@aws-sdk/client-sqs';
-
+import { FifoOptions } from '../ports/queue.port';
+import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 @Injectable()
 export class SQSClient {
   private readonly sqsClient: AwsSqsClient;
@@ -24,10 +25,12 @@ export class SQSClient {
     });
   }
 
-  async sendMessage(queueUrl: string, messageBody: string): Promise<void> {
+  async sendMessage(queueUrl: string, messageBody: string, options?: FifoOptions): Promise<void> {
     const command = new SendMessageCommand({
       QueueUrl: queueUrl,
       MessageBody: messageBody,
+      MessageGroupId: options?.fifo ? options.groupId : undefined,
+      MessageDeduplicationId: new UuidAdapter().generate(),
     });
 
     await this.sqsClient.send(command);

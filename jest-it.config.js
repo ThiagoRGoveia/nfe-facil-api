@@ -20,7 +20,7 @@ module.exports = {
   moduleDirectories: ['node_modules', __dirname],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/api/src/$1',
-    '^@doc/(.*)$': '<rootDir>/template-process/src/$1',
+    '^@doc/(.*)$': '<rootDir>/process-document-job/src/$1',
   },
   maxWorkers: 3,
   globalSetup: '<rootDir>/_scripts/jestGlobalSetup.ts',

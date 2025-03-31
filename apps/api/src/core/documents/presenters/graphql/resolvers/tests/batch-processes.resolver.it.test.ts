@@ -23,7 +23,7 @@ import { DocumentProcessorPort } from '@/core/documents/application/ports/docume
 import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { Readable } from 'stream';
 

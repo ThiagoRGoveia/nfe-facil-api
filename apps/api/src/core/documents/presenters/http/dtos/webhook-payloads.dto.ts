@@ -1,4 +1,4 @@
-import { NfseDto } from '@doc/workflows/nfe/dto/nfse.dto';
+import { NfseDto } from '@doc/core/workflows/nfe/dto/nfse.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**

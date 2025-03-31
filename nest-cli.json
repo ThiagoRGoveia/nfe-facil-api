@@ -45,15 +45,6 @@
       "compilerOptions": {
         "tsConfigPath": "apps/public-api/tsconfig.app.json"
       }
-    },
-    "template-process": {
-      "type": "application",
-      "root": "apps/template-process",
-      "entryFile": "main",
-      "sourceRoot": "apps/template-process/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/template-process/tsconfig.app.json"
-      }
     }
   }
 }

@@ -5,10 +5,10 @@ import path from 'path';
 
 import { NfeTextWorkflow } from '../nfse-text.workflow';
 import { BaseE2eTestModule } from '../../../testing/base-e2e-test.module';
-import { PdfPort } from '@doc/infra/pdf/ports/pdf.port';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@/core/templates/domain/entities/template.entity';
-import { PdfAdapter } from '@doc/infra/pdf/adapters/pdf.adapter';
+import { PdfAdapter } from 'apps/process-document-job/src/infra/pdf/adapters/pdf.adapter';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 
 const file = fs.readFileSync(path.join(__dirname, 'test-nfe.pdf'));

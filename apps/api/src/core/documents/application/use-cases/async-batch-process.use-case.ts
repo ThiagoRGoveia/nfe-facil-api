@@ -47,18 +47,25 @@ export class AsyncBatchProcessUseCase {
 
     do {
       files = await this.fileProcessRepository.findByBatchPaginated(batchId, limit, offset);
-      await this.processFiles(files);
+      await this.processFiles(files, batchId);
       offset += limit;
     } while (files.length === limit);
   }
 
-  private async processFiles(files: FileRecord[]) {
+  private async processFiles(files: FileRecord[], batchId: string) {
     await Promise.all(
       files.map(async (doc) => {
         try {
-          await this.queuePort.sendMessage(this.queueName, {
-            fileId: doc.id,
-          });
+          await this.queuePort.sendMessage(
+            this.queueName,
+            {
+              fileId: doc.id,
+            },
+            {
+              fifo: true,
+              groupId: batchId,
+            },
+          );
         } catch (error) {
           this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
           throw new ServiceUnavailableException('Failed to process file');

@@ -1,7 +1,7 @@
+import { NfseDto } from '@doc/core/workflows/nfe/dto/nfse.dto';
 import { ApiProperty, ApiExtraModels } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsString, IsObject, IsDateString, ValidateNested, IsEnum } from 'class-validator';
-import { NfseDto } from 'apps/template-process/src/workflows/nfe/dto/nfse.dto';
 
 export enum WebhookEvent {
   DOCUMENT_PROCESSED = 'DOCUMENT_PROCESSED',

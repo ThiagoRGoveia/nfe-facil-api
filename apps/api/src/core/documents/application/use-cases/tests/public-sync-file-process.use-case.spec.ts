@@ -7,7 +7,7 @@ import { PublicSyncFileProcessUseCase } from '../public-sync-file-process.use-ca
 import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { ConfigService } from '@nestjs/config';
 import { DocumentProcessorPort } from '../../ports/document-processor.port';
 import { PublicFileProcessDbPort } from '../../ports/public-file-process-db.port';

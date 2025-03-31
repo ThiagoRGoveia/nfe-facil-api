@@ -11,7 +11,7 @@ export function OutputConsolidationStack() {
 
   outputConsolidationQueue.subscribe(
     {
-      ...getConfig('main.handler', 'dist/apps/output-consolidation-job'),
+      ...getConfig('index.handler', 'dist/apps/output-consolidation-job'),
     },
     {
       batch: {

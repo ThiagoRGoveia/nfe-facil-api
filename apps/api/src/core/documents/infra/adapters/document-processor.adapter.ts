@@ -1,9 +1,9 @@
-import { DocumentProcessResult } from '@doc/core/domain/value-objects/document-process-result';
+import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { DocumentProcessorPort } from '../../application/ports/document-processor.port';
 import { InternalServerErrorException, Injectable } from '@nestjs/common';
-import { NfeTextWorkflow } from '@doc/workflows/nfe/nfse-text.workflow';
-import { BaseWorkflow } from '@doc/workflows/_base.workflow';
+import { BaseWorkflow } from '@doc/core/workflows/_base.workflow';
+import { NfeTextWorkflow } from '@doc/core/workflows/nfe/nfse-text.workflow';
 
 @Injectable()
 export class DocumentProcessorAdapter implements DocumentProcessorPort {

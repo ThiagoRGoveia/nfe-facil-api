@@ -14,15 +14,15 @@ import { FileStoragePort } from './aws/s3/ports/file-storage.port';
 import { QueuePort } from './aws/sqs/ports/queue.port';
 import { SQSClient } from './aws/sqs/clients/sqs.client';
 import { AuthModule } from './auth/auth.module';
-import { DocumentProcessModule } from '@doc/document-process.module';
+import { DocumentProcessModule } from 'apps/process-document-job/src/core/document-process.module';
 import { HttpModule } from '@nestjs/axios';
-import { OllamaClient } from '@doc/workflows/clients/ollama-client';
 import { DateAdapter } from './adapters/date.adapter';
 import { DatePort } from './adapters/date.adapter';
-import { TogetherClient } from '@doc/workflows/clients/together-client';
 import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { EntityManager } from '@mikro-orm/core';
 import { SQSAdapter } from './aws/sqs/adapters/sqs.adapter';
+import { OllamaClient } from '@doc/core/workflows/clients/ollama-client';
+import { TogetherClient } from '@doc/core/workflows/clients/together-client';
 
 @Global()
 @Module({

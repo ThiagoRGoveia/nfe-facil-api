@@ -28,7 +28,7 @@
         "apps/api/src/*"
       ],
       "@doc/*": [
-        "apps/template-process/src/*"
+        "apps/process-document-job/src/*"
       ]
     }
   },
