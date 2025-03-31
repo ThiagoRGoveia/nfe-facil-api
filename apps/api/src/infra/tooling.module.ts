@@ -22,6 +22,7 @@ import { DatePort } from './adapters/date.adapter';
 import { TogetherClient } from '@doc/workflows/clients/together-client';
 import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { EntityManager } from '@mikro-orm/core';
+import { SQSAdapter } from './aws/sqs/adapters/sqs.adapter';
 
 @Global()
 @Module({
@@ -51,7 +52,7 @@ import { EntityManager } from '@mikro-orm/core';
     },
     {
       provide: QueuePort,
-      useClass: SQSClient,
+      useClass: SQSAdapter,
     },
     {
       provide: DatePort,
@@ -59,6 +60,7 @@ import { EntityManager } from '@mikro-orm/core';
     },
     OllamaClient,
     TogetherClient,
+    SQSClient,
     {
       provide: SqlEntityManager,
       useFactory: (em: EntityManager) => em,

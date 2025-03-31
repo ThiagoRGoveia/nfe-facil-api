@@ -9,6 +9,10 @@ declare module "sst" {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
+    "NFeFacilApp": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
     "NFeFacilDocs": {
       "type": "sst.aws.StaticSite"
       "url": string

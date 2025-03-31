@@ -19,8 +19,6 @@ import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases
 
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 @Resolver(() => BatchProcess)
 export class BatchProcessesResolver {
   constructor(
@@ -42,7 +40,6 @@ export class BatchProcessesResolver {
     @Args('pagination', { nullable: true }) pagination?: Pagination,
     @Args('sort', { nullable: true }) sort?: Sort,
   ): Promise<PaginatedResponse<BatchProcess>> {
-    await delay(2000);
     if (context.req.user.role === UserRole.ADMIN) {
       return this.batchDbPort.findAll(filters?.filters, pagination, sort);
     } else {
@@ -56,7 +53,6 @@ export class BatchProcessesResolver {
     @Args('input') input: CreateBatchInput,
   ): Promise<BatchProcess> {
     const fileBuffers: Array<{ buffer: Buffer; fileName: string }> = [];
-
     if (input.files) {
       for (const filePromise of input.files) {
         const file = await filePromise;

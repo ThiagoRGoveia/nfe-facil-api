@@ -8,6 +8,7 @@ import { plainToInstance } from 'class-transformer';
 import { NfseDto } from './dto/nfse.dto';
 import { BaseWorkflow } from '../_base.workflow';
 import { TogetherClient } from '../clients/together-client';
+import { ConfigService } from '@nestjs/config';
 
 type ModelConfig = {
   model: string;
@@ -40,6 +41,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
     private readonly pdfExtractor: PdfPort,
     private readonly togetherClient: TogetherClient,
     private readonly logger: PinoLogger,
+    private readonly configService: ConfigService,
   ) {
     super();
   }

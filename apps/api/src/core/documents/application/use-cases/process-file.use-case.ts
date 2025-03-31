@@ -63,6 +63,7 @@ export class ProcessFileUseCase {
       await this.webhookNotifierPort.notifyFailure(file);
       file.markNotified();
     }
+    await this.fileProcessDbPort.save();
     if (batchProcess) {
       const updatedBatchProcess = await this.batchDbPort.incrementProcessedFilesCount(batchProcess.id);
       if (updatedBatchProcess.totalFiles === updatedBatchProcess.processedFiles) {
@@ -73,8 +74,7 @@ export class ProcessFileUseCase {
         await this.webhookNotifierPort.notifyBatchCompleted(updatedBatchProcess);
       }
     }
-
-    await this.fileProcessDbPort.save();
+    await this.batchDbPort.save();
     return file;
   }
 }

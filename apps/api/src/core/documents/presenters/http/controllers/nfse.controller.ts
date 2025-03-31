@@ -32,6 +32,7 @@ import { FileUploadDto, OptionalFileUploadDto } from '../dtos/file-upload.dto';
 import { SingleFileUploadDto } from '../dtos/single-file-upload.dto';
 import { plainToInstance } from 'class-transformer';
 import { NfseResponseDto } from '../dtos/nfse-response.dto';
+import { BatchProcessResponseDto } from '../dtos/batch-process-response.dto';
 
 /**
  * Controlador para processamento de Notas Fiscais de Serviço Eletrônicas (NFSe).
@@ -113,7 +114,7 @@ export class NFSeController {
     try {
       const result = await this.syncBatchProcessUseCase.execute(req.user, {
         templateId: this.templateId,
-        consolidateOutput: false,
+        consolidateOutput: true,
         files: [
           {
             data: file.buffer,
@@ -149,7 +150,8 @@ export class NFSeController {
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Lote de NFSe criado com sucesso. Retorna o ID do lote para referência em operações subsequentes.',
+    description: 'Lote de NFSe criado com sucesso. Retorna os detalhes do lote criado.',
+    type: BatchProcessResponseDto,
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: OptionalFileUploadDto })
@@ -181,13 +183,14 @@ export class NFSeController {
   @Get('lote/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Obter informações de um lote de NFSe',
+    summary: 'Obter informações de um lote extração de NFSe',
     description:
       'Recupera informações detalhadas sobre um lote específico de NFSe, incluindo seu status atual, quantidade de arquivos e resultados de processamento (se concluído).',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Informações do lote recuperadas com sucesso.',
+    type: BatchProcessResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -198,14 +201,13 @@ export class NFSeController {
   }
 
   @Put('lote/:id/arquivos')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Adicionar arquivos a um lote existente',
     description:
       'Permite adicionar novos arquivos a um lote de processamento já existente. Útil para agregar mais NFSe a um lote antes de iniciar seu processamento assíncrono. Os arquivos são validados antes de serem adicionados ao lote.',
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.ACCEPTED,
     description: 'Arquivos adicionados ao lote com sucesso.',
   })
   @ApiResponse({
@@ -219,6 +221,7 @@ export class NFSeController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @UseInterceptors(FilesInterceptor('files'))
+  @HttpCode(HttpStatus.ACCEPTED)
   async addFileToBatch(
     @Req() req: Request,
     @Param('id') batchId: string,
@@ -232,7 +235,7 @@ export class NFSeController {
     if (!files) {
       throw new BadRequestException('Arquivo é obrigatório');
     }
-    return await this.addFileToBatchUseCase.execute({
+    await this.addFileToBatchUseCase.execute({
       batchId,
       files: files.map((f) => ({
         file: f.buffer,

@@ -11,11 +11,7 @@ import {
   refs,
   ApiBasicAuth,
 } from '@nestjs/swagger';
-import {
-  BasicAuthConfigInput,
-  CreateWebhookDto,
-  OAuth2ConfigInput,
-} from '@/core/webhooks/application/dtos/create-webhook.dto';
+import { CreateWebhookDto } from '@/core/webhooks/application/dtos/create-webhook.dto';
 import { UpdateWebhookDto } from '@/core/webhooks/application/dtos/update-webhook.dto';
 import { CreateWebhookUseCase } from '@/core/webhooks/application/use-cases/create-webhook.use-case';
 import { UpdateWebhookUseCase } from '@/core/webhooks/application/use-cases/update-webhook.use-case';
@@ -31,11 +27,15 @@ import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { SortDirection } from '@/infra/dtos/sort.dto';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
 import { NotifyWebhookDto } from '@/core/webhooks/application/dtos/notify-webhook.dto';
+// Import Portuguese DTOs for documentation
+import { BasicAuthConfigInputPt, CreateWebhookPtDto, OAuth2ConfigInputPt } from '../dtos/create-webhook-pt.dto';
+import { UpdateWebhookPtDto } from '../dtos/update-webhook-pt.dto';
+import { WebhookResponsePtDto } from '../dtos/webhook-response-pt.dto';
 import {
-  DocumentProcessedPayloadDto,
-  DocumentFailedPayloadDto,
-  BatchFinishedPayloadDto,
-} from '@/core/documents/application/dtos/webhook-events.dto';
+  DocumentProcessedPayloadPtDto,
+  DocumentFailedPayloadPtDto,
+  BatchFinishedPayloadPtDto,
+} from '../dtos/webhook-events-pt.dto';
 
 const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
 
@@ -71,9 +71,9 @@ export class NFSeWebhooksController {
       `• **${WebhookEvent.BATCH_FINISHED}**: Enviado quando um lote completo de NFSe é finalizado. ` +
       'O payload contém o ID do lote processado.',
   })
-  @ApiBody({ type: CreateWebhookDto, description: 'Dados para criação do webhook' })
-  @ApiExtraModels(BasicAuthConfigInput, OAuth2ConfigInput)
-  @ApiCreatedResponse({ type: Webhook, description: 'Webhook criado com sucesso' })
+  @ApiBody({ type: CreateWebhookPtDto, description: 'Dados para criação do webhook' })
+  @ApiExtraModels(BasicAuthConfigInputPt, OAuth2ConfigInputPt)
+  @ApiCreatedResponse({ type: WebhookResponsePtDto, description: 'Webhook criado com sucesso' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Dados de entrada inválidos' })
   @HttpCode(HttpStatus.CREATED)
   async create(@Req() req: Request, @Body() createWebhookDto: CreateWebhookDto): Promise<Webhook> {
@@ -88,7 +88,7 @@ export class NFSeWebhooksController {
     summary: 'Obter webhook por ID',
     description: 'Recupera informações detalhadas de um webhook específico configurado para NFSe pelo seu ID.',
   })
-  @ApiOkResponse({ type: Webhook, description: 'Webhook encontrado' })
+  @ApiOkResponse({ type: WebhookResponsePtDto, description: 'Webhook encontrado' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Webhook não encontrado' })
   async findOne(@Param('id') id: string): Promise<Webhook> {
     return this.webhookDbPort.findByIdOrFail(id);
@@ -116,8 +116,8 @@ export class NFSeWebhooksController {
     summary: 'Atualizar webhook',
     description: 'Atualiza as configurações de um webhook existente para o processamento de NFSe.',
   })
-  @ApiBody({ type: UpdateWebhookDto, description: 'Dados de atualização do webhook' })
-  @ApiOkResponse({ type: Webhook, description: 'Webhook atualizado com sucesso' })
+  @ApiBody({ type: UpdateWebhookPtDto, description: 'Dados de atualização do webhook' })
+  @ApiOkResponse({ type: WebhookResponsePtDto, description: 'Webhook atualizado com sucesso' })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Webhook não encontrado' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Permissões insuficientes' })
   async update(
@@ -184,7 +184,7 @@ export class NFSeWebhooksController {
   })
   @ApiBody({
     schema: {
-      anyOf: refs(DocumentProcessedPayloadDto, DocumentFailedPayloadDto, BatchFinishedPayloadDto),
+      anyOf: refs(DocumentProcessedPayloadPtDto, DocumentFailedPayloadPtDto, BatchFinishedPayloadPtDto),
     },
     description: 'Payload de notificação de webhook baseado no tipo de evento',
     examples: {
@@ -230,7 +230,7 @@ export class NFSeWebhooksController {
       },
     },
   })
-  @ApiExtraModels(DocumentProcessedPayloadDto, DocumentFailedPayloadDto, BatchFinishedPayloadDto)
+  @ApiExtraModels(DocumentProcessedPayloadPtDto, DocumentFailedPayloadPtDto, BatchFinishedPayloadPtDto)
   @ApiOkResponse({ description: 'Notificações disparadas com sucesso' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Dados de entrada inválidos' })
   @HttpCode(HttpStatus.OK)

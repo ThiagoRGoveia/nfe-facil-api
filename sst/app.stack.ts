@@ -1,10 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../.sst/platform/config.d.ts" />
 
-export function DocsStack() {
+export function AppStack() {
   // Create a static site for API documentation
-  const site = new sst.aws.StaticSite('NFeFacilDocs', {
-    path: 'docs/nfe-facil',
+  const site = new sst.aws.StaticSite('NFeFacilApp', {
+    path: 'builds/fe-app/dist',
     assets: {
       // Configure caching for different file types
       fileOptions: [

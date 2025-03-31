@@ -3,7 +3,7 @@
 
 import { FunctionArgs } from "../.sst/platform/src/components/aws/function";
 
-function getConfig(handler: string, bundle: string) {
+export function getConfig(handler: string, bundle: string) {
   return {
     handler,
     bundle,

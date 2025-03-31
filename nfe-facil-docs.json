@@ -59,7 +59,14 @@
         },
         "responses": {
           "201": {
-            "description": "Lote de NFSe criado com sucesso. Retorna o ID do lote para referência em operações subsequentes."
+            "description": "Lote de NFSe criado com sucesso. Retorna os detalhes do lote criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchProcessResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -89,7 +96,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Informações do lote recuperadas com sucesso."
+            "description": "Informações do lote recuperadas com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchProcessResponseDto"
+                }
+              }
+            }
           },
           "404": {
             "description": "Lote não encontrado com o ID especificado."
@@ -100,7 +114,7 @@
             "basic": []
           }
         ],
-        "summary": "Obter informações de um lote de NFSe",
+        "summary": "Obter informações de um lote extração de NFSe",
         "tags": [
           "NFSe"
         ]
@@ -165,7 +179,7 @@
           }
         },
         "responses": {
-          "200": {
+          "202": {
             "description": "Arquivos adicionados ao lote com sucesso."
           },
           "400": {
@@ -233,7 +247,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateWebhookDto"
+                "$ref": "#/components/schemas/CreateWebhookPtDto"
               }
             }
           }
@@ -244,7 +258,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Webhook"
+                  "$ref": "#/components/schemas/WebhookResponsePtDto"
                 }
               }
             }
@@ -355,7 +369,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Webhook"
+                  "$ref": "#/components/schemas/WebhookResponsePtDto"
                 }
               }
             }
@@ -393,7 +407,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateWebhookDto"
+                "$ref": "#/components/schemas/UpdateWebhookPtDto"
               }
             }
           }
@@ -404,7 +418,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Webhook"
+                  "$ref": "#/components/schemas/WebhookResponsePtDto"
                 }
               }
             }
@@ -474,13 +488,13 @@
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/DocumentProcessedPayloadDto"
+                    "$ref": "#/components/schemas/DocumentProcessedPayloadPtDto"
                   },
                   {
-                    "$ref": "#/components/schemas/DocumentFailedPayloadDto"
+                    "$ref": "#/components/schemas/DocumentFailedPayloadPtDto"
                   },
                   {
-                    "$ref": "#/components/schemas/BatchFinishedPayloadDto"
+                    "$ref": "#/components/schemas/BatchFinishedPayloadPtDto"
                   }
                 ]
               },
@@ -493,7 +507,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "status": "PROCESSED",
                       "fileName": "nfse_12345.pdf",
-                      "processedAt": "2025-03-26T14:59:24.869Z",
+                      "processedAt": "2025-03-28T18:55:43.963Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001",
                       "result": {
                         "chave_acesso_nfse": "12345678901234567890123456789012345678901234567890",
@@ -510,7 +524,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "error": "Não foi possível extrair os dados do documento: formato inválido",
                       "fileName": "nfse_12345.pdf",
-                      "failedAt": "2025-03-26T14:59:24.869Z",
+                      "failedAt": "2025-03-28T18:55:43.963Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001"
                     }
                   }
@@ -554,9 +568,9 @@
     "version": "1.0.0",
     "contact": {},
     "x-logo": {
-      "url": "https://tera-dev.com/logo-s.svg",
+      "url": "https://logo.png",
       "altText": "NFe-Fácil logo",
-      "href": "https://nfe-facil.com"
+      "href": ""
     }
   },
   "tags": [
@@ -571,7 +585,7 @@
   ],
   "servers": [
     {
-      "url": "http://127.0.0.1:4000"
+      "url": "https://api.nfe-facil.com"
     }
   ],
   "components": {
@@ -753,6 +767,89 @@
           }
         }
       },
+      "BatchProcessResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único do lote de processamento",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status atual do lote de processamento",
+            "example": "PROCESSING",
+            "enum": [
+              "CREATED",
+              "PROCESSING",
+              "COMPLETED",
+              "CANCELLED",
+              "FAILED"
+            ]
+          },
+          "template": {
+            "type": "string",
+            "description": "Identificador único do template utilizado para processamento",
+            "example": "d7e8f9a0-b1c2-3456-d7e8-f9a0b1c23456"
+          },
+          "user": {
+            "type": "string",
+            "description": "Identificador único do usuário que criou o lote",
+            "example": "12345678-90ab-cdef-1234-567890abcdef"
+          },
+          "totalFiles": {
+            "type": "number",
+            "description": "Número total de arquivos no lote",
+            "example": 10
+          },
+          "processedFiles": {
+            "type": "number",
+            "description": "Número de arquivos já processados",
+            "example": 5
+          },
+          "requestedFormats": {
+            "description": "Formatos de saída solicitados",
+            "example": [
+              "JSON",
+              "CSV"
+            ],
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "jsonResults": {
+            "type": "string",
+            "description": "Resultados em formato JSON (disponível após processamento)",
+            "example": "{\"results\": [...]}",
+            "nullable": true
+          },
+          "csvResults": {
+            "type": "string",
+            "description": "Resultados em formato CSV (disponível após processamento)",
+            "example": "id,nome,valor\n1,item1,100.00\n2,item2,200.00",
+            "nullable": true
+          },
+          "excelResults": {
+            "type": "string",
+            "description": "Resultados em formato Excel (disponível após processamento)",
+            "example": "base64-encoded-excel-content",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "template",
+          "user",
+          "totalFiles",
+          "processedFiles",
+          "requestedFormats",
+          "jsonResults",
+          "csvResults",
+          "excelResults"
+        ]
+      },
       "FileUploadDto": {
         "type": "object",
         "properties": {
@@ -769,18 +866,18 @@
           "files"
         ]
       },
-      "BasicAuthConfigInput": {
+      "BasicAuthConfigInputPt": {
         "type": "object",
         "properties": {
           "username": {
             "type": "string",
-            "description": "Username for basic authentication",
-            "example": "username"
+            "description": "Nome de usuário para autenticação básica",
+            "example": "usuario"
           },
           "password": {
             "type": "string",
-            "description": "Password for basic authentication",
-            "example": "password"
+            "description": "Senha para autenticação básica",
+            "example": "senha"
           }
         },
         "required": [
@@ -788,23 +885,23 @@
           "password"
         ]
       },
-      "OAuth2ConfigInput": {
+      "OAuth2ConfigInputPt": {
         "type": "object",
         "properties": {
           "clientId": {
             "type": "string",
-            "description": "Client ID for OAuth2 authentication",
+            "description": "ID do cliente para autenticação OAuth2",
             "example": "client-id"
           },
           "clientSecret": {
             "type": "string",
-            "description": "Client secret for OAuth2 authentication",
+            "description": "Segredo do cliente para autenticação OAuth2",
             "example": "client-secret"
           },
           "tokenUrl": {
             "type": "string",
-            "description": "Token URL for OAuth2 authentication",
-            "example": "https://auth.example.com/token"
+            "description": "URL de token para autenticação OAuth2",
+            "example": "https://auth.exemplo.com.br/token"
           }
         },
         "required": [
@@ -813,22 +910,22 @@
           "tokenUrl"
         ]
       },
-      "CreateWebhookDto": {
+      "CreateWebhookPtDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Webhook name",
-            "example": "Invoice Processing Webhook"
+            "description": "Nome do webhook",
+            "example": "Webhook de Processamento de Notas Fiscais"
           },
           "url": {
             "type": "string",
-            "description": "Target URL for webhook notifications",
-            "example": "https://api.example.com/webhooks"
+            "description": "URL de destino para as notificações do webhook",
+            "example": "https://api.exemplo.com.br/webhooks"
           },
           "events": {
             "type": "array",
-            "description": "List of events to subscribe to",
+            "description": "Lista de eventos para se inscrever",
             "example": [
               "document.processed",
               "invoice.paid"
@@ -844,7 +941,7 @@
           },
           "authType": {
             "type": "string",
-            "description": "Authentication type for the webhook",
+            "description": "Tipo de autenticação para o webhook",
             "enum": [
               "NONE",
               "BASIC",
@@ -852,32 +949,32 @@
             ]
           },
           "authConfig": {
-            "description": "Authentication configuration (if required)",
+            "description": "Configuração de autenticação (se necessário)",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/BasicAuthConfigInput"
+                "$ref": "#/components/schemas/BasicAuthConfigInputPt"
               },
               {
-                "$ref": "#/components/schemas/OAuth2ConfigInput"
+                "$ref": "#/components/schemas/OAuth2ConfigInputPt"
               }
             ]
           },
           "headers": {
             "type": "object",
-            "description": "Custom headers for the webhook request",
+            "description": "Cabeçalhos personalizados para a requisição do webhook",
             "example": {
-              "X-Custom-Header": "value"
+              "X-Cabecalho-Personalizado": "valor"
             }
           },
           "maxRetries": {
             "type": "number",
-            "description": "Maximum number of retries for the webhook",
+            "description": "Número máximo de tentativas para o webhook",
             "example": 3,
             "default": 5
           },
           "timeout": {
             "type": "number",
-            "description": "Timeout for the webhook request",
+            "description": "Tempo limite para a requisição do webhook (em milissegundos)",
             "example": 5000,
             "default": 5000
           }
@@ -887,6 +984,111 @@
           "url",
           "events",
           "authType"
+        ]
+      },
+      "WebhookResponsePtDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único do webhook",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do webhook",
+            "example": "Webhook de Processamento de Notas Fiscais"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL de destino para as notificações do webhook",
+            "example": "https://api.exemplo.com.br/webhooks"
+          },
+          "events": {
+            "type": "array",
+            "description": "Lista de eventos inscritos",
+            "example": [
+              "document.processed",
+              "invoice.paid"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "DOCUMENT_PROCESSED",
+                "DOCUMENT_FAILED",
+                "BATCH_FINISHED"
+              ]
+            }
+          },
+          "authType": {
+            "type": "string",
+            "description": "Tipo de autenticação para o webhook",
+            "enum": [
+              "NONE",
+              "BASIC",
+              "OAUTH2"
+            ]
+          },
+          "authConfig": {
+            "type": "object",
+            "description": "Configuração de autenticação (valores sensíveis mascarados)",
+            "example": {
+              "username": "******",
+              "password": "******"
+            }
+          },
+          "headers": {
+            "type": "object",
+            "description": "Cabeçalhos personalizados para a requisição do webhook",
+            "example": {
+              "X-Cabecalho-Personalizado": "valor"
+            }
+          },
+          "maxRetries": {
+            "type": "number",
+            "description": "Número máximo de tentativas para o webhook",
+            "example": 3
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Tempo limite para a requisição do webhook (em milissegundos)",
+            "example": 5000
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Indica se o webhook está ativo",
+            "example": true
+          },
+          "userId": {
+            "type": "string",
+            "description": "Identificador do usuário que criou o webhook",
+            "example": "12345678-90ab-cdef-1234-567890abcdef"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de criação do webhook",
+            "example": "2023-09-15T14:30:15.123Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data da última atualização do webhook",
+            "example": "2023-09-15T14:30:15.123Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "events",
+          "authType",
+          "maxRetries",
+          "timeout",
+          "active",
+          "userId",
+          "createdAt",
+          "updatedAt"
         ]
       },
       "Webhook": {
@@ -947,22 +1149,22 @@
           "totalPages"
         ]
       },
-      "UpdateWebhookDto": {
+      "UpdateWebhookPtDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Webhook name",
-            "example": "Invoice Processing Webhook"
+            "description": "Nome do webhook",
+            "example": "Webhook de Processamento de Notas Fiscais"
           },
           "url": {
             "type": "string",
-            "description": "Target URL for webhook notifications",
-            "example": "https://api.example.com/webhooks"
+            "description": "URL de destino para as notificações do webhook",
+            "example": "https://api.exemplo.com.br/webhooks"
           },
           "events": {
             "type": "array",
-            "description": "List of events to subscribe to",
+            "description": "Lista de eventos para se inscrever",
             "example": [
               "document.processed",
               "invoice.paid"
@@ -978,7 +1180,7 @@
           },
           "authType": {
             "type": "string",
-            "description": "Authentication type for the webhook",
+            "description": "Tipo de autenticação para o webhook",
             "enum": [
               "NONE",
               "BASIC",
@@ -987,179 +1189,36 @@
           },
           "authConfig": {
             "type": "object",
-            "description": "Authentication configuration (if required)",
+            "description": "Configuração de autenticação (se necessário)",
             "example": {
-              "apiKey": "secret-key"
+              "apiKey": "chave-secreta"
             }
           },
           "headers": {
             "type": "object",
-            "description": "Custom headers for the webhook request",
+            "description": "Cabeçalhos personalizados para a requisição do webhook",
             "example": {
-              "X-Custom-Header": "value"
+              "X-Cabecalho-Personalizado": "valor"
             }
           },
           "active": {
             "type": "boolean",
-            "description": "Whether the webhook is active",
+            "description": "Indica se o webhook está ativo",
             "example": true
           }
         }
       },
-      "NfseDto": {
-        "type": "object",
-        "properties": {
-          "data_emissao": {
-            "type": "object",
-            "description": "Data e hora de emissão da NFSe",
-            "example": "2023-07-15T14:30:00",
-            "nullable": true
-          },
-          "prestador_cnpj_cpf": {
-            "type": "object",
-            "description": "CNPJ/CPF/NIF do prestador emitente da NFSe (prestador de serviço). CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)",
-            "example": "12345678901234",
-            "nullable": true
-          },
-          "prestador_inscricao_municipal": {
-            "type": "object",
-            "description": "Inscrição Municipal do prestador emitente da NFSe",
-            "example": "123456789",
-            "nullable": true
-          },
-          "prestador_telefone": {
-            "type": "object",
-            "description": "Telefone do prestador emitente da NFSe",
-            "example": "11912345678",
-            "nullable": true
-          },
-          "prestador_nome_empresarial": {
-            "type": "object",
-            "description": "Nome/Nome empresarial do prestador emitente da NFSe",
-            "example": "Empresa XYZ Ltda",
-            "nullable": true
-          },
-          "prestador_email": {
-            "type": "object",
-            "description": "Email do prestador emitente da NFSe",
-            "example": "contato@empresa.com.br",
-            "nullable": true
-          },
-          "prestador_endereco": {
-            "type": "object",
-            "description": "Endereço completo do prestador emitente da NFSe",
-            "example": "Rua Exemplo, 123, Sala 45",
-            "nullable": true
-          },
-          "prestador_municipio": {
-            "type": "object",
-            "description": "Município do prestador emitente da NFSe",
-            "example": "São Paulo",
-            "nullable": true
-          },
-          "prestador_cep": {
-            "type": "object",
-            "description": "CEP do prestador emitente da NFSe no formato XXXXX-XXX",
-            "example": "01234-567",
-            "nullable": true
-          },
-          "tomador_cnpj_cpf": {
-            "type": "object",
-            "description": "CNPJ/CPF/NIF do tomador do serviço. CNPJ: 14 dígitos (XX.XXX.XXX/XXXX-XX), CPF: 11 dígitos (XXX.XXX.XXX-XX)",
-            "example": "98765432109876",
-            "nullable": true
-          },
-          "tomador_inscricao_municipal": {
-            "type": "object",
-            "description": "Inscrição Municipal do tomador do serviço",
-            "example": "987654321",
-            "nullable": true
-          },
-          "tomador_telefone": {
-            "type": "object",
-            "description": "Telefone do tomador do serviço",
-            "example": "11987654321",
-            "nullable": true
-          },
-          "tomador_nome_empresarial": {
-            "type": "object",
-            "description": "Nome/Nome empresarial do tomador do serviço",
-            "example": "Cliente ABC S/A",
-            "nullable": true
-          },
-          "tomador_email": {
-            "type": "object",
-            "description": "Email do tomador do serviço",
-            "example": "financeiro@cliente.com.br",
-            "nullable": true
-          },
-          "tomador_endereco": {
-            "type": "object",
-            "description": "Endereço completo do tomador do serviço",
-            "example": "Avenida Cliente, 456, Andar 10",
-            "nullable": true
-          },
-          "tomador_municipio": {
-            "type": "object",
-            "description": "Município do tomador do serviço",
-            "example": "Rio de Janeiro",
-            "nullable": true
-          },
-          "tomador_cep": {
-            "type": "object",
-            "description": "CEP do tomador do serviço no formato XXXXX-XXX",
-            "example": "20000-000",
-            "nullable": true
-          },
-          "servico_prestado_codigo": {
-            "type": "object",
-            "description": "Código do serviço prestado conforme Lista de Serviços da LC 116/2003",
-            "example": "01.01",
-            "nullable": true
-          },
-          "servico_prestado_descricao_servico": {
-            "type": "object",
-            "description": "Descrição do serviço prestado",
-            "example": "Desenvolvimento de software sob encomenda",
-            "nullable": true
-          },
-          "valor_total_nfse_valor_liquido_nfse": {
-            "type": "object",
-            "description": "Valor total líquido da NFSe",
-            "example": "950.00",
-            "nullable": true
-          },
-          "totais_aproximados_tributos_federais": {
-            "type": "object",
-            "description": "Valor aproximado dos tributos federais incidentes sobre o serviço",
-            "example": "142.50",
-            "nullable": true
-          },
-          "totais_aproximados_tributos_estaduais": {
-            "type": "object",
-            "description": "Valor aproximado dos tributos estaduais incidentes sobre o serviço",
-            "example": "47.50",
-            "nullable": true
-          },
-          "totais_aproximados_tributos_municipais": {
-            "type": "object",
-            "description": "Valor aproximado dos tributos municipais incidentes sobre o serviço (ex: ISS)",
-            "example": "95.00",
-            "nullable": true
-          }
-        }
-      },
-      "DocumentProcessedPayloadDto": {
+      "DocumentProcessedPayloadPtDto": {
         "type": "object",
         "properties": {
           "documentId": {
             "type": "string",
-            "description": "ID único do documento processado",
+            "description": "Identificador único do documento processado",
             "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "status": {
             "type": "string",
-            "description": "Status do processamento",
+            "description": "Status do processamento do documento",
             "example": "PROCESSED"
           },
           "fileName": {
@@ -1174,16 +1233,16 @@
           },
           "batchId": {
             "type": "string",
-            "description": "ID do lote ao qual o documento pertence",
+            "description": "Identificador do lote ao qual o documento pertence",
             "example": "123e4567-e89b-12d3-a456-426614174001"
           },
           "result": {
-            "description": "Resultado da extração dos dados da NFSe",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/NfseDto"
-              }
-            ]
+            "type": "object",
+            "description": "Resultado do processamento com os dados extraídos",
+            "example": {
+              "chave_acesso_nfse": "12345678901234567890",
+              "numero_nfse": "123456"
+            }
           }
         },
         "required": [
@@ -1195,22 +1254,22 @@
           "result"
         ]
       },
-      "DocumentFailedPayloadDto": {
+      "DocumentFailedPayloadPtDto": {
         "type": "object",
         "properties": {
           "documentId": {
             "type": "string",
-            "description": "ID único do documento com falha",
+            "description": "Identificador único do documento que falhou no processamento",
             "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "error": {
             "type": "string",
-            "description": "Mensagem de erro detalhada",
+            "description": "Mensagem de erro que ocorreu durante o processamento",
             "example": "Não foi possível extrair os dados do documento: formato inválido"
           },
           "fileName": {
             "type": "string",
-            "description": "Nome do arquivo com falha",
+            "description": "Nome do arquivo que falhou",
             "example": "nfse_12345.pdf"
           },
           "failedAt": {
@@ -1220,7 +1279,7 @@
           },
           "batchId": {
             "type": "string",
-            "description": "ID do lote ao qual o documento pertence",
+            "description": "Identificador do lote ao qual o documento pertence",
             "example": "123e4567-e89b-12d3-a456-426614174001"
           }
         },
@@ -1232,12 +1291,12 @@
           "batchId"
         ]
       },
-      "BatchFinishedPayloadDto": {
+      "BatchFinishedPayloadPtDto": {
         "type": "object",
         "properties": {
           "batchId": {
             "type": "string",
-            "description": "ID único do lote finalizado",
+            "description": "Identificador único do lote finalizado",
             "example": "123e4567-e89b-12d3-a456-426614174001"
           }
         },

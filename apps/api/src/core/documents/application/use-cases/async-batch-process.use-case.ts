@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
@@ -61,6 +61,7 @@ export class AsyncBatchProcessUseCase {
           });
         } catch (error) {
           this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
+          throw new ServiceUnavailableException('Failed to process file');
         }
       }),
     );

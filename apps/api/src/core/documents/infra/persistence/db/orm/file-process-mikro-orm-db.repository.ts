@@ -49,7 +49,7 @@ export class FileProcessMikroOrmDbRepository extends EntityRepository(FileRecord
       const results = await this.em.getConnection().execute(
         `
         SELECT result 
-        FROM document_processes 
+        FROM file_records 
         WHERE batch_process_id = ? 
         AND status = ? 
         AND result IS NOT NULL
