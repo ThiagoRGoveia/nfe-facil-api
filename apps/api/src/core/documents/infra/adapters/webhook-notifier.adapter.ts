@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
-import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
@@ -21,7 +20,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
       const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
         user,
-        event: WebhookEvent.DOCUMENT_PROCESSED,
+        event: WebhookNotifierPort.DOCUMENT_PROCESSED_EVENT,
         payload: {
           documentId: process.id,
           status: process.status,
@@ -41,7 +40,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
       const user = await this.getUser(process);
       await this.notifyWebhookUseCase.execute({
         user,
-        event: WebhookEvent.DOCUMENT_FAILED,
+        event: WebhookNotifierPort.DOCUMENT_FAILED_EVENT,
         payload: {
           documentId: process.id,
           error: process.error,
@@ -63,7 +62,7 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
       }
       await this.notifyWebhookUseCase.execute({
         user,
-        event: WebhookEvent.BATCH_FINISHED,
+        event: WebhookNotifierPort.BATCH_FINISHED_EVENT,
         payload: {
           batchId: batch.id,
         },

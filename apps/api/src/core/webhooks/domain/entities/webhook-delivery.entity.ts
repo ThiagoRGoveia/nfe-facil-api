@@ -21,7 +21,7 @@ export class WebhookDelivery extends BaseEntity {
   id: string = new UuidAdapter().generate();
 
   @Field(() => Webhook)
-  @ManyToOne(() => Webhook, { ref: true, eager: false })
+  @ManyToOne(() => Webhook, { ref: true, eager: false, deleteRule: 'set null', nullable: true })
   webhook!: Ref<Webhook>;
 
   @Field(() => String)

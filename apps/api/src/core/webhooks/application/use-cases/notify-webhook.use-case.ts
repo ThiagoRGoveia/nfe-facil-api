@@ -11,7 +11,7 @@ import { DatePort } from '@/infra/adapters/date.adapter';
 export interface NotifyWebhookParams {
   user: User;
   event: WebhookEvent;
-  payload: unknown;
+  payload: object;
 }
 
 @Injectable()
@@ -32,7 +32,11 @@ export class NotifyWebhookUseCase {
         // Create delivery data according to RequiredEntityData type
         const delivery = this.deliveryRepository.create({
           webhook: webhook,
-          payload: params.payload,
+          payload: {
+            event: params.event,
+            timestamp: this.datePort.now().toISOString(),
+            payload: params.payload,
+          },
           status: WebhookDeliveryStatus.PENDING,
           retryCount: 0,
           lastError: null,

@@ -112,6 +112,10 @@ export class BatchFinishedPayloadDto {
 
 /**
  * DTO base para notificações de webhook
+ *
+ * Na entrega do webhook, os seguintes campos adicionais são incluídos:
+ * - event: Tipo do evento (WebhookEvent) identificando o tipo de notificação
+ * - timestamp: Data e hora ISO 8601 em que a notificação foi enviada
  */
 @ApiExtraModels(DocumentProcessedPayloadDto, DocumentFailedPayloadDto, BatchFinishedPayloadDto)
 export class WebhookNotificationDto {
@@ -122,6 +126,13 @@ export class WebhookNotificationDto {
   })
   @IsEnum(WebhookEvent)
   event: WebhookEvent;
+
+  @ApiProperty({
+    description: 'Data e hora do envio da notificação',
+    example: '2023-09-15T14:30:15.123Z',
+  })
+  @IsDateString()
+  timestamp: string;
 
   @ApiProperty({
     description: 'Dados específicos do evento',

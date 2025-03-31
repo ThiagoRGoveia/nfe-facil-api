@@ -16,5 +16,5 @@ export class NotifyWebhookDto {
     example: { data: 'example' },
   })
   @IsObject()
-  payload: unknown;
+  payload: object;
 }

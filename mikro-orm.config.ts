@@ -30,5 +30,5 @@ export default defineConfig({
     pathTs: `./apps/api/src/infra/persistence/mikro-orm/seed`,
     glob: '!(*.d).{js,ts}',
   },
-  driverOptions: process.env.NODE_ENV === 'production' ? { connection: { ssl: { rejectUnauthorized: false } } } : undefined,
+  driverOptions: { connection: { ssl: { rejectUnauthorized: false } } }
 });
