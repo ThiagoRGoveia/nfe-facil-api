@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 
 export class DocumentProcessedPayloadPtDto {
@@ -128,13 +128,4 @@ export class NotifyWebhookPtDto {
   })
   @IsObject()
   payload: DocumentProcessedPayloadPtDto | DocumentFailedPayloadPtDto | BatchFinishedPayloadPtDto;
-
-  @ApiProperty({
-    description: 'ID específico do webhook para notificar (opcional)',
-    example: '123e4567-e89b-12d3-a456-426614174002',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  webhookId?: string;
 }

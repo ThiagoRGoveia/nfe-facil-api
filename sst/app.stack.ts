@@ -23,8 +23,6 @@ export function AppStack() {
       paths: 'all',
       wait: false,
     },
-    // Optional: Configure custom domain if available
-    // domain: process.env.NFE_FACIL_DOCS_DOMAIN,
   });
 
   return site

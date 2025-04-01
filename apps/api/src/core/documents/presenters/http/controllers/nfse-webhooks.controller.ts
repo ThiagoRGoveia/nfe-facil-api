@@ -192,6 +192,7 @@ export class NFSeWebhooksController {
         summary: `Exemplo para evento ${WebhookEvent.DOCUMENT_PROCESSED}`,
         value: {
           event: WebhookEvent.DOCUMENT_PROCESSED,
+          timestamp: '2023-09-15T14:30:15.123Z',
           payload: {
             documentId: '123e4567-e89b-12d3-a456-426614174000',
             status: 'PROCESSED',
