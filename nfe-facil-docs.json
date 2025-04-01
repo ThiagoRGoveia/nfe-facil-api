@@ -508,7 +508,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "status": "PROCESSED",
                       "fileName": "nfse_12345.pdf",
-                      "processedAt": "2025-03-31T18:55:58.298Z",
+                      "processedAt": "2025-04-01T16:04:57.887Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001",
                       "result": {
                         "chave_acesso_nfse": "12345678901234567890123456789012345678901234567890",
@@ -525,7 +525,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "error": "Não foi possível extrair os dados do documento: formato inválido",
                       "fileName": "nfse_12345.pdf",
-                      "failedAt": "2025-03-31T18:55:58.298Z",
+                      "failedAt": "2025-04-01T16:04:57.887Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001"
                     }
                   }
