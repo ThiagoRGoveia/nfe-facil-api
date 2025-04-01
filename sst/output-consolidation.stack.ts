@@ -16,7 +16,7 @@ export function OutputConsolidationStack() {
     {
       batch: {
         size: 10,
-        window: '1 minute',
+        window: '5 seconds',
       },
     },
   );

@@ -3,6 +3,7 @@ import { ProcessFileUseCase } from 'apps/api/src/core/documents/application/use-
 import { DatePort } from '@/infra/adapters/date.adapter';
 import { PinoLogger } from 'nestjs-pino';
 import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
+import { RetriableError } from './workflows/nfe/nfse-text.workflow';
 type MessageParam = {
   fileId: string;
 };
@@ -36,14 +37,18 @@ export class ProcessDocumentJobService {
         processedAt: this.datePort.now().toISOString(),
       };
     } catch (error) {
-      this.logger.error(`Error processing document: ${error.message}`, error.stack);
-      throw error;
+      if (error instanceof RetriableError) {
+        this.logger.error(`Retriable error processing document: ${error.message}`, error.stack);
+        throw error;
+      } else {
+        this.logger.error(`Error processing document: ${error.message}`, error.stack);
+      }
     }
   }
 
   @CreateRequestContext()
   private async runInRequestContext(fileId: string) {
-    await this.processFileUseCase.execute({ fileId });
+    return await this.processFileUseCase.execute({ fileId });
   }
 
   private validateMessage(message: object): message is MessageParam {

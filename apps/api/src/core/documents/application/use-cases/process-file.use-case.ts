@@ -8,6 +8,7 @@ import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
+import { RetriableError } from '@doc/core/workflows/nfe/nfse-text.workflow';
 
 export interface ProcessFileParams {
   fileId: FileRecord['id'];
@@ -73,6 +74,10 @@ export class ProcessFileUseCase {
       });
       file.markNotified();
     } else if (result.isError()) {
+      if (result.shouldRetry) {
+        // NOTICE: By throwing an exception here, the process will be retried by the worker
+        throw new RetriableError(result.errorMessage);
+      }
       file.markFailed(result.errorMessage);
       this.webhookNotifierPort.notifyFailure(file).catch((error) => {
         this.logger.error('Error notifying webhook', error);

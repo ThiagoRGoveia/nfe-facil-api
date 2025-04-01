@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
@@ -8,6 +8,20 @@ import { plainToInstance } from 'class-transformer';
 import { NfseDto } from './dto/nfse.dto';
 import { BaseWorkflow } from '../_base.workflow';
 import { TogetherClient } from '../clients/together-client';
+
+export class RetriableError extends ServiceUnavailableException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RetriableError';
+  }
+}
+
+export class NonRetriableError extends ServiceUnavailableException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NonRetriableError';
+  }
+}
 
 type ModelConfig = {
   model: string;
@@ -67,9 +81,17 @@ export class NfeTextWorkflow extends BaseWorkflow {
 
       return await this.processWithImage(fileBuffer, template, warnings);
     } catch (error) {
+      if (error instanceof RetriableError) {
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: error.message,
+          shouldRetry: true,
+        });
+      }
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
         message: error.message,
+        shouldRetry: false,
       });
     }
   }
@@ -106,6 +128,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
         code: 'PROCESS_ERROR',
         message: 'Could not validate response are not equal',
         data: responsesJson,
+        shouldRetry: false,
       });
     }
 
@@ -123,6 +146,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
         message: 'No text or images found in the document',
+        shouldRetry: false,
       });
     }
 
@@ -154,6 +178,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
         code: 'PROCESS_ERROR',
         message: 'Could not validate response are not equal',
         data: responsesJson,
+        shouldRetry: false,
       });
     }
 
@@ -176,7 +201,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
       });
     } catch (error) {
       this.logger.error(error);
-      throw new Error('Could not parse document');
+      throw new NonRetriableError('Could not parse document');
     }
   }
 
@@ -185,7 +210,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
       await validateOrReject(data);
     } catch (errors) {
       this.logger.error(errors);
-      throw new Error('Could not validate document');
+      throw new NonRetriableError('Could not validate document');
     }
   }
 

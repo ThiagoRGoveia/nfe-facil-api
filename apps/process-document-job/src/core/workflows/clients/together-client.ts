@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
+import { RetriableError, NonRetriableError } from '../nfe/nfse-text.workflow';
 
 type LLMConfig = {
   model: string;
@@ -74,7 +75,10 @@ export class TogetherClient {
       );
       return response.data.choices[0]?.message?.content || '';
     } catch (error) {
-      throw new Error(`Together API error: ${error.message}`);
+      if (error.response.status === 429) {
+        throw new RetriableError('Server is busy, please try again later');
+      }
+      throw new NonRetriableError(`Together API error: ${error.message}`);
     }
   }
 
