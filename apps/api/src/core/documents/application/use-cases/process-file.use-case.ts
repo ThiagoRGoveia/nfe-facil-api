@@ -18,6 +18,7 @@ export interface ProcessFileParams {
 @Injectable()
 export class ProcessFileUseCase {
   private readonly outputConsolidationQueue: string;
+  private readonly creditSpendingQueue: string;
 
   constructor(
     private readonly fileProcessDbPort: FileProcessDbPort,
@@ -29,11 +30,17 @@ export class ProcessFileUseCase {
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
   ) {
-    const queueName = this.configService.get<string>('OUTPUT_CONSOLIDATION_QUEUE');
-    if (!queueName) {
+    const outputQueueName = this.configService.get<string>('OUTPUT_CONSOLIDATION_QUEUE');
+    if (!outputQueueName) {
       throw new Error('OUTPUT_CONSOLIDATION_QUEUE is not set');
     }
-    this.outputConsolidationQueue = queueName;
+    this.outputConsolidationQueue = outputQueueName;
+
+    const creditQueueName = this.configService.get<string>('CREDIT_SPENDING_QUEUE');
+    if (!creditQueueName) {
+      throw new Error('CREDIT_SPENDING_QUEUE is not set');
+    }
+    this.creditSpendingQueue = creditQueueName;
   }
 
   async execute(params: ProcessFileParams): Promise<FileRecord> {
@@ -64,8 +71,30 @@ export class ProcessFileUseCase {
       throw new BadRequestException('Missing file for file processing');
     }
 
+    if (user.credits <= 0) {
+      file.markFailed('Insufficient credits');
+      await this.fileProcessDbPort.save();
+      return file;
+    }
+
     const pdfBuffer = await this.fileStoragePort.getBuffer(file.filePath);
     const result = await this.documentProcessorPort.process(pdfBuffer, template);
+
+    // Check if a Together request was made to queue credit spending
+    if (result.shouldBillCustomer) {
+      try {
+        await this.queuePort.sendMessage(
+          this.creditSpendingQueue,
+          { userId: user.id, operationId: file.id },
+          { fifo: true, groupId: user.id },
+        );
+        this.logger.info(`Credit spending queued for file ${file.id} and user ${user.id}`);
+      } catch (error) {
+        this.logger.error('Error queuing credit spending', error);
+        // Don't throw error - continue with file processing
+      }
+    }
+
     if (result.isSuccess()) {
       file.setResult(result.payload);
       file.markCompleted();

@@ -86,12 +86,16 @@ export class NfeTextWorkflow extends BaseWorkflow {
           code: 'PROCESS_ERROR',
           message: error.message,
           shouldRetry: true,
+          togetherRequestMade:
+            error instanceof Error && 'togetherRequestMade' in error ? (error.togetherRequestMade as boolean) : false,
         });
       }
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
         message: error.message,
         shouldRetry: false,
+        togetherRequestMade:
+          error instanceof Error && 'togetherRequestMade' in error ? (error.togetherRequestMade as boolean) : false,
       });
     }
   }
@@ -106,33 +110,55 @@ export class NfeTextWorkflow extends BaseWorkflow {
 
     // Parallel requests to both models
     const modelConfigs = template.metadata.modelConfigsForText;
-    const responses = await Promise.all(
-      modelConfigs.map((modelConfig) =>
-        this.togetherClient.generate(prompt, {
-          model: modelConfig.model,
-          systemMessage: modelConfig.systemMessage,
-          config: modelConfig.config,
-        }),
-      ),
-    );
+    let togetherRequestMade = false;
 
-    // Parse responses
-    const responsesJson = responses.map((response) => this.parseResponse(response));
+    try {
+      const responses = await Promise.all(
+        modelConfigs.map((modelConfig) =>
+          this.togetherClient.generate(prompt, {
+            model: modelConfig.model,
+            systemMessage: modelConfig.systemMessage,
+            config: modelConfig.config,
+          }),
+        ),
+      );
 
-    // Validate responses
-    await this.validateResponse(responsesJson);
+      togetherRequestMade = true;
 
-    // Compare responses
-    if (!this.deepEqual(responsesJson)) {
+      // Parse responses
+      const responsesJson = responses.map((response) => this.parseResponse(response));
+
+      // Validate responses
+      await this.validateResponse(responsesJson);
+
+      // Compare responses
+      if (!this.deepEqual(responsesJson)) {
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: 'Could not validate response are not equal',
+          data: responsesJson,
+          shouldRetry: false,
+          togetherRequestMade,
+        });
+      }
+
+      return DocumentProcessResult.fromSuccess(responsesJson[0], warnings, togetherRequestMade);
+    } catch (error) {
+      if (error instanceof RetriableError) {
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: error.message,
+          shouldRetry: true,
+          togetherRequestMade,
+        });
+      }
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
-        message: 'Could not validate response are not equal',
-        data: responsesJson,
+        message: error.message,
         shouldRetry: false,
+        togetherRequestMade,
       });
     }
-
-    return DocumentProcessResult.fromSuccess(responsesJson[0], warnings);
   }
 
   private async processWithImage(
@@ -147,6 +173,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
         code: 'PROCESS_ERROR',
         message: 'No text or images found in the document',
         shouldRetry: false,
+        togetherRequestMade: false,
       });
     }
 
@@ -156,33 +183,47 @@ export class NfeTextWorkflow extends BaseWorkflow {
 
     const prompt = template.metadata.promptForImage;
     const modelConfigs = template.metadata.modelConfigsForImage;
-    const responses = await Promise.all(
-      modelConfigs.map((modelConfig) =>
-        this.togetherClient.generateWithImage(prompt, images[0], {
-          model: modelConfig.model,
-          systemMessage: modelConfig.systemMessage,
-          config: modelConfig.config,
-        }),
-      ),
-    );
+    let togetherRequestMade = false;
 
-    // Parse responses
-    const responsesJson = responses.map((response) => this.parseResponse(response));
+    try {
+      const responses = await Promise.all(
+        modelConfigs.map((modelConfig) =>
+          this.togetherClient.generateWithImage(prompt, images[0], {
+            model: modelConfig.model,
+            systemMessage: modelConfig.systemMessage,
+            config: modelConfig.config,
+          }),
+        ),
+      );
 
-    // Validate responses
-    await this.validateResponse(responsesJson);
+      togetherRequestMade = true;
 
-    // Compare responses
-    if (!this.deepEqual(responsesJson)) {
+      // Parse responses
+      const responsesJson = responses.map((response) => this.parseResponse(response));
+
+      // Validate responses
+      await this.validateResponse(responsesJson);
+
+      // Compare responses
+      if (!this.deepEqual(responsesJson)) {
+        return DocumentProcessResult.fromError({
+          code: 'PROCESS_ERROR',
+          message: 'Could not validate response are not equal',
+          data: responsesJson,
+          shouldRetry: false,
+          togetherRequestMade,
+        });
+      }
+
+      return DocumentProcessResult.fromSuccess(responsesJson[0], warnings, togetherRequestMade);
+    } catch (error) {
       return DocumentProcessResult.fromError({
         code: 'PROCESS_ERROR',
-        message: 'Could not validate response are not equal',
-        data: responsesJson,
+        message: error instanceof Error ? error.message : 'Unknown error',
         shouldRetry: false,
+        togetherRequestMade,
       });
     }
-
-    return DocumentProcessResult.fromSuccess(responsesJson[0], warnings);
   }
 
   private parseResponse(response: string): NfseDto {

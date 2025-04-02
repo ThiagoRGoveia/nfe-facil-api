@@ -8,10 +8,15 @@ export class DocumentProcessResult {
     public readonly errorMessage?: string,
     public readonly warnings?: string[],
     public readonly shouldRetry?: boolean,
+    public readonly shouldBillCustomer: boolean = false,
   ) {}
 
-  public static fromSuccess(payload: unknown, warnings?: string[]): DocumentProcessResult {
-    return new DocumentProcessResult(payload, 'SUCCESS', undefined, undefined, warnings, false);
+  public static fromSuccess(
+    payload: unknown,
+    warnings?: string[],
+    togetherRequestMade: boolean = false,
+  ): DocumentProcessResult {
+    return new DocumentProcessResult(payload, 'SUCCESS', undefined, undefined, warnings, false, togetherRequestMade);
   }
 
   public static fromError(error: {
@@ -19,8 +24,17 @@ export class DocumentProcessResult {
     message: string;
     data?: unknown;
     shouldRetry?: boolean;
+    togetherRequestMade?: boolean;
   }): DocumentProcessResult {
-    return new DocumentProcessResult(error.data, 'ERROR', error.code, error.message, undefined, error.shouldRetry);
+    return new DocumentProcessResult(
+      error.data,
+      'ERROR',
+      error.code,
+      error.message,
+      undefined,
+      error.shouldRetry,
+      error.togetherRequestMade || false,
+    );
   }
 
   public isSuccess(): this is IsSuccessResponse {
