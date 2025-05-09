@@ -144,8 +144,8 @@ describe('ProcessDocumentJobService (Integration)', () => {
 
       // Assertions
       expect(result).toBeDefined();
-      expect(result.success).toBe(true);
-      expect(result.processedAt).toBeDefined();
+      expect(result?.success).toBe(true);
+      expect(result?.processedAt).toBeDefined();
       expect(mockDocumentProcessorPort.process).toHaveBeenCalledWith(mockBuffer, testTemplate);
 
       // Verify webhook call was made

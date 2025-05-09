@@ -6,7 +6,7 @@ import { AppStack } from './sst/app.stack';
 import { DocsStack } from './sst/docs.stack';
 import { ProcessDocumentStack } from './sst/process-document.stack';
 import { OutputConsolidationStack } from './sst/output-consolidation.stack';
-
+import { TeraLpStack } from './sst/tera-lp';
 export default $config({
   app(input) {
     return {
@@ -20,6 +20,7 @@ export default $config({
     const { api } = ApiStack();
     const { processDocumentQueue } = ProcessDocumentStack();
     const { outputConsolidationQueue } = OutputConsolidationStack();
+    const teraLp = TeraLpStack();
     const doc = DocsStack();
     const app = AppStack();
     return Promise.resolve({
@@ -28,6 +29,7 @@ export default $config({
       outputConsolidationQueue: outputConsolidationQueue.url,
       docsUrl: doc.url,
       appUrl: app.url,
+      teraLpUrl: teraLp.url,
     });
   },
 });

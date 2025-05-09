@@ -25,6 +25,10 @@ declare module "sst" {
       "type": "sst.aws.Queue"
       "url": string
     }
+    "TeraLp": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />
