@@ -1,7 +1,0 @@
-.env
-*.md
-/builds/*
-/node_modules/*
-/coverage/*
-/logs/*
-/tmp/*
