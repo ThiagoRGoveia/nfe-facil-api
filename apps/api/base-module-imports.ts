@@ -13,7 +13,7 @@ export const baseImports = [
     useFactory: (configService: ConfigService) => ({
       forRoutes: ['*'],
       pinoHttp:
-        configService.get('NODE_ENV') !== 'production'
+        configService.get('NODE_ENV') !== 'production' && configService.get('NODE_ENV') !== 'uat'
           ? {
               transport: {
                 target: 'pino-pretty',
@@ -58,7 +58,10 @@ export const baseImports = [
           allOrNothing: true,
           emit: 'ts',
         },
-        driverOptions: { connection: { ssl: { rejectUnauthorized: false } } },
+        driverOptions:
+          configService.get('NODE_ENV') === 'production' || configService.get('NODE_ENV') === 'uat'
+            ? { connection: { ssl: { rejectUnauthorized: false } } }
+            : undefined,
       });
     },
   }),

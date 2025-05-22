@@ -79,7 +79,6 @@ export class ProcessFileUseCase {
 
     const pdfBuffer = await this.fileStoragePort.getBuffer(file.filePath);
     const result = await this.documentProcessorPort.process(pdfBuffer, template);
-
     // Check if a Together request was made to queue credit spending
     if (result.shouldBillCustomer) {
       try {

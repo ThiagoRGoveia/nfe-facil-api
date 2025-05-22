@@ -4,22 +4,20 @@ import { Logger } from '@nestjs/common';
 import { SQSEvent } from 'aws-lambda';
 import { AppModule } from './app.module';
 import { ReplaySubject, firstValueFrom } from 'rxjs';
-import { ProcessDocumentJobService } from './core/process-document-job.service';
+import { OutputConsolidationJobService } from './core/output-consolidation-job.service';
 
 const logger = new Logger('Lambda');
 
-// Create a ReplaySubject to store the service instance
-
-async function bootstrap(): Promise<ProcessDocumentJobService> {
+async function bootstrap(): Promise<OutputConsolidationJobService> {
   logger.log('COLD START: Initializing NestJS Application');
   const app = await NestFactory.createApplicationContext(AppModule);
   app.useLogger(app.get(PinoLogger));
-  const service = app.get(ProcessDocumentJobService);
+  const service = app.get(OutputConsolidationJobService);
   return service;
 }
 
-// // Start bootstrapping immediately, don't wait for handler to be called
-const serviceSubject = new ReplaySubject<ProcessDocumentJobService>();
+// Start bootstrapping immediately, don't wait for handler to be called
+const serviceSubject = new ReplaySubject<OutputConsolidationJobService>();
 bootstrap()
   .then((service) => serviceSubject.next(service))
   .catch((error) => {
@@ -44,20 +42,23 @@ export const handler = async (event: SQSEvent) => {
   }
 };
 
-bootstrap()
-  .then((service) => {
-    service
-      .processMessage({
-        fileId: '1aea2228-2cd3-45f6-a20d-990c0e71fb50',
-      })
-      .then(() => {
-        logger.log('Process message completed');
-      })
-      .catch((error) => {
-        logger.error('Error processing message:', error);
-      });
-  })
-  .catch((error) => {
-    logger.error('Error bootstrapping NestJS Application:', error);
-    throw error;
-  });
+// For local development testing
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'uat') {
+  bootstrap()
+    .then((service) => {
+      service
+        .processMessage({
+          batchId: process.env.TEST_BATCH_ID || 'test-batch-id',
+        })
+        .then(() => {
+          logger.log('Process message completed');
+        })
+        .catch((error) => {
+          logger.error('Error processing message:', error);
+        });
+    })
+    .catch((error) => {
+      logger.error('Error bootstrapping NestJS Application:', error);
+      throw error;
+    });
+}

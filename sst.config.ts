@@ -7,6 +7,7 @@ import { DocsStack } from './sst/docs.stack';
 import { ProcessDocumentStack } from './sst/process-document.stack';
 import { OutputConsolidationStack } from './sst/output-consolidation.stack';
 import { TeraLpStack } from './sst/tera-lp';
+import { CreditSpendingStack } from './sst/credit-spending.stack';
 export default $config({
   app(input) {
     return {
@@ -20,6 +21,7 @@ export default $config({
     const { api } = ApiStack();
     const { processDocumentQueue } = ProcessDocumentStack();
     const { outputConsolidationQueue } = OutputConsolidationStack();
+    const { creditSpendingQueue } = CreditSpendingStack();
     const teraLp = TeraLpStack();
     const doc = DocsStack();
     const app = AppStack();
@@ -27,6 +29,7 @@ export default $config({
       api: api.url,
       processDocumentQueue: processDocumentQueue.url,
       outputConsolidationQueue: outputConsolidationQueue.url,
+      creditSpendingQueue: creditSpendingQueue.url,
       docsUrl: doc.url,
       appUrl: app.url,
       teraLpUrl: teraLp.url,

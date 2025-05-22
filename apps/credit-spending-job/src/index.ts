@@ -42,3 +42,24 @@ export const handler = async (event: SQSEvent) => {
     throw error;
   }
 };
+
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'uat') {
+  bootstrap()
+    .then((service) => {
+      service
+        .processMessage({
+          userId: '19198a71-88e6-466b-aed0-5f577cce77f2',
+          operationId: 'a35bcc3b-46f0-4665-8708-022063a733f7',
+        })
+        .then(() => {
+          logger.log('Process message completed');
+        })
+        .catch((error) => {
+          logger.error('Error processing message:', error);
+        });
+    })
+    .catch((error) => {
+      logger.error('Error bootstrapping NestJS Application:', error);
+      throw error;
+    });
+}

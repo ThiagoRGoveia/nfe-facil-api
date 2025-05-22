@@ -69,7 +69,6 @@ export class FileProcessMikroOrmDbRepository extends EntityRepository(FileRecord
             await new Promise((resolve) => stream.once('drain', resolve));
           }
         }
-        // console.log('offset', offset);
         offset += limit;
       }
     }

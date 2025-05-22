@@ -54,7 +54,6 @@ export class SyncFileProcessUseCase {
         }
       }),
     );
-
     this.batchRepository.update(batch.id, { status: BatchStatus.COMPLETED });
     await this.batchRepository.save();
     return this.batchRepository.refresh(batch);

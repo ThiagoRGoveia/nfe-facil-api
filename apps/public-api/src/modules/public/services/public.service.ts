@@ -22,7 +22,7 @@ export class PublicService {
         throw new Error('CONTACT_EMAIL environment variable is not set');
       }
 
-      const subject = 'Contato Nfe-Facil';
+      const subject = contactFormData.subject || 'Contato Nfe-Facil';
 
       const htmlBody = `
         <h1>Novo contato via formulário do site</h1>
