@@ -30,7 +30,7 @@ export class FileRecord {
 
   @Field(() => Template)
   @Index()
-  @ManyToOne(() => Template, { ref: true, eager: false })
+  @ManyToOne(() => Template, { ref: true, eager: false, hidden: true })
   template: Ref<Template>;
 
   @Field(() => String)
@@ -58,12 +58,12 @@ export class FileRecord {
   notifiedAt?: Date;
 
   @Field(() => BatchProcess)
-  @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true })
+  @ManyToOne(() => BatchProcess, { ref: true, eager: false, nullable: true, hidden: true })
   batchProcess?: Ref<BatchProcess>;
 
   @Field(() => User)
   @Index()
-  @ManyToOne(() => User, { ref: true, eager: false })
+  @ManyToOne(() => User, { ref: true, eager: false, hidden: true })
   user: Ref<User>;
 
   @Field(() => Date)

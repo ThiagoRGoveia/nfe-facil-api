@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileFormat } from '@/core/documents/domain/constants/file-formats';
+import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 
 /**
  * DTO para envio de arquivos via multipart/form-data
@@ -71,4 +73,24 @@ export class OptionalFileUploadDto {
     required: false,
   })
   files?: any[];
+}
+
+/**
+ * DTO para envio de arquivos com formatos de saída específicos
+ *
+ * Estende o OptionalFileUploadDto, adicionando a capacidade de especificar
+ * quais formatos de saída devem ser gerados durante o processamento.
+ */
+export class FileUploadWithFormatsDto extends OptionalFileUploadDto {
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'string',
+      enum: Object.values(FileFormat),
+    },
+    description: 'Formatos de saída desejados (json, csv, xlsx)',
+    example: ['json', 'csv'],
+    required: false,
+  })
+  outputFormats?: OutputFormat[];
 }

@@ -92,12 +92,18 @@ export class DocumentsController {
     )
     files?: Express.Multer.File[],
   ) {
+    const outputFormats = req.body.outputFormats
+      ? Array.isArray(req.body.outputFormats)
+        ? req.body.outputFormats
+        : [req.body.outputFormats] // Converter para array se for uma string única
+      : undefined;
     return await this.createBatchUseCase.execute(req.user, {
       templateId,
       files: files?.map((f) => ({
         data: f.buffer,
         fileName: f.originalname,
       })),
+      outputFormats,
     });
   }
 

@@ -28,7 +28,7 @@ import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 import { ConfigService } from '@nestjs/config';
-import { FileUploadDto, OptionalFileUploadDto } from '../dtos/file-upload.dto';
+import { FileUploadDto, FileUploadWithFormatsDto } from '../dtos/file-upload.dto';
 import { SingleFileUploadDto } from '../dtos/single-file-upload.dto';
 import { plainToInstance } from 'class-transformer';
 import { NfseResponseDto } from '../dtos/nfse-response.dto';
@@ -154,7 +154,7 @@ export class NFSeController {
     type: BatchProcessResponseDto,
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: OptionalFileUploadDto })
+  @ApiBody({ type: FileUploadWithFormatsDto })
   @UseInterceptors(FilesInterceptor('files', 10))
   async createBatch(
     @Req() req: Request,
@@ -171,12 +171,18 @@ export class NFSeController {
     )
     files?: Express.Multer.File[],
   ) {
+    const outputFormats = req.body.outputFormats
+      ? Array.isArray(req.body.outputFormats)
+        ? req.body.outputFormats
+        : [req.body.outputFormats] // Converter para array se for uma string única
+      : undefined;
     return await this.createBatchUseCase.execute(req.user, {
       templateId: this.templateId,
       files: files?.map((f) => ({
         data: f.buffer,
         fileName: f.originalname,
       })),
+      outputFormats,
     });
   }
 

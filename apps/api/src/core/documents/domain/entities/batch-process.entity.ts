@@ -35,14 +35,14 @@ export class BatchProcess extends BaseEntity<'totalFiles' | 'processedFiles' | '
   status: BatchStatus;
 
   @Field(() => Template)
-  @ManyToOne(() => Template, { eager: false, ref: true })
+  @ManyToOne(() => Template, { eager: false, ref: true, hidden: true })
   template!: Ref<Template>;
 
   @OneToMany(() => FileRecord, (process) => process.batchProcess, { eager: false, ref: true })
   files = new Collection<FileRecord>(this);
 
   @Field(() => User)
-  @ManyToOne(() => User, { eager: false, ref: true })
+  @ManyToOne(() => User, { eager: false, ref: true, hidden: true })
   user!: Ref<User>;
 
   @Field(() => Number)
