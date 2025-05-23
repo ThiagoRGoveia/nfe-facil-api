@@ -5,23 +5,25 @@ import { SESClient } from '../../../infra/aws/ses/ses.client';
 import { ContactFormDto } from '../dto/contact-form.dto';
 
 @Injectable()
-export class PublicService {
+export class ContactFormService {
+  private readonly contactEmail: string;
+
   constructor(
     private readonly sesClient: SESClient,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
   ) {
-    this.logger.setContext('PublicService');
+    const contactEmail = this.configService.get<string>('CONTACT_EMAIL');
+    if (!contactEmail) {
+      throw new Error('CONTACT_EMAIL environment variable is not set');
+    }
+    this.contactEmail = contactEmail;
+
+    this.logger.setContext('ContactFormService');
   }
 
   async processContactForm(contactFormData: ContactFormDto): Promise<void> {
     try {
-      const contactEmail = this.configService.get<string>('CONTACT_EMAIL');
-
-      if (!contactEmail) {
-        throw new Error('CONTACT_EMAIL environment variable is not set');
-      }
-
       const subject = contactFormData.subject || 'Contato Nfe-Facil';
 
       const htmlBody = `
@@ -43,8 +45,8 @@ export class PublicService {
       `;
 
       await this.sesClient.sendEmail(
-        contactEmail,
-        contactEmail, // Using same email as from and to
+        this.contactEmail,
+        this.contactEmail, // Using same email as from and to
         subject,
         htmlBody,
         textBody,

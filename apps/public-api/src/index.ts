@@ -34,7 +34,7 @@ async function createServerlessHandler(): Promise<Handler> {
 }
 
 // Determine execution mode based on NODE_ENV
-const isServerless = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging';
+const isServerless = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'uat';
 
 // For local development, start the server immediately
 if (!isServerless) {

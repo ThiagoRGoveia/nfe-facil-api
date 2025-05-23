@@ -1,8 +1,5 @@
 {
-  "include": [
-    "apps/**/*.ts",
-    "libs/**/*.ts"
-  ],
+  "include": ["apps/**/*.ts", "libs/**/*.ts"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -24,17 +21,11 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": [
-        "apps/api/src/*"
-      ],
-      "@doc/*": [
-        "apps/process-document-job/src/*"
-      ]
+      "@/*": ["apps/api/src/*"],
+      "@doc/*": ["apps/process-document-job/src/*"]
     }
   },
   "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   }
 }

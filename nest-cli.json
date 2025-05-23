@@ -28,6 +28,15 @@
         "tsConfigPath": "apps/public-api/tsconfig.app.json"
       }
     },
+    "contact-form-api": {
+      "type": "application",
+      "root": "apps/contact-form-api",
+      "entryFile": "index",
+      "sourceRoot": "apps/contact-form-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/contact-form-api/tsconfig.app.json"
+      }
+    },
     "output-consolidation-job": {
       "type": "application",
       "root": "apps/output-consolidation-job",
