@@ -90,6 +90,7 @@
     "graphql-scalars": "^1.24.1",
     "graphql-upload-minimal": "^1.6.1",
     "graphql-yoga": "^5.13.2",
+    "https-proxy-agent": "^7.0.6",
     "install": "^0.13.0",
     "json-2-csv": "^5.5.8",
     "jwks-rsa": "^3.1.0",
