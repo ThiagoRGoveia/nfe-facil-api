@@ -52,7 +52,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/OptionalFileUploadDto"
+                "$ref": "#/components/schemas/FileUploadWithFormatsDto"
               }
             }
           }
@@ -508,7 +508,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "status": "PROCESSED",
                       "fileName": "nfse_12345.pdf",
-                      "processedAt": "2025-04-01T16:04:57.887Z",
+                      "processedAt": "2025-05-23T17:20:39.078Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001",
                       "result": {
                         "chave_acesso_nfse": "12345678901234567890123456789012345678901234567890",
@@ -525,7 +525,7 @@
                       "documentId": "123e4567-e89b-12d3-a456-426614174000",
                       "error": "Não foi possível extrair os dados do documento: formato inválido",
                       "fileName": "nfse_12345.pdf",
-                      "failedAt": "2025-04-01T16:04:57.887Z",
+                      "failedAt": "2025-05-23T17:20:39.078Z",
                       "batchId": "123e4567-e89b-12d3-a456-426614174001"
                     }
                   }
@@ -755,7 +755,7 @@
           "totaisAproximadosTributosMunicipais"
         ]
       },
-      "OptionalFileUploadDto": {
+      "FileUploadWithFormatsDto": {
         "type": "object",
         "properties": {
           "files": {
@@ -765,6 +765,22 @@
               "format": "binary"
             },
             "description": "Lista opcional de arquivos a serem processados. Aceita PDFs e ZIPs contendo PDFs."
+          },
+          "outputFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv",
+                "xlsx"
+              ]
+            },
+            "description": "Formatos de saída desejados (json, csv, xlsx)",
+            "example": [
+              "json",
+              "csv"
+            ]
           }
         }
       },
