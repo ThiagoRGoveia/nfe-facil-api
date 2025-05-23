@@ -6,7 +6,7 @@ import { ContactFormDto } from '../dto/contact-form.dto';
 export class ContactFormController {
   constructor(private readonly contactFormService: ContactFormService) {}
 
-  @Post('submit')
+  @Post('contact-form')
   async submitContactForm(@Body() contactFormDto: ContactFormDto): Promise<{ success: boolean }> {
     await this.contactFormService.processContactForm(contactFormDto);
     return { success: true };
