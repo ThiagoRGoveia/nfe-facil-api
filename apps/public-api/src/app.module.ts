@@ -1,7 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
-import { PublicModule } from './modules/public/public.module';
 
 interface AppModuleOptions {
   apiType: 'rest' | 'graphql';
@@ -28,7 +27,6 @@ export class AppModule {
             },
           },
         }),
-        PublicModule,
       ],
     };
   }
