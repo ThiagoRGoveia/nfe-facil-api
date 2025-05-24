@@ -72,17 +72,6 @@ export function getContactFormConfig(handler: string, bundle: string) {
     bundle,
     memory: '512 MB', // Less memory since it's a simple API
     timeout: '60 seconds',
-    vpc: {
-      securityGroups: ['sg-01e531d730fbffe95'], // inb-vpc
-      privateSubnets: [
-        'subnet-03e9f1f95db6bde9a', // us-east-1e
-        'subnet-0b68606d11d3b93df', // us-east-1d
-        'subnet-00527189af53b98c5', // us-east-1c
-        'subnet-0415977c236e401e1', // us-east-1f
-        'subnet-0801b612124736748', // us-east-1a
-        'subnet-0581808c74af9f6dc', // us-east-1b
-      ],
-    },
     permissions: [
       {
         // Only SES permissions
@@ -90,7 +79,6 @@ export function getContactFormConfig(handler: string, bundle: string) {
         resources: ['*'],
       },
     ],
-    policies: ['arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'],
     environment: {
       NODE_ENV: process.env.NODE_ENV || 'development',
       API_VERSION: process.env.API_VERSION || '1.0.0',

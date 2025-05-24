@@ -242,7 +242,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
       });
     } catch (error) {
       this.logger.error(error);
-      throw new NonRetriableError('Could not parse document');
+      throw new NonRetriableError(`Could not parse document: ${response}`);
     }
   }
 

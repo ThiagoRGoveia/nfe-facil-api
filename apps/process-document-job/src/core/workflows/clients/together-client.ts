@@ -23,6 +23,7 @@ export class TogetherClient {
   private readonly apiKey: string;
   private readonly proxyUrl: string;
   private readonly proxyPort: string;
+  private readonly proxyMode: boolean;
   private mockMode = false;
 
   constructor(
@@ -32,14 +33,20 @@ export class TogetherClient {
     const apiKeyValue = this.configService.get('TOGETHER_API_KEY');
     const proxyUrlValue = this.configService.get('PROXY_URL');
     const proxyPortValue = this.configService.get('PROXY_PORT');
-    if (!apiKeyValue || !proxyUrlValue || !proxyPortValue) {
-      throw new Error('Together API key or proxy URL are required');
+    const proxyMode = this.configService.get('NODE_ENV') !== 'local';
+    if (!apiKeyValue) {
+      throw new Error('Together API key is required');
+    }
+
+    if (proxyMode && (!proxyUrlValue || !proxyPortValue)) {
+      throw new Error('Proxy URL or Proxy Port is required');
     }
     this.apiKey = apiKeyValue;
     this.mockMode =
       this.configService.get('MOCK_MODE') === 'true' && this.configService.get('NODE_ENV') !== 'production';
     this.proxyUrl = proxyUrlValue;
     this.proxyPort = proxyPortValue;
+    this.proxyMode = proxyMode;
   }
 
   async generate(prompt: string, config: LLMConfig): Promise<string> {
@@ -76,11 +83,13 @@ export class TogetherClient {
               Authorization: `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json',
             },
-            proxy: {
-              host: this.proxyUrl,
-              port: Number(this.proxyPort),
-              protocol: 'http',
-            },
+            proxy: this.proxyMode
+              ? {
+                  host: this.proxyUrl,
+                  port: Number(this.proxyPort),
+                  protocol: 'http',
+                }
+              : undefined,
           },
         ),
       );

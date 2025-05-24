@@ -114,7 +114,7 @@ export class NFSeController {
     try {
       const result = await this.syncBatchProcessUseCase.execute(req.user, {
         templateId: this.templateId,
-        consolidateOutput: true,
+        consolidateOutput: false,
         files: [
           {
             data: file.buffer,

@@ -14,9 +14,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const AUTH_AUDIENCE = configService.get('AUTH_AUDIENCE');
     const PROXY_URL = configService.get('PROXY_URL');
     const PROXY_PORT = configService.get('PROXY_PORT');
-
-    if (!AUTH_DOMAIN || !AUTH_ISSUER_URL || !AUTH_AUDIENCE || !PROXY_URL || !PROXY_PORT) {
+    const proxyMode = nodeEnv !== 'local';
+    if (!AUTH_DOMAIN || !AUTH_ISSUER_URL || !AUTH_AUDIENCE) {
       throw new Error('AUTH_DOMAIN or AUTH_ISSUER_URL or AUTH_AUDIENCE is not set');
+    }
+
+    if (proxyMode && (!PROXY_URL || !PROXY_PORT)) {
+      throw new Error('PROXY_URL or PROXY_PORT is not set');
     }
 
     super({
