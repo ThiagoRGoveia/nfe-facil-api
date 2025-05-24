@@ -236,7 +236,7 @@ export class NfeTextWorkflow extends BaseWorkflow {
         throw new Error('No JSON object found in response');
       }
 
-      const jsonString = response.slice(start, end + 1);
+      const jsonString = response.slice(start, end + 1).replaceAll('NULL', 'null');
       return plainToInstance(NfseDto, JSON.parse(jsonString), {
         excludeExtraneousValues: true,
       });
