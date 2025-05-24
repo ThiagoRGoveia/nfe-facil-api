@@ -8,11 +8,14 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
   _Object,
+  S3ClientConfig,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Readable } from 'stream';
 import { FileStoragePort } from '../ports/file-storage.port';
 import { Upload } from '@aws-sdk/lib-storage';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 
 @Injectable()
 export class S3Client implements FileStoragePort {
@@ -24,18 +27,29 @@ export class S3Client implements FileStoragePort {
     const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID_ENV');
     const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY_ENV');
     const bucketName = this.configService.get<string>('DOCUMENT_BUCKET_NAME');
+    const proxyUrl = this.configService.get<string>('PROXY_URL');
+    const proxyPort = this.configService.get<string>('PROXY_PORT');
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
     if (!region || !accessKeyId || !secretAccessKey || !bucketName) {
       throw new Error('AWS credentials are not set');
     }
     this.bucketName = bucketName;
 
-    const clientConfig = {
+    const clientConfig: S3ClientConfig = {
       region,
       credentials: {
         accessKeyId,
         secretAccessKey,
       },
     };
+
+    if (proxyUrl && nodeEnv !== 'local') {
+      const proxyAgent = new HttpsProxyAgent(`http://${proxyUrl}:${proxyPort}`);
+      clientConfig.requestHandler = new NodeHttpHandler({
+        httpsAgent: proxyAgent,
+        httpAgent: proxyAgent,
+      });
+    }
 
     this.s3Client = new AWSS3Client(clientConfig);
   }
