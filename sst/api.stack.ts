@@ -13,11 +13,6 @@ export function getConfig(handler: string, bundle: string) {
       securityGroups: ['sg-01e531d730fbffe95'], // inb-vpc
       privateSubnets: [
         'subnet-03e9f1f95db6bde9a', // us-east-1e
-        'subnet-0b68606d11d3b93df', // us-east-1d
-        'subnet-00527189af53b98c5', // us-east-1c
-        'subnet-0415977c236e401e1', // us-east-1f
-        'subnet-0801b612124736748', // us-east-1a
-        'subnet-0581808c74af9f6dc', // us-east-1b
       ],
     },
     permissions: [
@@ -94,7 +89,7 @@ export function getContactFormConfig(handler: string, bundle: string) {
 
 export function ApiStack() {
   // Create the HTTP API Gateway
-  const api = new sst.aws.ApiGatewayV2('Api', {
+  const api = new sst.aws.ApiGatewayV2(`Api-${process.env.NODE_ENV}`, {
     cors: {
       allowOrigins: ['*'],
       allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
