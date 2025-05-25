@@ -5,20 +5,12 @@
 
 declare module "sst" {
   export interface Resource {
-    "Api": {
+    "Api-production": {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
     "CreditSpendingQueue": {
       "type": "sst.aws.Queue"
-      "url": string
-    }
-    "NFeFacilApp": {
-      "type": "sst.aws.StaticSite"
-      "url": string
-    }
-    "NFeFacilDocs": {
-      "type": "sst.aws.StaticSite"
       "url": string
     }
     "OutputConsolidationQueue": {
@@ -27,10 +19,6 @@ declare module "sst" {
     }
     "ProcessDocumentQueue": {
       "type": "sst.aws.Queue"
-      "url": string
-    }
-    "TeraLp": {
-      "type": "sst.aws.StaticSite"
       "url": string
     }
   }
