@@ -5,7 +5,7 @@
 
 declare module "sst" {
   export interface Resource {
-    "Api-production": {
+    "Api-uat": {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
