@@ -63,3 +63,5 @@ test-files/*
 
 # sst
 .sst
+docs/*
+nfe-facil-docs.json
