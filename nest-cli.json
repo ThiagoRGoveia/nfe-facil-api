@@ -63,6 +63,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/credit-spending-job/tsconfig.app.json"
       }
+    },
+    "webhook-dispatch-job": {
+      "type": "application",
+      "root": "apps/webhook-dispatch-job",
+      "entryFile": "index",
+      "sourceRoot": "apps/webhook-dispatch-job/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/webhook-dispatch-job/tsconfig.app.json"
+      }
     }
   }
 }
