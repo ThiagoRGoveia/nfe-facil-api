@@ -12,11 +12,11 @@ export function CreditSpendingStack() {
   creditSpendingQueue.subscribe(
     {
       ...getConfig('index.handler', 'dist/apps/credit-spending-job'),
-      timeout: '30 seconds',
+      timeout: '350 seconds',
     },
     {
       batch: {
-        size: 50,
+        size: 10,
         partialResponses: true,
       },
     },

@@ -27,6 +27,7 @@ export function WebhookDispatchStack() {
       batch: {
         size: 50,
         partialResponses: true,
+        window: '10 seconds',
       },
     },
   );
