@@ -2,6 +2,7 @@ import { IsString, IsNotEmpty, IsIn, IsOptional, IsNumber, Min, Max } from 'clas
 import { Sort, SortDirection } from './sort.dto';
 import { Pagination } from './pagination.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class RestQueryDto {
   @ApiProperty({
@@ -33,6 +34,7 @@ export class RestQueryDto {
   @IsNumber()
   @IsNotEmpty()
   @Min(1)
+  @Transform(({ value }) => parseInt(value, 10))
   page: number = 1;
 
   @ApiProperty({
@@ -45,6 +47,7 @@ export class RestQueryDto {
   @IsNumber()
   @Min(10)
   @Max(100)
+  @Transform(({ value }) => parseInt(value, 10))
   pageSize: number = 10;
 
   toPagination(): Pagination | undefined {

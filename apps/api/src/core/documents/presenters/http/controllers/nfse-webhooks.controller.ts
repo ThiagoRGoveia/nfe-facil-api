@@ -48,7 +48,7 @@ const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
  */
 @ApiTags('Webhooks')
 @ApiBasicAuth()
-@Controller('nfse/webhooks')
+@Controller('webhooks')
 export class NFSeWebhooksController {
   constructor(
     private readonly webhookDbPort: WebhookDbPort,
