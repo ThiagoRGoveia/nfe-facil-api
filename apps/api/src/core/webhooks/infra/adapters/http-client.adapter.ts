@@ -7,15 +7,28 @@ import {
   OAuth2Config,
   BasicAuthConfig,
 } from '../../application/ports/http-client.port';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class HttpClientAdapter implements HttpClientPort {
   private readonly axiosInstance: AxiosInstance;
   private oAuth2Tokens: Map<string, { token: string; expiresAt: number }>;
+  private proxyUrlValue: string;
+  private proxyPortValue: string;
+  private proxyMode: boolean;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     this.axiosInstance = axios.create();
     this.oAuth2Tokens = new Map();
+    const proxyUrlValue = this.configService.get('PROXY_URL');
+    const proxyPortValue = this.configService.get('PROXY_PORT');
+    const proxyMode = this.configService.get('NODE_ENV') !== 'local';
+    if ((proxyMode && !proxyUrlValue) || !proxyPortValue) {
+      throw new Error('Proxy URL or Proxy Port is required');
+    }
+    this.proxyUrlValue = proxyUrlValue;
+    this.proxyPortValue = proxyPortValue;
+    this.proxyMode = proxyMode;
   }
 
   async request<T = unknown>(config: HttpRequestConfig): Promise<HttpResponse<T>> {
@@ -25,6 +38,13 @@ export class HttpClientAdapter implements HttpClientPort {
       headers: config.headers || {},
       data: config.body,
       timeout: config.timeout || 10000,
+      proxy: this.proxyMode
+        ? {
+            host: this.proxyUrlValue,
+            port: Number(this.proxyPortValue),
+            protocol: 'http',
+          }
+        : undefined,
     };
 
     if (config.auth) {
