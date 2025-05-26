@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../.sst/platform/config.d.ts" />
 
-import { getConfig } from "./api.stack";
+import { getConfig } from './api.stack';
 
 export function CreditSpendingStack() {
   const creditSpendingQueue = new sst.aws.Queue('CreditSpendingQueue', {
@@ -16,7 +16,7 @@ export function CreditSpendingStack() {
     },
     {
       batch: {
-        size: 10,
+        size: 50,
         partialResponses: true,
       },
     },
@@ -25,4 +25,4 @@ export function CreditSpendingStack() {
   return {
     creditSpendingQueue,
   };
-} 
+}

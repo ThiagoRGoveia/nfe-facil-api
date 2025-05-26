@@ -25,7 +25,7 @@ export function WebhookDispatchStack() {
     },
     {
       batch: {
-        size: 1,
+        size: 50,
         partialResponses: true,
       },
     },

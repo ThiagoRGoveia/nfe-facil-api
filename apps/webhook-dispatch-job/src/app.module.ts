@@ -9,6 +9,8 @@ import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
 import { WebhookDeliveryDbPort } from '@/core/webhooks/webhooks.module';
 import { WebhookDeliveryMikroOrmDbRepository } from '@/core/webhooks/infra/persistence/db/orm/webhook-delivery-mikro-orm-db.repository';
 import { WebhookDispatcherService } from './core/services/webhook-dispatcher.service';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/core';
 
 @Module({
   imports: [
@@ -33,6 +35,12 @@ import { WebhookDispatcherService } from './core/services/webhook-dispatcher.ser
       provide: EncryptionPort,
       useClass: EncryptionAdapter,
     },
+    {
+      provide: SqlEntityManager,
+      useFactory: (em: EntityManager) => em,
+      inject: [EntityManager],
+    },
   ],
+  exports: [SqlEntityManager],
 })
 export class AppModule {}
