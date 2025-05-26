@@ -13,7 +13,7 @@ module.exports = {
     '!**/graphql/inputs/**',
     '!**/*.module.ts',
     '!**/*.dto.ts',
-    '!**/main.ts',
+    '!**/index.ts',
   ],
   coverageDirectory: '../coverage-e2e',
   testEnvironment: 'node',
@@ -26,4 +26,4 @@ module.exports = {
   globalSetup: '<rootDir>/_scripts/jestGlobalSetup.ts',
   forceExit: true,
   detectOpenHandles: true,
-}; 
+};

@@ -13,7 +13,7 @@ module.exports = {
     '!**/graphql/inputs/**',
     '!**/*.module.ts',
     '!**/*.dto.ts',
-    '!**/main.ts',
+    '!**/index.ts',
   ],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',

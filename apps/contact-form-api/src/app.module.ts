@@ -8,16 +8,7 @@ import { ContactFormModule } from './modules/contact-form/contact-form.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-          },
-        },
-      },
-    }),
+    LoggerModule.forRoot(),
     ContactFormModule,
   ],
 })

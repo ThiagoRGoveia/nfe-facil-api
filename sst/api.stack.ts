@@ -108,7 +108,7 @@ export function ApiStack() {
   });
 
   api.route('POST /contact-form', {
-    ...getContactFormConfig('main.handler', 'dist/apps/contact-form-api'),
+    ...getContactFormConfig('index.handler', 'dist/apps/contact-form-api'),
   });
 
   // Add catch-all route for other endpoints using the public API lambda

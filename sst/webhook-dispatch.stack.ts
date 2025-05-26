@@ -10,7 +10,7 @@ export function WebhookDispatchStack() {
   });
 
   const webhookDispatchQueue = new sst.aws.Queue('WebhookDispatchQueue', {
-    fifo: true,
+    fifo: false,
     visibilityTimeout: '60 seconds',
     dlq: {
       queue: deadLetterQueue.arn,

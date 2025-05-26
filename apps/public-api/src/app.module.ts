@@ -17,16 +17,7 @@ export class AppModule {
         ConfigModule.forRoot({
           isGlobal: true,
         }),
-        LoggerModule.forRoot({
-          pinoHttp: {
-            transport: {
-              target: 'pino-pretty',
-              options: {
-                singleLine: true,
-              },
-            },
-          },
-        }),
+        LoggerModule.forRoot(),
       ],
     };
   }

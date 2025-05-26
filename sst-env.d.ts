@@ -21,6 +21,14 @@ declare module "sst" {
       "type": "sst.aws.Queue"
       "url": string
     }
+    "WebhookDispatchDLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "WebhookDispatchQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />
