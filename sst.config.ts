@@ -5,6 +5,7 @@ import { ApiStack } from './sst/api.stack';
 import { ProcessDocumentStack } from './sst/process-document.stack';
 import { OutputConsolidationStack } from './sst/output-consolidation.stack';
 import { CreditSpendingStack } from './sst/credit-spending.stack';
+import { WebhookDispatchStack } from './sst/webhook-dispatch.stack';
 export default $config({
   app(input) {
     return {
@@ -19,11 +20,14 @@ export default $config({
     const { processDocumentQueue } = ProcessDocumentStack();
     const { outputConsolidationQueue } = OutputConsolidationStack();
     const { creditSpendingQueue } = CreditSpendingStack();
+    const { webhookDispatchQueue, deadLetterQueue } = WebhookDispatchStack();
     return Promise.resolve({
       api: api.url,
       processDocumentQueue: processDocumentQueue.url,
       outputConsolidationQueue: outputConsolidationQueue.url,
       creditSpendingQueue: creditSpendingQueue.url,
+      webhookDispatchQueue: webhookDispatchQueue.url,
+      webhookDispatchDLQ: deadLetterQueue.url,
     });
   },
 });
