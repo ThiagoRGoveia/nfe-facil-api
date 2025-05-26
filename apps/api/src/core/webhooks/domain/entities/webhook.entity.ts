@@ -83,7 +83,7 @@ export class Webhook extends BaseEntity<'maxRetries' | 'timeout' | 'headers'> {
   timeout: number = 5000;
 
   @Field(() => User)
-  @ManyToOne(() => User, { ref: true, eager: false })
+  @ManyToOne(() => User, { ref: true, eager: false, hidden: true })
   user!: Ref<User>;
 
   @Field(() => WebhookAuthType)
