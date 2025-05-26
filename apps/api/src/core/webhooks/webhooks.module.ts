@@ -15,8 +15,8 @@ import { HttpClientAdapter } from '@/core/webhooks/infra/adapters/http-client.ad
 import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
 import { WebhooksController } from './presenters/rest/controllers/webhooks.controller';
 
-const controllers = [WebhooksController];
-const resolvers = [WebhooksResolver];
+const controllers = [];
+const resolvers = [];
 const defaultProviders = [
   {
     provide: WebhookDbPort,
@@ -79,4 +79,6 @@ export {
   DeleteWebhookUseCase,
   RetryWebhookDeliveryUseCase,
   NotifyWebhookUseCase,
+  WebhooksController,
+  WebhooksResolver,
 };

@@ -7,8 +7,8 @@ import { DeleteTemplateUseCase } from './application/use-cases/delete-template.u
 import { TemplatesResolver } from './presenters/graphql/resolvers/templates.resolver';
 import { TemplateController } from './presenters/rest/controllers/templates.controller';
 
-const controllers = [TemplateController];
-const resolvers = [TemplatesResolver];
+const controllers = [];
+const resolvers = [];
 const defaultProviders = [
   {
     provide: TemplateDbPort,
@@ -38,4 +38,11 @@ export class TemplatesModule {
   }
 }
 
-export { TemplateDbPort, CreateTemplateUseCase, UpdateTemplateUseCase, DeleteTemplateUseCase, TemplatesResolver };
+export {
+  TemplateDbPort,
+  CreateTemplateUseCase,
+  UpdateTemplateUseCase,
+  DeleteTemplateUseCase,
+  TemplatesResolver,
+  TemplateController,
+};
