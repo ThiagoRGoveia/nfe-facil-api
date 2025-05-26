@@ -23,7 +23,7 @@ export class HttpClientAdapter implements HttpClientPort {
     const proxyUrlValue = this.configService.get('PROXY_URL');
     const proxyPortValue = this.configService.get('PROXY_PORT');
     const proxyMode = this.configService.get('NODE_ENV') !== 'local';
-    if ((proxyMode && !proxyUrlValue) || !proxyPortValue) {
+    if (proxyMode && (!proxyUrlValue || !proxyPortValue)) {
       throw new Error('Proxy URL or Proxy Port is required');
     }
     this.proxyUrlValue = proxyUrlValue;

@@ -16,7 +16,10 @@ export class WebhookDispatcherService {
   ) {}
 
   async dispatch(delivery: WebhookDelivery): Promise<void> {
-    const webhook = delivery.webhook.unwrap();
+    const webhook = await delivery.webhook.load();
+    if (!webhook) {
+      throw new Error(`Webhook not found for delivery ${delivery.id}`);
+    }
 
     const config: HttpRequestConfig = {
       method: 'POST',
@@ -41,7 +44,7 @@ export class WebhookDispatcherService {
     if (webhook.authType === WebhookAuthType.NONE) return undefined;
 
     if (!webhook.encryptedConfig) {
-      throw new Error('Webhook missing required authentication configuration');
+      return undefined;
     }
 
     const decryptedConfig = this.encryptionPort.decrypt(webhook.encryptedConfig);
