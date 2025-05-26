@@ -16,7 +16,7 @@ import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.po
 import { WebhooksController } from './presenters/rest/controllers/webhooks.controller';
 
 const controllers = [];
-const resolvers = [];
+const resolvers = [WebhooksResolver];
 const defaultProviders = [
   {
     provide: WebhookDbPort,
