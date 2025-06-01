@@ -14,7 +14,7 @@ import { FileProcessStatus } from '@/core/documents/domain/entities/file-records
 import { Template } from '@/core/templates/domain/entities/template.entity';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 import { graphqlUploadExpress } from 'graphql-upload-minimal';
-import { ZipPort } from '@/infra/zip/zip.port';
+import { ZipPort } from 'libs/tooling/zip/src/core/zip.port';
 import { ZipAdapter } from '@/infra/zip/zip.adapter';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { DocumentsModule } from '@/core/documents/documents.module';

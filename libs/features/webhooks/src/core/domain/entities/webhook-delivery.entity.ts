@@ -3,7 +3,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Webhook } from './webhook.entity';
 import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
 import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 export enum WebhookDeliveryStatus {
   PENDING = 'PENDING',

@@ -6,11 +6,11 @@ import { UserDbPort } from '../../ports/users-db.port';
 import { CreateUserSocialUseCase } from '../create-user-social.use-case';
 import { CreateUserSocialDto } from '../../dtos/create-user-social.dto';
 import { UserRole } from '../../../domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '../../../infra/tests/factories/users.factory';
 import { BadRequestException } from '@nestjs/common';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
+import { UuidAdapter } from '../../../infra/adapters/uuid.adapter';
+import { SecretAdapter } from '../../../infra/adapters/secret.adapter';
+import { AuthPort, AuthUserDto } from '../../../infra/auth/ports/auth.port';
 
 describe('CreateUserSocialUseCase', () => {
   let useCase: CreateUserSocialUseCase;

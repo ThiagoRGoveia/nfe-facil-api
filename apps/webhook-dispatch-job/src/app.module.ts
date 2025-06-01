@@ -4,8 +4,8 @@ import { WebhookDispatchJobService } from './core/services/webhook-dispatch-job.
 import { baseImports } from 'apps/api/base-module-imports';
 import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
 import { HttpClientAdapter } from '@/core/webhooks/infra/adapters/http-client.adapter';
-import { EncryptionAdapter } from '@/infra/encryption/adapters/encryption.adapter';
-import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
+import { EncryptionAdapter } from 'libs/tooling/encryption/src/core/adapters/encryption.adapter';
+import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 import { WebhookDeliveryDbPort } from '@/core/webhooks/webhooks.module';
 import { WebhookDeliveryMikroOrmDbRepository } from '@/core/webhooks/infra/persistence/db/orm/webhook-delivery-mikro-orm-db.repository';
 import { WebhookDispatcherService } from './core/services/webhook-dispatcher.service';

@@ -1,4 +1,4 @@
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 import { BaseEntity as MikroORMBaseEntity, OptionalProps, Property } from '@mikro-orm/core';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';

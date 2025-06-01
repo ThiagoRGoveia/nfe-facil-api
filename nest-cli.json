@@ -19,22 +19,13 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
-    "auth-lib": {
+    "auth": {
       "type": "library",
-      "root": "libs/auth-lib",
+      "root": "libs/auth",
       "entryFile": "index",
-      "sourceRoot": "libs/auth-lib/src",
+      "sourceRoot": "libs/auth/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/auth-lib/tsconfig.lib.json"
-      }
-    },
-    "claude-client-lib": {
-      "type": "library",
-      "root": "libs/claude-client-lib",
-      "entryFile": "index",
-      "sourceRoot": "libs/claude-client-lib/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/claude-client-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
     },
     "contact-form-api": {
@@ -55,94 +46,85 @@
         "tsConfigPath": "apps/credit-spending-job/tsconfig.app.json"
       }
     },
-    "csv-lib": {
+    "csv": {
       "type": "library",
-      "root": "libs/csv-lib",
+      "root": "libs/csv",
       "entryFile": "index",
-      "sourceRoot": "libs/csv-lib/src",
+      "sourceRoot": "libs/csv/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/csv-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/csv/tsconfig.lib.json"
       }
     },
-    "database-lib": {
+    "database": {
       "type": "library",
-      "root": "libs/database-lib",
+      "root": "libs/database",
       "entryFile": "index",
-      "sourceRoot": "libs/database-lib/src",
+      "sourceRoot": "libs/database/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/database-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
     },
-    "date-lib": {
+    "date": {
       "type": "library",
-      "root": "libs/date-lib",
+      "root": "libs/date",
       "entryFile": "index",
-      "sourceRoot": "libs/date-lib/src",
+      "sourceRoot": "libs/date/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/date-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/date/tsconfig.lib.json"
       }
     },
-    "documents-lib": {
+    "documents": {
       "type": "library",
-      "root": "libs/documents-lib",
+      "root": "libs/documents",
       "entryFile": "index",
-      "sourceRoot": "libs/documents-lib/src",
+      "sourceRoot": "libs/documents/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/documents-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/documents/tsconfig.lib.json"
       }
     },
-    "encryption-lib": {
+    "encryption": {
       "type": "library",
-      "root": "libs/encryption-lib",
+      "root": "libs/encryption",
       "entryFile": "index",
-      "sourceRoot": "libs/encryption-lib/src",
+      "sourceRoot": "libs/encryption/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/encryption-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/encryption/tsconfig.lib.json"
       }
     },
-    "excel-lib": {
+    "excel": {
       "type": "library",
-      "root": "libs/excel-lib",
+      "root": "libs/excel",
       "entryFile": "index",
-      "sourceRoot": "libs/excel-lib/src",
+      "sourceRoot": "libs/excel/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/excel-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/excel/tsconfig.lib.json"
       }
     },
-    "file-storage-lib": {
+    "file-storage": {
       "type": "library",
-      "root": "libs/file-storage-lib",
+      "root": "libs/file-storage",
       "entryFile": "index",
-      "sourceRoot": "libs/file-storage-lib/src",
+      "sourceRoot": "libs/file-storage/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/file-storage-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/file-storage/tsconfig.lib.json"
       }
     },
-    "http-client-lib": {
+    "http-client": {
       "type": "library",
-      "root": "libs/http-client-lib",
+      "root": "libs/http-client",
       "entryFile": "index",
-      "sourceRoot": "libs/http-client-lib/src",
+      "sourceRoot": "libs/http-client/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/http-client-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/http-client/tsconfig.lib.json"
       }
     },
-    "logger-lib": {
+    "workflows": {
       "type": "library",
-      "root": "libs/logger-lib",
+      "root": "libs/workflows",
       "entryFile": "index",
-      "sourceRoot": "libs/logger-lib/src",
+      "sourceRoot": "libs/workflows/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/logger-lib/tsconfig.lib.json"
-      }
-    },
-    "open-ai-client-lib": {
-      "type": "library",
-      "root": "libs/open-ai-client-lib",
-      "entryFile": "index",
-      "sourceRoot": "libs/open-ai-client-lib/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/open-ai-client-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/workflows/tsconfig.lib.json"
       }
     },
     "output-consolidation-job": {
@@ -172,58 +154,58 @@
         "tsConfigPath": "apps/public-api/tsconfig.app.json"
       }
     },
-    "queue-lib": {
+    "queue": {
       "type": "library",
-      "root": "libs/queue-lib",
+      "root": "libs/queue",
       "entryFile": "index",
-      "sourceRoot": "libs/queue-lib/src",
+      "sourceRoot": "libs/queue/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/queue-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/queue/tsconfig.lib.json"
       }
     },
-    "secrets-lib": {
+    "secrets": {
       "type": "library",
-      "root": "libs/secrets-lib",
+      "root": "libs/secrets",
       "entryFile": "index",
-      "sourceRoot": "libs/secrets-lib/src",
+      "sourceRoot": "libs/secrets/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/secrets-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/secrets/tsconfig.lib.json"
       }
     },
-    "templates-lib": {
+    "templates": {
       "type": "library",
-      "root": "libs/templates-lib",
+      "root": "libs/templates",
       "entryFile": "index",
-      "sourceRoot": "libs/templates-lib/src",
+      "sourceRoot": "libs/templates/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/templates-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/templates/tsconfig.lib.json"
       }
     },
-    "user-credits-lib": {
+    "user-credits": {
       "type": "library",
-      "root": "libs/user-credits-lib",
+      "root": "libs/user-credits",
       "entryFile": "index",
-      "sourceRoot": "libs/user-credits-lib/src",
+      "sourceRoot": "libs/user-credits/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/user-credits-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/user-credits/tsconfig.lib.json"
       }
     },
-    "users-lib": {
+    "users": {
       "type": "library",
-      "root": "libs/users-lib",
+      "root": "libs/users",
       "entryFile": "index",
-      "sourceRoot": "libs/users-lib/src",
+      "sourceRoot": "libs/users/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/users-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/users/tsconfig.lib.json"
       }
     },
-    "uuid-lib": {
+    "uuid": {
       "type": "library",
-      "root": "libs/uuid-lib",
+      "root": "libs/uuid",
       "entryFile": "index",
-      "sourceRoot": "libs/uuid-lib/src",
+      "sourceRoot": "libs/uuid/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/uuid-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/uuid/tsconfig.lib.json"
       }
     },
     "webhook-dispatch-job": {
@@ -235,22 +217,22 @@
         "tsConfigPath": "apps/webhook-dispatch-job/tsconfig.app.json"
       }
     },
-    "webhooks-lib": {
+    "webhooks": {
       "type": "library",
-      "root": "libs/webhooks-lib",
+      "root": "libs/webhooks",
       "entryFile": "index",
-      "sourceRoot": "libs/webhooks-lib/src",
+      "sourceRoot": "libs/webhooks/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/webhooks-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/webhooks/tsconfig.lib.json"
       }
     },
-    "zip-lib": {
+    "zip": {
       "type": "library",
-      "root": "libs/zip-lib",
+      "root": "libs/zip",
       "entryFile": "index",
-      "sourceRoot": "libs/zip-lib/src",
+      "sourceRoot": "libs/zip/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/zip-lib/tsconfig.lib.json"
+        "tsConfigPath": "libs/zip/tsconfig.lib.json"
       }
     }
   }

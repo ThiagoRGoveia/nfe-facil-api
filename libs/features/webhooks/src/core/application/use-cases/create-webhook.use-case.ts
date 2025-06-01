@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { WebhookDbPort } from '../ports/webhook-db.port';
 import { Webhook, WebhookStatus } from '../../domain/entities/webhook.entity';
-import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
+import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { CreateWebhookDto } from '../dtos/create-webhook.dto';

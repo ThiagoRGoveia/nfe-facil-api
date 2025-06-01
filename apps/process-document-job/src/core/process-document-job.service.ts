@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessFileUseCase } from 'apps/api/src/core/documents/application/use-cases/process-file.use-case';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 import { PinoLogger } from 'nestjs-pino';
 import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
 import { RetriableError } from './workflows/nfe/nfse-text.workflow';

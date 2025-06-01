@@ -10,7 +10,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 describe('WebhookNotifierAdapter', () => {
   let adapter: WebhookNotifierAdapter;

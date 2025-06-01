@@ -6,7 +6,7 @@ import {
 } from '../../../../api/src/core/webhooks/application/ports/http-client.port';
 import { Webhook, WebhookAuthType } from '../../../../api/src/core/webhooks/domain/entities/webhook.entity';
 import { BasicAuthConfig, OAuth2Config } from '../../../../api/src/core/webhooks/application/ports/http-client.port';
-import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
+import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 
 @Injectable()
 export class WebhookDispatcherService {

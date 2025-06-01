@@ -23,7 +23,7 @@ import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { HandleOutputFormatUseCase } from '@/core/documents/application/use-cases/handle-output-format.use-case';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 jest.setTimeout(30000);
 
 const mockBuffer = Buffer.from('test-data');

@@ -13,7 +13,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useWebhookDeliveryFactory } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
 import { BadRequestException } from '@nestjs/common';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 describe('NotifyWebhookUseCase', () => {
   let useCase: NotifyWebhookUseCase;

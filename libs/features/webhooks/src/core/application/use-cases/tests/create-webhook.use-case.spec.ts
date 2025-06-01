@@ -8,7 +8,7 @@ import { User } from '@/core/users/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { CreateWebhookDto } from '../../dtos/create-webhook.dto';
 import { BadRequestException } from '@nestjs/common';
-import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
+import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 import { ConfigService } from '@nestjs/config';
 import { WebhookAuthType } from '@/core/webhooks/domain/entities/webhook.entity';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';

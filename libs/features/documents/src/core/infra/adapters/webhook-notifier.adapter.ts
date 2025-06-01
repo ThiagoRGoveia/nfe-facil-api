@@ -5,7 +5,7 @@ import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/noti
 import { User } from '@/core/users/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
-import { DatePort } from '@/infra/adapters/date.adapter';
+import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 @Injectable()
 export class WebhookNotifierAdapter implements WebhookNotifierPort {

@@ -6,7 +6,7 @@ import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
 import { User } from '@/core/users/domain/entities/user.entity';
 import { FileProcessStatus, FileRecord } from '../../domain/entities/file-records.entity';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { ExtractedFile, ZipPort } from '@/infra/zip/zip.port';
+import { ExtractedFile, ZipPort } from 'libs/tooling/zip/src/core/zip.port';
 import { PinoLogger } from 'nestjs-pino';
 
 type FilesToAdd = {

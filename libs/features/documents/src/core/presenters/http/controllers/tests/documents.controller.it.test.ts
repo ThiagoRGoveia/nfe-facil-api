@@ -17,7 +17,7 @@ import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { ZipPort } from '@/infra/zip/zip.port';
+import { ZipPort } from 'libs/tooling/zip/src/core/zip.port';
 import { ZipAdapter } from '@/infra/zip/zip.adapter';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';

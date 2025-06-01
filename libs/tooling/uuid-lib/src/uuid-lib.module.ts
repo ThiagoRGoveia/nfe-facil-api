@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { UuidLibService } from './uuid-lib.service';
+import { UuidAdapter } from './core/uuid.adapter';
 
 @Module({
-  providers: [UuidLibService],
-  exports: [UuidLibService],
+  providers: [UuidAdapter],
+  exports: [UuidAdapter],
 })
 export class UuidLibModule {}
