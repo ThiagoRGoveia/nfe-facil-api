@@ -90,7 +90,7 @@ export function getContactFormConfig(handler: string, bundle: string) {
 
 export function ApiStack() {
   // Create the HTTP API Gateway
-  const api = new sst.aws.ApiGatewayV2(`Api-${process.env.NODE_ENV}`, {
+  const api = new sst.aws.ApiGatewayV2(`Api-production`, {
     cors: {
       allowOrigins: ['*'],
       allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

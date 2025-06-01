@@ -3,35 +3,35 @@
 /* eslint-disable */
 /* deno-fmt-ignore-file */
 
-declare module "sst" {
+declare module 'sst' {
   export interface Resource {
-    "Api-uat": {
-      "type": "sst.aws.ApiGatewayV2"
-      "url": string
-    }
-    "CreditSpendingQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "OutputConsolidationQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "ProcessDocumentQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "WebhookDispatchDLQ": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "WebhookDispatchQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
+    'Api-production': {
+      type: 'sst.aws.ApiGatewayV2';
+      url: string;
+    };
+    CreditSpendingQueue: {
+      type: 'sst.aws.Queue';
+      url: string;
+    };
+    OutputConsolidationQueue: {
+      type: 'sst.aws.Queue';
+      url: string;
+    };
+    ProcessDocumentQueue: {
+      type: 'sst.aws.Queue';
+      url: string;
+    };
+    WebhookDispatchDLQ: {
+      type: 'sst.aws.Queue';
+      url: string;
+    };
+    WebhookDispatchQueue: {
+      type: 'sst.aws.Queue';
+      url: string;
+    };
   }
 }
 /// <reference path="sst-env.d.ts" />
 
-import "sst"
-export {}
+import 'sst';
+export {};
