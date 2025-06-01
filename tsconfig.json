@@ -1,5 +1,8 @@
 {
-  "include": ["apps/**/*.ts", "libs/**/*.ts"],
+  "include": [
+    "apps/**/*.ts",
+    "libs/**/*.ts"
+  ],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -21,11 +24,137 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["apps/api/src/*"],
-      "@doc/*": ["apps/process-document-job/src/*"]
+      "@/*": [
+        "apps/api/src/*"
+      ],
+      "@doc/*": [
+        "apps/process-document-job/src/*"
+      ],
+      "defaultLibraryPrefix/auth-lib": [
+        "libs/auth-lib/src"
+      ],
+      "defaultLibraryPrefix/auth-lib/*": [
+        "libs/auth-lib/src/*"
+      ],
+      "defaultLibraryPrefix/claude-client-lib": [
+        "libs/claude-client-lib/src"
+      ],
+      "defaultLibraryPrefix/claude-client-lib/*": [
+        "libs/claude-client-lib/src/*"
+      ],
+      "defaultLibraryPrefix/csv-lib": [
+        "libs/csv-lib/src"
+      ],
+      "defaultLibraryPrefix/csv-lib/*": [
+        "libs/csv-lib/src/*"
+      ],
+      "defaultLibraryPrefix/database-lib": [
+        "libs/database-lib/src"
+      ],
+      "defaultLibraryPrefix/database-lib/*": [
+        "libs/database-lib/src/*"
+      ],
+      "defaultLibraryPrefix/date-lib": [
+        "libs/date-lib/src"
+      ],
+      "defaultLibraryPrefix/date-lib/*": [
+        "libs/date-lib/src/*"
+      ],
+      "defaultLibraryPrefix/documents-lib": [
+        "libs/documents-lib/src"
+      ],
+      "defaultLibraryPrefix/documents-lib/*": [
+        "libs/documents-lib/src/*"
+      ],
+      "defaultLibraryPrefix/encryption-lib": [
+        "libs/encryption-lib/src"
+      ],
+      "defaultLibraryPrefix/encryption-lib/*": [
+        "libs/encryption-lib/src/*"
+      ],
+      "defaultLibraryPrefix/excel-lib": [
+        "libs/excel-lib/src"
+      ],
+      "defaultLibraryPrefix/excel-lib/*": [
+        "libs/excel-lib/src/*"
+      ],
+      "defaultLibraryPrefix/file-storage-lib": [
+        "libs/file-storage-lib/src"
+      ],
+      "defaultLibraryPrefix/file-storage-lib/*": [
+        "libs/file-storage-lib/src/*"
+      ],
+      "defaultLibraryPrefix/http-client-lib": [
+        "libs/http-client-lib/src"
+      ],
+      "defaultLibraryPrefix/http-client-lib/*": [
+        "libs/http-client-lib/src/*"
+      ],
+      "defaultLibraryPrefix/logger-lib": [
+        "libs/logger-lib/src"
+      ],
+      "defaultLibraryPrefix/logger-lib/*": [
+        "libs/logger-lib/src/*"
+      ],
+      "defaultLibraryPrefix/open-ai-client-lib": [
+        "libs/open-ai-client-lib/src"
+      ],
+      "defaultLibraryPrefix/open-ai-client-lib/*": [
+        "libs/open-ai-client-lib/src/*"
+      ],
+      "defaultLibraryPrefix/queue-lib": [
+        "libs/queue-lib/src"
+      ],
+      "defaultLibraryPrefix/queue-lib/*": [
+        "libs/queue-lib/src/*"
+      ],
+      "defaultLibraryPrefix/secrets-lib": [
+        "libs/secrets-lib/src"
+      ],
+      "defaultLibraryPrefix/secrets-lib/*": [
+        "libs/secrets-lib/src/*"
+      ],
+      "defaultLibraryPrefix/templates-lib": [
+        "libs/templates-lib/src"
+      ],
+      "defaultLibraryPrefix/templates-lib/*": [
+        "libs/templates-lib/src/*"
+      ],
+      "defaultLibraryPrefix/user-credits-lib": [
+        "libs/user-credits-lib/src"
+      ],
+      "defaultLibraryPrefix/user-credits-lib/*": [
+        "libs/user-credits-lib/src/*"
+      ],
+      "defaultLibraryPrefix/uuid-lib": [
+        "libs/uuid-lib/src"
+      ],
+      "defaultLibraryPrefix/uuid-lib/*": [
+        "libs/uuid-lib/src/*"
+      ],
+      "defaultLibraryPrefix/webhooks-lib": [
+        "libs/webhooks-lib/src"
+      ],
+      "defaultLibraryPrefix/webhooks-lib/*": [
+        "libs/webhooks-lib/src/*"
+      ],
+      "defaultLibraryPrefix/zip-lib": [
+        "libs/zip-lib/src"
+      ],
+      "defaultLibraryPrefix/zip-lib/*": [
+        "libs/zip-lib/src/*"
+      ],
+      "lib/users-lib": [
+        "libs/users-lib/src"
+      ],
+      "lib/users-lib/*": [
+        "libs/users-lib/src/*"
+      ]
     }
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }
