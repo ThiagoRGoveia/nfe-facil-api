@@ -1,2 +1,1 @@
-export * from './templates-lib.module';
-export * from './templates-lib.service';
+export * from './templates.module';

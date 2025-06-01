@@ -1,2 +1,1 @@
-export * from './documents-lib.module';
-export * from './documents-lib.service';
+export * from './documents.module';

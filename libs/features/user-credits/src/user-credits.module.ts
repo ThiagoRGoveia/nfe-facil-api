@@ -1,9 +1,9 @@
 import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
-import { CreditTransactionDbPort, PaymentServicePort } from './application/ports';
-import { CreditTransactionMikroOrmDbRepository } from './infra/persistence/db/orm/credit-transaction-mikro-orm-db.repository';
-import { TopupCreditsUseCase, HandleStripeEventUseCase, SpendCreditsUseCase } from './application/use-cases';
-import { StripeController } from './presenters/http/controllers/stripe.controller';
-import { StripePaymentAdapter } from './infra/adapters/stripe';
+import { CreditTransactionDbPort, PaymentServicePort } from './core/application/ports';
+import { CreditTransactionMikroOrmDbRepository } from './core/infra/persistence/db/orm/credit-transaction-mikro-orm-db.repository';
+import { TopupCreditsUseCase, HandleStripeEventUseCase, SpendCreditsUseCase } from './core/application/use-cases';
+import { StripeController } from './core/presenters/http/controllers/stripe.controller';
+import { StripePaymentAdapter } from './core/infra/adapters/stripe';
 
 const controllers = [StripeController];
 const providers = [

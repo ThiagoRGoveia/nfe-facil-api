@@ -1,11 +1,11 @@
 import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
-import { TemplateDbPort } from './application/ports/templates-db.port';
-import { TemplateMikroOrmDbRepository } from './infra/persistence/db/orm/templates-mikro-orm-db.repository';
-import { CreateTemplateUseCase } from './application/use-cases/create-template.use-case';
-import { UpdateTemplateUseCase } from './application/use-cases/update-template.use-case';
-import { DeleteTemplateUseCase } from './application/use-cases/delete-template.use-case';
-import { TemplatesResolver } from './presenters/graphql/resolvers/templates.resolver';
-import { TemplateController } from './presenters/rest/controllers/templates.controller';
+import { TemplateDbPort } from './core/application/ports/templates-db.port';
+import { TemplateMikroOrmDbRepository } from './core/infra/persistence/db/orm/templates-mikro-orm-db.repository';
+import { CreateTemplateUseCase } from './core/application/use-cases/create-template.use-case';
+import { UpdateTemplateUseCase } from './core/application/use-cases/update-template.use-case';
+import { DeleteTemplateUseCase } from './core/application/use-cases/delete-template.use-case';
+import { TemplatesResolver } from './core/presenters/graphql/resolvers/templates.resolver';
+import { TemplateController } from './core/presenters/rest/controllers/templates.controller';
 
 const controllers = [];
 const resolvers = [];
