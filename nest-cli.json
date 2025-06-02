@@ -28,6 +28,15 @@
         "tsConfigPath": "libs/auth/tsconfig.lib.json"
       }
     },
+    "commons": {
+      "type": "library",
+      "root": "libs/commons",
+      "entryFile": "index",
+      "sourceRoot": "libs/commons/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/commons/tsconfig.lib.json"
+      }
+    },
     "contact-form-api": {
       "type": "application",
       "root": "apps/contact-form-api",
@@ -116,15 +125,6 @@
       "sourceRoot": "libs/http-client/src",
       "compilerOptions": {
         "tsConfigPath": "libs/http-client/tsconfig.lib.json"
-      }
-    },
-    "workflows": {
-      "type": "library",
-      "root": "libs/workflows",
-      "entryFile": "index",
-      "sourceRoot": "libs/workflows/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/workflows/tsconfig.lib.json"
       }
     },
     "output-consolidation-job": {
@@ -224,6 +224,15 @@
       "sourceRoot": "libs/webhooks/src",
       "compilerOptions": {
         "tsConfigPath": "libs/webhooks/tsconfig.lib.json"
+      }
+    },
+    "workflows": {
+      "type": "library",
+      "root": "libs/workflows",
+      "entryFile": "index",
+      "sourceRoot": "libs/workflows/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/workflows/tsconfig.lib.json"
       }
     },
     "zip": {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
-import { BaseDbPort } from '@/infra/ports/_base-db-port';
+import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { Filter } from '@/infra/dtos/filter.dto';

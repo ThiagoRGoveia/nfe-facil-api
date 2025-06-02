@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Webhook } from '../../domain/entities/webhook.entity';
 import { WebhookEvent } from '../../domain/entities/webhook.entity';
-import { BaseDbPort } from '@/infra/ports/_base-db-port';
+import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { RequiredEntityData } from '@mikro-orm/core';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Filter } from '@/infra/dtos/filter.dto';

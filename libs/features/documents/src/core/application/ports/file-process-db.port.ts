@@ -1,5 +1,5 @@
 import { FileRecord, FileProcessStatus } from '../../domain/entities/file-records.entity';
-import { BaseDbPort } from '@/infra/ports/_base-db-port';
+import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { Readable } from 'stream';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
 export abstract class FileProcessDbPort extends BaseDbPort<FileRecord> {

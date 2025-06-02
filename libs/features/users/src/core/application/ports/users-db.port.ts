@@ -1,5 +1,5 @@
 import { User } from '../../domain/entities/user.entity';
-import { BaseDbPort } from '@/infra/ports/_base-db-port';
+import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { RequiredEntityData } from '@mikro-orm/core';
 
 export type DtoWithClientCredentials<T> = T & {

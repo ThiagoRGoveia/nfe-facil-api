@@ -8,7 +8,7 @@ import {
   ReferenceKind,
   RequiredEntityData,
 } from '@mikro-orm/postgresql';
-import { BaseDbPort } from '@/infra/ports/_base-db-port';
+import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
