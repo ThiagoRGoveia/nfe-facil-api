@@ -8,7 +8,7 @@ import { ApiKeyStrategy } from '../api-key.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 import { UsersModule } from '@lib/users';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 

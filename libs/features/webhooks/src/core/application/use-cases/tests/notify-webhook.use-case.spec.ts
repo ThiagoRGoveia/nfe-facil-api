@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { NotifyWebhookUseCase } from '../notify-webhook.use-case';
 import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
 import { WebhookDeliveryDbPort } from '@lib/webhooks/core/webhooks.module';

@@ -7,7 +7,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { useRestModule } from '@/infra/tests/rest-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
 import { TemplatesModule } from '@lib/templates/templates.module';
@@ -25,6 +24,7 @@ import { useDbFileRecord } from '@lib/documents/core/infra/tests/factories/file-
 import { FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 import { ZipAdapter } from '@lib/zip/core/adapters/zip.adapter';
 import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { useRestModule } from '@dev-modules/dev-modules/tests/rest-integration-test.module';
 
 jest.setTimeout(100000);
 

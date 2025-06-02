@@ -28,7 +28,7 @@
     "test:watch": "jest --watch",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "nfse-doc:build": "ts-node --project tsconfig.json apps/api/src/infra/swagger/nfe-facil/nfe-facil-docs.ts",
+    "nfse-doc:build": "ts-node --project tsconfig.json libs/dev-modules/src/swagger/nfe-facil/nfe-facil-docs.ts",
     "nfse-doc:generate": "pnpm nfse-doc:build && npx @redocly/cli build-docs nfe-facil-docs.json  -o docs/nfe-facil/index.html -t mustache-templates/redoc.mustache",
     "nfse-doc:deploy": "ts-node --project tsconfig.json apps/_scripts/deploy-api-docs.ts",
     "nfse-doc:deploy:uat": "dotenv -e .env.uat -- pnpm nfse-doc:generate && dotenv -e .env.uat -- wrangler pages deploy ./docs/nfe-facil --branch uat",

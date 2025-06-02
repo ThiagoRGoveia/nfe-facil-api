@@ -8,7 +8,7 @@ import { TemplatesResolver } from '../templates.resolver';
 import { TemplatesModule } from '@lib/templates/templates.module';
 import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
-import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+import { useGraphqlModule } from '@dev-modules/dev-modules/tests/graphql-integration-test.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 jest.setTimeout(100000);

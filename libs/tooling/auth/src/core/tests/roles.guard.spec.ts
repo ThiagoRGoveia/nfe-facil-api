@@ -14,7 +14,7 @@ import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 import { UsersModule } from '@lib/users';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 

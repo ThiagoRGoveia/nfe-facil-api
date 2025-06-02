@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { RemoveFileFromBatchUseCase } from '../remove-file-from-batch.use-case';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';

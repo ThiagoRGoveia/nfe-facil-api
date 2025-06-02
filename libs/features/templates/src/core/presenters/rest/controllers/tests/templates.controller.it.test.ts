@@ -9,7 +9,7 @@ import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { TemplatesModule } from '@lib/templates/templates.module';
 import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-template.dto';
-import { useRestModule } from '@/infra/tests/rest-integration-test.module';
+import { useRestModule } from '@dev-modules/dev-modules/tests/rest-integration-test.module';
 import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
 
 jest.setTimeout(100000);

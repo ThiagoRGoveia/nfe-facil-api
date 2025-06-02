@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Webhook, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { WebhooksResolver } from '../webhooks.resolver';
-import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+import { useGraphqlModule } from '@dev-modules/dev-modules/tests/graphql-integration-test.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';

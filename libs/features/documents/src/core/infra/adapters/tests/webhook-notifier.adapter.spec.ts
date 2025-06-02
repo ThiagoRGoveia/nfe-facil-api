@@ -4,7 +4,7 @@ import { WebhookNotifierAdapter } from '../webhook-notifier.adapter';
 import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
 import { useFileRecordFactory } from '../../tests/factories/file-process.factory';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';

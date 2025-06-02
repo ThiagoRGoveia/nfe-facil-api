@@ -3,7 +3,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookMikroOrmDbRepository } from '../webhook-mikro-orm-db.repository';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 
 import {
   Webhook,

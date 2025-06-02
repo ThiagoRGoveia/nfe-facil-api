@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/postgresql';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { TemplateDbPort } from '../../ports/templates-db.port';
 import { DeleteTemplateUseCase } from '../delete-template.use-case';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';

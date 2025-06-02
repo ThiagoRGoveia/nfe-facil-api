@@ -8,7 +8,7 @@ import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { SortDirection } from '@lib/commons/dtos/sort.dto';
 import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-template.dto';

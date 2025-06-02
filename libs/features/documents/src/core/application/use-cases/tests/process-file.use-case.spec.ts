@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { ProcessFileUseCase } from '../../../../../../../workflows/src/core/application/use-cases/process-file.use-case';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { DocumentProcessorPort } from '../../ports/document-processor.port';

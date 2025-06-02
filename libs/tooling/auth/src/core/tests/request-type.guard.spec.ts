@@ -13,7 +13,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { JwtAuthGuard } from '../jwt.guard';
 import { ApiKeyAuthGuard } from '../api-key.guard';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 import { UsersModule } from '@lib/users';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 

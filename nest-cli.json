@@ -82,6 +82,15 @@
         "tsConfigPath": "libs/date/tsconfig.lib.json"
       }
     },
+    "dev-modules": {
+      "type": "library",
+      "root": "libs/dev-modules",
+      "entryFile": "index",
+      "sourceRoot": "libs/dev-modules/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/dev-modules/tsconfig.lib.json"
+      }
+    },
     "documents": {
       "type": "library",
       "root": "libs/documents",

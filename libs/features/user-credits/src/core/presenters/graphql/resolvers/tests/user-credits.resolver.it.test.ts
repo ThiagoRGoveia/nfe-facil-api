@@ -5,7 +5,7 @@
 
 // import { UserCreditsModule } from '@/core/user-credits/user-credits.module';
 // import { UsersModule } from '@lib/users/users.module';
-// import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+// import { useGraphqlModule } from '@dev-modules/dev-modules/tests/graphql-integration-test.module';
 // import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 // import { User } from '@lib/users/core/domain/entities/user.entity';
 // import { UserCreditsResolver } from '../user-credits.resolver';

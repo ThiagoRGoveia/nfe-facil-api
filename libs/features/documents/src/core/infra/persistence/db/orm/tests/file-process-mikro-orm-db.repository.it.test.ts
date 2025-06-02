@@ -3,7 +3,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 
 import { FileRecord, FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 import { useDbFileRecord, useFileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';

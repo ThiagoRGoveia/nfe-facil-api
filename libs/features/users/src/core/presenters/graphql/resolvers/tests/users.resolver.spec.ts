@@ -11,7 +11,7 @@ import { UpdatePasswordDto } from '../../../../application/dtos/update-password.
 import { useUserFactory } from '../../../../infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { RefreshClientSecretUseCase } from '../../../../application/use-cases/refresh-client-secret.use-case';
 import { UpdatePasswordUseCase } from '../../../../application/use-cases/update-password.use-case';

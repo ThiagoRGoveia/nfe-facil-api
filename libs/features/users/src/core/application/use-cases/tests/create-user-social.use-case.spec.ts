@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { UserDbPort } from '../../ports/users-db.port';
 import { CreateUserSocialUseCase } from '../create-user-social.use-case';
 import { CreateUserSocialDto } from '../../dtos/create-user-social.dto';

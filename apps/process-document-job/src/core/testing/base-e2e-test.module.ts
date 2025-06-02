@@ -8,8 +8,8 @@ import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
 import { HttpModule } from '@nestjs/axios';
-import { DatabaseLifecycleService } from '@/infra/tests/database-lifecycle.service';
 import { TogetherClient } from '@lib/workflows/clients/together-client';
+import { DatabaseLifecycleService } from '@dev-modules/dev-modules/tests/database-lifecycle.service';
 
 @Global()
 @Module({

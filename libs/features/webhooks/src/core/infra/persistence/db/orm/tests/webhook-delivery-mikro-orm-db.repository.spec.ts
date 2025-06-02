@@ -2,7 +2,7 @@ import { RequiredEntityData } from '@mikro-orm/postgresql';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookDeliveryMikroOrmDbRepository } from '../webhook-delivery-mikro-orm-db.repository';
-import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
+import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { WebhookDelivery, WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 

@@ -5,7 +5,6 @@ import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
-import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
@@ -26,6 +25,7 @@ import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { Readable } from 'stream';
+import { useGraphqlModule } from '@dev-modules/dev-modules/tests/graphql-integration-test.module';
 
 jest.setTimeout(100000);
 describe('BatchProcesses Resolver (integration)', () => {

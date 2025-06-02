@@ -16,7 +16,7 @@ import { CsvPort } from '@lib/csv/core/ports/csv.port';
 import { ExcelPort } from '@lib/excel/core/ports/excel.port';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
 import { LocalFileStorageAdapter } from '@lib/file-storage/core/adapters/local-file-storage.adapter';
 import { DownloadPath } from '@lib/documents/core/domain/value-objects/download-path.vo';

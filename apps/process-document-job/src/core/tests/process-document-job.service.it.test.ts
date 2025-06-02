@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 import { ProcessDocumentJobService } from '../process-document-job.service';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
@@ -29,6 +28,7 @@ import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-c
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 import { DocumentsModule } from '@lib/documents';
 import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 jest.setTimeout(30000);
 
 const mockBuffer = Buffer.from('test-data');

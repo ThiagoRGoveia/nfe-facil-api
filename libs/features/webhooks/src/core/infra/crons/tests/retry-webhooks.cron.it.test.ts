@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 import { RetryWebhooksCron } from '../retry-webhooks.cron';
 import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
 import { createMock } from '@golevelup/ts-jest';

@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { useRestModule } from '@/infra/tests/rest-integration-test.module';
+import { useRestModule } from '@dev-modules/dev-modules/tests/rest-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { Webhook, WebhookAuthType, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';

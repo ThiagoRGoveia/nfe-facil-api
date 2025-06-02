@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UsersResolver } from '../users.resolver';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
-import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
+import { useGraphqlModule } from '@dev-modules/dev-modules/tests/graphql-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { faker } from '@faker-js/faker';
 import { AuthPort, AuthUserDto } from '@lib/auth/core/ports/auth.port';

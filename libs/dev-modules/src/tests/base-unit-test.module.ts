@@ -3,9 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { defineConfig } from '@mikro-orm/postgresql';
 import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
-import { EncryptionPort } from '../../../../../libs/tooling/encryption/src/core/ports/encryption.port';
-import { ZipPort } from '../../../../../libs/tooling/zip/src/core/zip.port';
-import { DatePort } from '../../../../../libs/tooling/date/src/core/date.adapter';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
 import { AuthPort } from '@lib/auth/core/ports/auth.port';
@@ -13,6 +10,9 @@ import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port'
 import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { CsvPort } from '@lib/csv/core/ports/csv.port';
 import { ExcelPort } from '@lib/excel/core/ports/excel.port';
+import { ZipPort } from '@lib/zip/core/zip.port';
+import { EncryptionPort } from '@lib/encryption/core/ports/encryption.port';
+import { DatePort } from '@lib/date/core/date.adapter';
 /**
  *
  * @ignore
