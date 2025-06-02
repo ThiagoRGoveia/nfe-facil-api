@@ -12,7 +12,7 @@ import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-t
 import { SortDirection } from '@lib/commons/dtos/sort.dto';
 import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 import { CreateTemplateUseCase } from '@lib/templates/core/application/use-cases/create-template.use-case';
 import { UpdateTemplateUseCase } from '@lib/templates/core/application/use-cases/update-template.use-case';
 import { DeleteTemplateUseCase } from '@lib/templates/core/application/use-cases/delete-template.use-case';

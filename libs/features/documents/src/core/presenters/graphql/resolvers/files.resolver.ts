@@ -1,9 +1,9 @@
 import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { FileRecord } from '../../../domain/entities/file-records.entity';
 import { FileProcessDbPort } from '../../../application/ports/file-process-db.port';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
-import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { PaginatedGraphqlResponse } from '@lib/commons/graphql/factories/paginated-response.factory';
 import { Filters } from '@lib/commons/dtos/filter.dto';
 import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';

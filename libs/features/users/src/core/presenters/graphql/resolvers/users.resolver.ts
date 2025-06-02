@@ -10,11 +10,11 @@ import { DeleteUserUseCase } from '../../../application/use-cases/delete-user.us
 import { RefreshClientSecretUseCase } from '../../../application/use-cases/refresh-client-secret.use-case';
 import { UpdatePasswordUseCase } from '../../../application/use-cases/update-password.use-case';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
-import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { PaginatedGraphqlResponse } from '@lib/commons/graphql/factories/paginated-response.factory';
 import { Filters } from '@lib/commons/dtos/filter.dto';
 import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 const PaginatedUsers = PaginatedGraphqlResponse(User);
 
 @Resolver(() => User)

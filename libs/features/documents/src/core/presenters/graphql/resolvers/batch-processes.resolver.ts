@@ -1,10 +1,10 @@
 import { Args, Context, Mutation, Query, Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { BatchProcess } from '../../../domain/entities/batch-process.entity';
 import { BatchDbPort } from '../../../application/ports/batch-db.port';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 import { CreateBatchInput } from '../dtos/create-batch.input';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
-import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { PaginatedGraphqlResponse } from '@lib/commons/graphql/factories/paginated-response.factory';
 import { Filters } from '@lib/commons/dtos/filter.dto';
 import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';

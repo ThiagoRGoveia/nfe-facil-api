@@ -10,7 +10,7 @@ import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { SortDirection } from '@lib/commons/dtos/sort.dto';
 
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 import {
   CreateWebhookUseCase,
   DeleteWebhookUseCase,

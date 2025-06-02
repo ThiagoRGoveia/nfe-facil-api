@@ -7,12 +7,12 @@ import { CreateTemplateUseCase } from '../../../application/use-cases/create-tem
 import { UpdateTemplateUseCase } from '../../../application/use-cases/update-template.use-case';
 import { DeleteTemplateUseCase } from '../../../application/use-cases/delete-template.use-case';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
-import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
+import { PaginatedGraphqlResponse } from '@lib/commons/graphql/factories/paginated-response.factory';
 import { Filters } from '@lib/commons/dtos/filter.dto';
 import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
+import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
 
 const PaginatedTemplates = PaginatedGraphqlResponse(Template);
 
