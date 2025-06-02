@@ -25,3 +25,8 @@ export class UserMikroOrmDbRepository extends EntityRepository(User) implements 
     return this.em.findOne(User, { auth0Id });
   }
 }
+
+export const UserMikroOrmDbRepositoryProvider = {
+  provide: UserDbPort,
+  useClass: UserMikroOrmDbRepository,
+};

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { YogaDriver } from '@graphql-yoga/nestjs';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -65,16 +64,6 @@ export interface AppModuleOptions {
             global: true,
           },
           debug: false,
-          migrations: {
-            tableName: 'mikro_orm_migrations',
-            path: `./dist/infra/db/mikro-orm/migrations`,
-            pathTs: `./src/infra/db/mikro-orm/migrations`,
-            glob: '!(*.d).{js,ts}',
-            safe: true,
-            transactional: true,
-            allOrNothing: true,
-            emit: 'ts',
-          },
           driverOptions:
             configService.get('NODE_ENV') === 'production' || configService.get('NODE_ENV') === 'uat'
               ? { connection: { ssl: { rejectUnauthorized: false } } }
@@ -93,7 +82,7 @@ export interface AppModuleOptions {
     ToolingModule,
   ],
   providers: [UsersResolver, FilesResolver, WebhooksResolver, BatchProcessesResolver],
-  controllers: [AppController],
+  controllers: [],
   exports: [],
 })
 export class AppModule {}

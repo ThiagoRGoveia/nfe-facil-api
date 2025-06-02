@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserDbPort } from '../ports/users-db.port';
-import { CreateUserSocialDto } from '../dtos/create-user-social.dto';
-import { User, UserRole } from '../../domain/entities/user.entity';
+import { UserDbPort } from '../../../../../features/users/src/core/application/ports/users-db.port';
+import { CreateUserSocialDto } from '../../../../../features/users/src/core/application/dtos/create-user-social.dto';
+import { User, UserRole } from '../../../../../features/users/src/core/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { SecretAdapter } from '@lib/secrets/core/secret.adapter';

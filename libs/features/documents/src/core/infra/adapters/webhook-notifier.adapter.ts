@@ -80,3 +80,8 @@ export class WebhookNotifierAdapter implements WebhookNotifierPort {
     return user;
   }
 }
+
+export const WebhookNotifierAdapterProvider = {
+  provide: WebhookNotifierPort,
+  useClass: WebhookNotifierAdapter,
+};

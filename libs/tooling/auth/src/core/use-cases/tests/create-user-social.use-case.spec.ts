@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
-import { UserDbPort } from '../../ports/users-db.port';
-import { CreateUserSocialUseCase } from '../../../../../../../tooling/auth/src/core/use-cases/create-user-social.use-case';
-import { CreateUserSocialDto } from '../../dtos/create-user-social.dto';
-import { UserRole } from '../../../domain/entities/user.entity';
-import { useUserFactory } from '../../../infra/tests/factories/users.factory';
+import { CreateUserSocialUseCase } from '../create-user-social.use-case';
 import { BadRequestException } from '@nestjs/common';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
 import { AuthPort, AuthUserDto } from '@lib/auth/core/ports/auth.port';
+import { UserDbPort } from '@lib/users/core/application/ports/users-db.port';
+import { CreateUserSocialDto } from '@lib/users/core/application/dtos/create-user-social.dto';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 describe('CreateUserSocialUseCase', () => {
   let useCase: CreateUserSocialUseCase;

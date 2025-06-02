@@ -29,3 +29,8 @@ export class WebhookDeliveryMikroOrmDbRepository
     return existingDelivery;
   }
 }
+
+export const WebhookDeliveryMikroOrmDbRepositoryProvider = {
+  provide: WebhookDeliveryDbPort,
+  useClass: WebhookDeliveryMikroOrmDbRepository,
+};

@@ -4,10 +4,10 @@ import fs from 'fs';
 import path from 'path';
 
 import { NfeTextWorkflow } from '../nfse-text.workflow';
-import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
+import { PdfPort } from '@lib/workflows/infra/pdf/ports/pdf.port';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { PdfAdapter } from 'apps/process-document-job/src/infra/pdf/adapters/pdf.adapter';
+import { PdfAdapter } from '@lib/workflows/infra/pdf/adapters/pdf.adapter';
 import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { BaseE2eTestModule } from '@doc/core/testing/base-e2e-test.module';
 

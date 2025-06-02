@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../../api/src/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { INestApplication } from '@nestjs/common';
+import { AppModule } from './app.module';
 
 export interface BootstrapRestOptions {
   rawBody?: boolean;

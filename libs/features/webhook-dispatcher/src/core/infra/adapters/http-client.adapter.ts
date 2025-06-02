@@ -126,3 +126,8 @@ export class HttpClientAdapter implements HttpClientPort {
     return access_token;
   }
 }
+
+export const HttpClientAdapterProvider = {
+  provide: HttpClientPort,
+  useClass: HttpClientAdapter,
+};

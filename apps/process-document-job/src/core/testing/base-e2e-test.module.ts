@@ -6,9 +6,9 @@ import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
-import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
+import { PdfPort } from '@lib/workflows/infra/pdf/ports/pdf.port';
 import { HttpModule } from '@nestjs/axios';
-import { TogetherClient } from '@lib/workflows/clients/together-client';
+import { TogetherClient } from '@lib/workflows/infra/clients/together-client';
 import { DatabaseLifecycleService } from '@dev-modules/dev-modules/tests/database-lifecycle.service';
 
 @Global()

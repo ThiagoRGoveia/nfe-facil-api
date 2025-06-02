@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
-import { RetriableError, NonRetriableError } from '../nfe/nfse-text.workflow';
+import { RetriableError, NonRetriableError } from '../../nfe/nfse-text.workflow';
 
 type LLMConfig = {
   model: string;

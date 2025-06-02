@@ -42,3 +42,8 @@ export class PdfAdapter implements PdfPort {
     }
   }
 }
+
+export const PdfAdapterProvider = {
+  provide: PdfPort,
+  useClass: PdfAdapter,
+};

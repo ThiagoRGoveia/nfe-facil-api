@@ -32,3 +32,8 @@ export class HttpWebhookDispatcherAdapter implements WebhookDispatcherPort {
     }
   }
 }
+
+export const HttpWebhookDispatcherAdapterProvider = {
+  provide: WebhookDispatcherPort,
+  useClass: HttpWebhookDispatcherAdapter,
+};
