@@ -9,12 +9,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { LoggerModule } from 'nestjs-pino';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { DataloaderType, defineConfig } from '@mikro-orm/core';
+import { DataloaderType } from '@mikro-orm/core';
 import entities from '@lib/database/infra/persistence/mikro-orm/entities';
 import { UsersResolver } from '@lib/users';
 import { FilesResolver } from '@lib/documents/core/presenters/graphql/resolvers/files.resolver';
 import { BatchProcessesResolver } from '@lib/documents/core/presenters/graphql/resolvers/batch-processes.resolver';
 import { WebhooksResolver } from '@lib/webhooks/core/presenters/graphql/resolvers/webhooks.resolver';
+import { defineConfig } from '@mikro-orm/postgresql';
 
 export interface AppModuleOptions {
   apiType?: 'rest' | 'graphql' | 'all';
@@ -93,5 +94,6 @@ export interface AppModuleOptions {
   ],
   providers: [UsersResolver, FilesResolver, WebhooksResolver, BatchProcessesResolver],
   controllers: [AppController],
+  exports: [],
 })
 export class AppModule {}

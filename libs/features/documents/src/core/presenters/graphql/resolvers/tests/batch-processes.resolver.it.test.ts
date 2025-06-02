@@ -18,7 +18,7 @@ import { ZipAdapter } from '@lib/zip/core/adapters/zip.adapter';
 import { TemplatesModule } from '@lib/templates/templates.module';
 import { DocumentsModule } from '@lib/documents/documents.module';
 import { WebhookNotifierPort } from '@lib/documents/core/application/ports/webhook-notifier.port';
-import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DocumentProcessorPort } from '@lib/workflows/core/application/ports/document-processor.port';
 import { ConfigService } from '@nestjs/config';
 import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';

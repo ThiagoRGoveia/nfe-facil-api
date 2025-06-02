@@ -8,18 +8,14 @@ import { AsyncBatchProcessUseCase } from './core/application/use-cases/async-bat
 // Ports
 import { BatchDbPort } from './core/application/ports/batch-db.port';
 import { FileProcessDbPort } from './core/application/ports/file-process-db.port';
-import { WebhookNotifierPort } from './core/application/ports/webhook-notifier.port';
 
 // Repositories
 import { BatchMikroOrmRepository } from './core/infra/persistence/db/orm/batch-process-mikro-orm-db.repository';
 import { FileProcessMikroOrmDbRepository } from './core/infra/persistence/db/orm/file-process-mikro-orm-db.repository';
 
 // Adapters
-import { WebhookNotifierAdapter } from './core/infra/adapters/webhook-notifier.adapter';
-import { DocumentProcessorPort } from './core/application/ports/document-processor.port';
-import { DocumentProcessorAdapter } from './core/infra/adapters/document-processor.adapter';
-import { HandleOutputFormatUseCase } from './core/application/use-cases/handle-output-format.use-case';
 import { TriggerOutputConsolidationUseCase } from './core/application/use-cases/trigger-output-consolidation.use-case';
+import { TriggerFileProcessUseCase } from './core/application/use-cases/trigger-file-process.use-case';
 
 @Global()
 @Module({
@@ -29,8 +25,8 @@ import { TriggerOutputConsolidationUseCase } from './core/application/use-cases/
     AddFileToBatchUseCase,
     CancelBatchProcessUseCase,
     AsyncBatchProcessUseCase,
-    HandleOutputFormatUseCase,
     TriggerOutputConsolidationUseCase,
+    TriggerFileProcessUseCase,
     {
       provide: BatchDbPort,
       useClass: BatchMikroOrmRepository,
@@ -39,14 +35,6 @@ import { TriggerOutputConsolidationUseCase } from './core/application/use-cases/
       provide: FileProcessDbPort,
       useClass: FileProcessMikroOrmDbRepository,
     },
-    {
-      provide: WebhookNotifierPort,
-      useClass: WebhookNotifierAdapter,
-    },
-    {
-      provide: DocumentProcessorPort,
-      useClass: DocumentProcessorAdapter,
-    },
   ],
   exports: [
     CreateBatchProcessUseCase,
@@ -54,12 +42,10 @@ import { TriggerOutputConsolidationUseCase } from './core/application/use-cases/
     AddFileToBatchUseCase,
     CancelBatchProcessUseCase,
     AsyncBatchProcessUseCase,
-    HandleOutputFormatUseCase,
     TriggerOutputConsolidationUseCase,
     BatchDbPort,
     FileProcessDbPort,
-    WebhookNotifierPort,
-    DocumentProcessorPort,
+    TriggerFileProcessUseCase,
   ],
 })
 export class DocumentsModule {}

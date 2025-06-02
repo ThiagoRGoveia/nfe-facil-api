@@ -20,3 +20,8 @@ export class DocumentProcessorAdapter implements DocumentProcessorPort {
     return workflow.execute(fileBuffer, template);
   }
 }
+
+export const DocumentProcessorAdapterProvider = {
+  provide: DocumentProcessorPort,
+  useClass: DocumentProcessorAdapter,
+};

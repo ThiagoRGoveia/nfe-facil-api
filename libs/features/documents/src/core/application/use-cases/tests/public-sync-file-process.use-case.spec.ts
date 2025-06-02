@@ -9,7 +9,7 @@ import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port'
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { ConfigService } from '@nestjs/config';
-import { DocumentProcessorPort } from '../../ports/document-processor.port';
+import { DocumentProcessorPort } from '../../../../../../../workflows/src/core/application/ports/document-processor.port';
 import { PublicFileProcessDbPort } from '../../ports/public-file-process-db.port';
 import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';

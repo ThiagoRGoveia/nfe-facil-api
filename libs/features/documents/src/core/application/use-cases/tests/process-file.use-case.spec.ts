@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { ProcessFileUseCase } from '../../../../../../../workflows/src/core/application/use-cases/process-file.use-case';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
-import { DocumentProcessorPort } from '../../ports/document-processor.port';
+import { DocumentProcessorPort } from '../../../../../../../workflows/src/core/application/ports/document-processor.port';
 import { WebhookNotifierPort } from '../../ports/webhook-notifier.port';
 import { useFileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';
 import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';

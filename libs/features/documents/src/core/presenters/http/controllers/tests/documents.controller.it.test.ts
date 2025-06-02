@@ -17,7 +17,7 @@ import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { Readable } from 'stream';
 import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { DocumentsModule } from '@lib/documents/documents.module';
-import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DocumentProcessorPort } from '@lib/workflows/core/application/ports/document-processor.port';
 import { WebhookNotifierPort } from '@lib/documents/core/application/ports/webhook-notifier.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { useDbFileRecord } from '@lib/documents/core/infra/tests/factories/file-process.factory';

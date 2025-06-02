@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
-import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DocumentProcessorPort } from '@lib/workflows/core/application/ports/document-processor.port';
 import { WebhookNotifierPort } from '@lib/documents/core/application/ports/webhook-notifier.port';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';

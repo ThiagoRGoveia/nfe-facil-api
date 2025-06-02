@@ -27,7 +27,7 @@ import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/b
 import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
 import { DatePort } from '@lib/date/core/date.adapter';
 import { DocumentsModule } from '@lib/documents';
-import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DocumentProcessorPort } from '@lib/workflows/core/application/ports/document-processor.port';
 import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';
 jest.setTimeout(30000);
 

@@ -10,7 +10,7 @@ import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { ConfigService } from '@nestjs/config';
 import { PublicFileProcessDbPort } from '@lib/documents/core/application/ports/public-file-process-db.port';
 import { CreateBatchDto, FileDto } from '@lib/documents/core/application/dtos/create-batch.dto';
-import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DocumentProcessorPort } from '@lib/workflows/core/application/ports/document-processor.port';
 import { DownloadPath } from '@lib/documents/core/domain/value-objects/download-path.vo';
 import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
 

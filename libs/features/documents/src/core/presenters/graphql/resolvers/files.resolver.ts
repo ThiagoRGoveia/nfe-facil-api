@@ -8,16 +8,17 @@ import { Filters } from '@lib/commons/dtos/filter.dto';
 import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { ProcessFileUseCase } from '@lib/workflows/core/application/use-cases/process-file.use-case';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { TriggerFileProcessUseCase } from '../../../application/use-cases/trigger-file-process.use-case';
+import { NotFoundException } from '@nestjs/common';
 const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 
 @Resolver(() => FileRecord)
 export class FilesResolver {
   constructor(
     private readonly fileProcessDbPort: FileProcessDbPort,
-    private readonly processFileUseCase: ProcessFileUseCase,
     private readonly fileStorage: FileStoragePort,
+    private readonly triggerFileProcessUseCase: TriggerFileProcessUseCase,
   ) {}
 
   @Query(() => PaginatedFiles)
@@ -35,8 +36,13 @@ export class FilesResolver {
   }
 
   @Mutation(() => FileRecord)
-  processFile(@Args('fileId', { type: () => String }) fileId: string): Promise<FileRecord> {
-    return this.processFileUseCase.execute({ fileId });
+  async processFile(@Args('fileId', { type: () => String }) fileId: string): Promise<FileRecord> {
+    const file = await this.fileProcessDbPort.findById(fileId);
+    if (!file) {
+      throw new NotFoundException('File not found');
+    }
+    await this.triggerFileProcessUseCase.execute(file);
+    return file;
   }
 
   @ResolveField(() => String, { nullable: true })

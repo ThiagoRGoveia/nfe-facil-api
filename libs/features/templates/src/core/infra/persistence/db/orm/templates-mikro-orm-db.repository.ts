@@ -5,3 +5,8 @@ import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-
 
 @Injectable()
 export class TemplateMikroOrmDbRepository extends EntityRepository(Template) implements TemplateDbPort {}
+
+export const TemplateMikroOrmDbRepositoryProvider = {
+  provide: TemplateDbPort,
+  useClass: TemplateMikroOrmDbRepository,
+};

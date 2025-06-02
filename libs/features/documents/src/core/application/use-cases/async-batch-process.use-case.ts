@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';
 import { PinoLogger } from 'nestjs-pino';
+import { TriggerFileProcessUseCase } from './trigger-file-process.use-case';
 
 @Injectable()
 export class AsyncBatchProcessUseCase {
@@ -17,6 +18,7 @@ export class AsyncBatchProcessUseCase {
     private readonly queuePort: QueuePort,
     private readonly configService: ConfigService,
     private readonly logger: PinoLogger,
+    private readonly triggerFileProcessUseCase: TriggerFileProcessUseCase,
   ) {
     const queueName = this.configService.get<string>('DOCUMENT_PROCESSING_QUEUE');
 
@@ -47,29 +49,15 @@ export class AsyncBatchProcessUseCase {
 
     do {
       files = await this.fileProcessRepository.findByBatchPaginated(batchId, limit, offset);
-      await this.processFiles(files, batchId);
+      await this.processFiles(files);
       offset += limit;
     } while (files.length === limit);
   }
 
-  private async processFiles(files: FileRecord[], batchId: string) {
+  private async processFiles(files: FileRecord[]) {
     await Promise.all(
       files.map(async (doc) => {
-        try {
-          await this.queuePort.sendMessage(
-            this.queueName,
-            {
-              fileId: doc.id,
-            },
-            {
-              fifo: true,
-              groupId: batchId,
-            },
-          );
-        } catch (error) {
-          this.logger.error(`Failed to queue file ${doc.fileName}: %o`, error);
-          throw new ServiceUnavailableException('Failed to process file');
-        }
+        await this.triggerFileProcessUseCase.execute(doc);
       }),
     );
   }
