@@ -12,3 +12,8 @@ export class CreditTransactionMikroOrmDbRepository
     return this.em.findOne(CreditTransaction, { externalOperationId: paymentExternalId });
   }
 }
+
+export const CreditTransactionMikroOrmDbRepositoryProvider = {
+  provide: CreditTransactionDbPort,
+  useClass: CreditTransactionMikroOrmDbRepository,
+};
