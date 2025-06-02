@@ -13,6 +13,7 @@ import { FilesResolver } from '@lib/documents/core/presenters/graphql/resolvers/
 import { BatchProcessesResolver } from '@lib/documents/core/presenters/graphql/resolvers/batch-processes.resolver';
 import { WebhooksResolver } from '@lib/webhooks/core/presenters/graphql/resolvers/webhooks.resolver';
 import { dbConfig } from '@lib/database/infra/config/config';
+import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
 
 export interface AppModuleOptions {
   apiType?: 'rest' | 'graphql' | 'all';
@@ -25,20 +26,7 @@ export interface AppModuleOptions {
     }),
     HttpModule,
     LoggerModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        forRoutes: ['*'],
-        pinoHttp:
-          configService.get('NODE_ENV') !== 'production' && configService.get('NODE_ENV') !== 'uat'
-            ? {
-                transport: {
-                  target: 'pino-pretty',
-                  options: {
-                    colorize: true,
-                  },
-                },
-              }
-            : undefined,
-      }),
+      useFactory: loggerConfig,
       inject: [ConfigService],
     }),
     MikroOrmModule.forRootAsync({

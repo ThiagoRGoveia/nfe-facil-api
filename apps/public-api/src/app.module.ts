@@ -7,6 +7,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AppController } from '../app.controller';
 import { dbConfig } from '@lib/database/infra/config/config';
+import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
 
 export interface AppModuleOptions {
   apiType?: 'rest' | 'graphql' | 'all';
@@ -19,20 +20,7 @@ export interface AppModuleOptions {
     }),
     HttpModule,
     LoggerModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        forRoutes: ['*'],
-        pinoHttp:
-          configService.get('NODE_ENV') !== 'production' && configService.get('NODE_ENV') !== 'uat'
-            ? {
-                transport: {
-                  target: 'pino-pretty',
-                  options: {
-                    colorize: true,
-                  },
-                },
-              }
-            : undefined,
-      }),
+      useFactory: loggerConfig,
       inject: [ConfigService],
     }),
     MikroOrmModule.forRootAsync({
