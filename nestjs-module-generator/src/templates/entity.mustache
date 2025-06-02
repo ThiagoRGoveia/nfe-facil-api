@@ -1,9 +1,0 @@
-import { Entity, PrimaryKey } from '@mikro-orm/core';
-import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
-import { Field, ObjectType } from '@nestjs/graphql';
-@ObjectType()
-@Entity({ tableName: '{{singularSnake}}' })
-export class {{singularPascal}} extends BaseEntity {
-  @PrimaryKey()
-  id: number;
-} 
