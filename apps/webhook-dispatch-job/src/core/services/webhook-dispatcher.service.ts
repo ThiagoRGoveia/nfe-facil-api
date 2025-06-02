@@ -3,7 +3,7 @@ import {
   HttpClientPort,
   HttpRequestConfig,
   OAuth2Config,
-} from '@lib/webhooks/core/application/ports/http-client.port';
+} from '@lib/webhook-dispatcher/core/application/ports/http-client.port';
 import { WebhookDelivery } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { Webhook, WebhookAuthType } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { Injectable } from '@nestjs/common';

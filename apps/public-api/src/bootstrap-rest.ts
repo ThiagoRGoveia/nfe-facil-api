@@ -14,7 +14,7 @@ export async function bootstrapRest(options: BootstrapRestOptions = {}): Promise
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  const app = await NestFactory.create(AppModule.forRoot({ apiType: 'rest' }), {
+  const app = await NestFactory.create(AppModule, {
     rawBody: options.rawBody ?? false,
   });
 

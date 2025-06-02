@@ -3,7 +3,7 @@ import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
 
 export enum PublicFileProcessStatus {
   COMPLETED = 'COMPLETED',

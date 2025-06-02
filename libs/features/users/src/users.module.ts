@@ -1,4 +1,4 @@
-import { Global, Module, DynamicModule, Inject, Optional } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { UserDbPort } from './core/application/ports/users-db.port';
 import { UserMikroOrmDbRepository } from './core/infra/persistence/db/orm/users-mikro-orm-db.repository';
 import { UsersResolver } from './core/presenters/graphql/resolvers/users.resolver';
@@ -9,43 +9,31 @@ import { RefreshClientSecretUseCase } from './core/application/use-cases/refresh
 import { UpdatePasswordUseCase } from './core/application/use-cases/update-password.use-case';
 import { CreateUserSocialUseCase } from './core/application/use-cases/create-user-social.use-case';
 
-const controllers = [];
-const resolvers = [UsersResolver];
-const defaultProviders = [
-  {
-    provide: UserDbPort,
-    useClass: UserMikroOrmDbRepository,
-  },
-  CreateUserUseCase,
-  UpdateUserUseCase,
-  DeleteUserUseCase,
-  RefreshClientSecretUseCase,
-  UpdatePasswordUseCase,
-  CreateUserSocialUseCase,
-];
-const exportValues = [
-  UserDbPort,
-  CreateUserUseCase,
-  UpdateUserUseCase,
-  DeleteUserUseCase,
-  RefreshClientSecretUseCase,
-  UpdatePasswordUseCase,
-  CreateUserSocialUseCase,
-];
-
 @Global()
-@Module({})
-export class UsersModule {
-  static register(@Optional() @Inject('API_TYPE') apiType: 'rest' | 'graphql' | 'all' | 'none' = 'all'): DynamicModule {
-    const providers = [...(apiType === 'graphql' || apiType === 'all' ? resolvers : []), ...defaultProviders];
-    return {
-      module: UsersModule,
-      controllers: apiType === 'rest' || apiType === 'all' ? controllers : [],
-      providers,
-      exports: exportValues,
-    };
-  }
-}
+@Module({
+  providers: [
+    {
+      provide: UserDbPort,
+      useClass: UserMikroOrmDbRepository,
+    },
+    CreateUserUseCase,
+    UpdateUserUseCase,
+    DeleteUserUseCase,
+    RefreshClientSecretUseCase,
+    UpdatePasswordUseCase,
+    CreateUserSocialUseCase,
+  ],
+  exports: [
+    UserDbPort,
+    CreateUserUseCase,
+    UpdateUserUseCase,
+    DeleteUserUseCase,
+    RefreshClientSecretUseCase,
+    UpdatePasswordUseCase,
+    CreateUserSocialUseCase,
+  ],
+})
+export class UsersModule {}
 
 export {
   UserDbPort,

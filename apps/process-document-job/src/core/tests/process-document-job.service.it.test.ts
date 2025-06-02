@@ -11,7 +11,7 @@ import { useDbFileRecord } from '@lib/documents/core/infra/tests/factories/file-
 import { FileProcessStatus, FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
 import { TemplatesModule } from '@lib/templates/templates.module';
 import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
-import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
+import { HttpClientPort } from '@lib/webhook-dispatcher/core/application/ports/http-client.port';
 import { createMock } from '@golevelup/ts-jest';
 import {
   Webhook,
@@ -25,7 +25,7 @@ import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/bat
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
 import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
 import { DocumentsModule } from '@lib/documents';
 import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
 import { BaseIntegrationTestModule } from '@dev-modules/dev-modules/tests/base-integration-test.module';

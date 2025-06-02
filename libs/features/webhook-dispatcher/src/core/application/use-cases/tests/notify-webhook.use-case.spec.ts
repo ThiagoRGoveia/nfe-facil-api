@@ -3,8 +3,6 @@ import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { NotifyWebhookUseCase } from '../notify-webhook.use-case';
-import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
-import { WebhookDeliveryDbPort } from '@lib/webhooks/core/webhooks.module';
 import { Webhook, WebhookEvent, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
@@ -12,8 +10,10 @@ import { User } from '@lib/users/core/domain/entities/user.entity';
 import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { useWebhookDeliveryFactory } from '@lib/webhooks/core/infra/tests/factories/webhook-deliveries.factory';
 import { BadRequestException } from '@nestjs/common';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
 import { WebhookDispatcherPort } from '../../ports/webhook-dispatcher.port';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { WebhookDeliveryDbPort } from '../../ports/webhook-delivery-db.port';
 
 describe('NotifyWebhookUseCase', () => {
   let useCase: NotifyWebhookUseCase;

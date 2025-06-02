@@ -6,15 +6,13 @@ import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-c
 import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-cases/sync-file-process.use-case';
 import { NFSeWebhooksController } from '@lib/documents/core/presenters/http/controllers/nfse-webhooks.controller';
 import { NFSeController } from '@lib/documents/core/presenters/http/controllers/nfse.controller';
-import {
-  CreateWebhookUseCase,
-  DeleteWebhookUseCase,
-  NotifyWebhookUseCase,
-  UpdateWebhookUseCase,
-  WebhookDbPort,
-} from '@lib/webhooks/core/webhooks.module';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { CreateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/create-webhook.use-case';
+import { UpdateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/update-webhook.use-case';
+import { DeleteWebhookUseCase } from '@lib/webhooks/core/application/use-cases/delete-webhook.use-case';
 
 @Module({
   imports: [

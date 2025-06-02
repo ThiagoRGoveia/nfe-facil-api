@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ProcessDocumentJobService } from './core/process-document-job.service';
-import { baseImports } from 'apps/api/base-module-imports';
 import { ToolingModule } from '@/infra/tooling.module';
 import { FeatureModule } from '@/core/feature.module';
 import { ConfigModule } from '@nestjs/config';
@@ -12,8 +11,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     ToolingModule,
-    FeatureModule.register('none'),
-    ...baseImports,
+    FeatureModule,
   ],
   providers: [ProcessDocumentJobService],
 })

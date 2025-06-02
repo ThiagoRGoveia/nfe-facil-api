@@ -19,7 +19,7 @@ export async function bootstrapGraphQL(options: BootstrapGraphQLOptions = {}): P
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  const app = await NestFactory.create(AppModule.forRoot({ apiType: 'graphql' }), {
+  const app = await NestFactory.create(AppModule, {
     rawBody: options.rawBody ?? false,
   });
 

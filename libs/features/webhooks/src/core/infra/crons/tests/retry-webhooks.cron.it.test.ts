@@ -8,7 +8,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
-import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
+import { HttpClientPort } from '@lib/webhook-dispatcher/core/application/ports/http-client.port';
 import { useDbWebhookDelivery } from '../../tests/factories/webhook-deliveries.factory';
 
 jest.setTimeout(100000);

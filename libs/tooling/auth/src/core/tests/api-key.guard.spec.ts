@@ -35,11 +35,7 @@ describe('ApiKeyAuthGuard (integration)', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        BaseIntegrationTestModule,
-        PassportModule.register({ defaultStrategy: 'api-key' }),
-        UsersModule.register('none'),
-      ],
+      imports: [BaseIntegrationTestModule, PassportModule.register({ defaultStrategy: 'api-key' }), UsersModule],
       controllers: [TestController],
       providers: [
         ApiKeyStrategy,

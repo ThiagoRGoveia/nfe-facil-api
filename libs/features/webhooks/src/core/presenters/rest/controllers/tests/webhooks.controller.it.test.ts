@@ -7,11 +7,12 @@ import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { useRestModule } from '@dev-modules/dev-modules/tests/rest-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { Webhook, WebhookAuthType, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
-import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
-import { NotifyWebhookUseCase, WebhooksModule } from '@lib/webhooks/core/webhooks.module';
+import { HttpClientPort } from '@lib/webhook-dispatcher/core/application/ports/http-client.port';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
 import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { WebhookEvent } from '@lib/documents/core/application/dtos/webhook-events.dto';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 
 jest.setTimeout(100000);
 describe('WebhooksController (REST Integration)', () => {

@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';
-import { NotifyWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 
 @Injectable()
 export class WebhookNotifierAdapter implements WebhookNotifierPort {

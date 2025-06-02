@@ -21,8 +21,8 @@ import { Request } from '@lib/commons/types/express/request';
 import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { SortDirection } from '@lib/commons/dtos/sort.dto';
-import { NotifyWebhookUseCase } from '../../../application/use-cases/notify-webhook.use-case';
 import { NotifyWebhookDto } from '../../../application/dtos/notify-webhook.dto';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 
 const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
 
@@ -109,7 +109,7 @@ export class WebhooksController {
   @ApiOkResponse({ description: 'Notifications dispatched successfully' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Invalid input data' })
   @HttpCode(HttpStatus.OK)
-  async notify(@Req() req: Request, @Body() notifyDto: NotifyWebhookDto): Promise<void> {
+  notify(@Req() req: Request, @Body() notifyDto: NotifyWebhookDto): Promise<void> {
     return this.notifyWebhookUseCase.execute({
       user: req.user,
       ...notifyDto,

@@ -1,6 +1,6 @@
+import { RetryWebhookDeliveryUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/retry-webhook-delivery.use-case';
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
-import { RetryWebhookDeliveryUseCase } from '../../application/use-cases/retry-webhook-delivery.use-case';
 
 @Injectable()
 export class RetryWebhooksCron {

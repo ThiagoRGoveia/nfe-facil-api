@@ -1,5 +1,5 @@
+import { WebhookDelivery } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { Injectable } from '@nestjs/common';
-import { WebhookDelivery } from '../../domain/entities/webhook-delivery.entity';
 
 @Injectable()
 export abstract class WebhookDispatcherPort {

@@ -13,13 +13,6 @@ import {
 } from '@nestjs/swagger';
 import { CreateWebhookDto } from '@lib/webhooks/core/application/dtos/create-webhook.dto';
 import { UpdateWebhookDto } from '@lib/webhooks/core/application/dtos/update-webhook.dto';
-import {
-  CreateWebhookUseCase,
-  DeleteWebhookUseCase,
-  NotifyWebhookUseCase,
-  UpdateWebhookUseCase,
-  WebhookDbPort,
-} from '@lib/webhooks/core/webhooks.module';
 import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
@@ -38,6 +31,11 @@ import {
   BatchFinishedPayloadPtDto,
 } from '../dtos/webhook-events-pt.dto';
 import { NotifyWebhookDto } from '@lib/webhooks/core/application/dtos/notify-webhook.dto';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { CreateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/create-webhook.use-case';
+import { UpdateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/update-webhook.use-case';
+import { DeleteWebhookUseCase } from '@lib/webhooks/core/application/use-cases/delete-webhook.use-case';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 
 const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
 
@@ -237,7 +235,7 @@ export class NFSeWebhooksController {
   @ApiOkResponse({ description: 'Notificações disparadas com sucesso' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Dados de entrada inválidos' })
   @HttpCode(HttpStatus.OK)
-  async notify(@Req() req: Request, @Body() notifyDto: NotifyWebhookDto): Promise<void> {
+  notify(@Req() req: Request, @Body() notifyDto: NotifyWebhookDto): Promise<void> {
     return this.notifyWebhookUseCase.execute({
       user: req.user,
       ...notifyDto,

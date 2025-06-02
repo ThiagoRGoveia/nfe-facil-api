@@ -12,8 +12,8 @@ import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
-import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
 
 const PaginatedWebhooks = PaginatedGraphqlResponse(Webhook);
 
@@ -32,7 +32,7 @@ export class WebhooksResolver {
   }
 
   @Query(() => PaginatedWebhooks)
-  async findAllWebhooks(
+  findAllWebhooks(
     @Context() context: GraphqlExpressContext,
     @Args('filters', { nullable: true }) filters?: Filters,
     @Args('pagination', { nullable: true }) pagination?: Pagination,

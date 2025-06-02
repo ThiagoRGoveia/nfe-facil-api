@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { WebhookDbPort } from '../ports/webhook-db.port';
 import { WebhookDeliveryDbPort } from '../ports/webhook-delivery-db.port';
 import { WebhookDispatcherPort } from '../ports/webhook-dispatcher.port';
-import { WebhookEvent } from '../../domain/entities/webhook.entity';
-import { WebhookDeliveryStatus } from '../../domain/entities/webhook-delivery.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
+import { WebhookEvent } from '@lib/documents/core/application/dtos/webhook-events.dto';
 
 export interface NotifyWebhookParams {
   user: User;

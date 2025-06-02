@@ -5,7 +5,7 @@ import { BatchProcess } from './batch-process.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DatePort } from '@lib/date/core/date.adapter';
 export enum FileProcessStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',

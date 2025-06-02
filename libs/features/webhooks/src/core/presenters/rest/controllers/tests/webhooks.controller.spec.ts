@@ -9,15 +9,17 @@ import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { SortDirection } from '@lib/commons/dtos/sort.dto';
-import { CreateWebhookUseCase, NotifyWebhookUseCase, WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
-import { UpdateWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
-import { DeleteWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
 import { CreateWebhookDto } from '@lib/webhooks/core/application/dtos/create-webhook.dto';
 import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { UpdateWebhookDto } from '@lib/webhooks/core/application/dtos/update-webhook.dto';
 import { WebhookEvent } from '@lib/documents/core/application/dtos/webhook-events.dto';
 import { NotifyWebhookDto } from '@lib/webhooks/core/application/dtos/notify-webhook.dto';
+import { CreateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/create-webhook.use-case';
+import { UpdateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/update-webhook.use-case';
+import { DeleteWebhookUseCase } from '@lib/webhooks/core/application/use-cases/delete-webhook.use-case';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { NotifyWebhookUseCase } from '@lib/webhook-dispatcher/core/application/use-cases/notify-webhook.use-case';
 
 describe('WebhooksController', () => {
   let controller: WebhooksController;

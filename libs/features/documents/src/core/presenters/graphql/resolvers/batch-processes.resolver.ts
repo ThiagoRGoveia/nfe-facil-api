@@ -10,25 +10,21 @@ import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PublicSyncFileProcessUseCase } from '../../../../../../../workflows/src/core/application/use-cases/public-sync-file-process.use-case';
-import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
+import { BadRequestException } from '@nestjs/common';
 import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
-import { Public } from '@lib/auth/core/public.decorator';
-import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
+import { TriggerOutputConsolidationUseCase } from '@lib/documents/core/application/use-cases/trigger-output-consolidation.use-case';
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
 @Resolver(() => BatchProcess)
 export class BatchProcessesResolver {
   constructor(
     private readonly batchDbPort: BatchDbPort,
-    private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
     private readonly createBatchProcessUseCase: CreateBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
-    private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
     private readonly fileStorage: FileStoragePort,
+    private readonly triggerOutputConsolidationUseCase: TriggerOutputConsolidationUseCase,
   ) {}
 
   @Query(() => BatchProcess, { nullable: true })
@@ -96,50 +92,7 @@ export class BatchProcessesResolver {
 
   @Mutation(() => BatchProcess)
   async processOutputConsolidation(@Args('batchId', { type: () => String }) batchId: string): Promise<BatchProcess> {
-    const batch = await this.batchDbPort.findById(batchId);
-
-    if (!batch) {
-      throw new NotFoundException(`Batch with ID ${batchId} not found`);
-    }
-
-    await this.handleOutputFormatUseCase.execute(batch);
-
-    return this.batchDbPort.findByIdOrFail(batchId);
-  }
-
-  @Public()
-  @Mutation(() => PublicSyncProcessResponse)
-  async publicProcessBatchSync(@Args('input') input: CreateBatchInput) {
-    const fileBuffers: Array<{ buffer: Buffer; fileName: string }> = [];
-
-    if (input.files) {
-      for (const filePromise of input.files) {
-        const file = await filePromise;
-
-        const fileName = file.filename.toLowerCase();
-        if (!fileName.endsWith('.zip') && !fileName.endsWith('.pdf')) {
-          throw new BadRequestException('Invalid file type. Only ZIP and PDF are allowed');
-        }
-
-        const buffer = await this.streamToBuffer(file.createReadStream);
-
-        fileBuffers.push({
-          buffer,
-          fileName: file.filename,
-        });
-      }
-    }
-
-    const result = await this.publicSyncBatchProcessUseCase.execute({
-      templateId: input.templateId,
-      outputFormats: input.outputFormats,
-      files: fileBuffers.map((f) => ({
-        data: f.buffer,
-        fileName: f.fileName,
-      })),
-    });
-
-    return PublicSyncProcessResponse.fromUrls(result);
+    return this.triggerOutputConsolidationUseCase.execute(batchId);
   }
 
   @ResolveField(() => User, { nullable: true })

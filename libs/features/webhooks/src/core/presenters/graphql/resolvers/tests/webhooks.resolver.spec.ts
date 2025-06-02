@@ -11,14 +11,13 @@ import { SortDirection } from '@lib/commons/dtos/sort.dto';
 
 import { useUnitTestModule } from '@dev-modules/dev-modules/tests/base-unit-test.module';
 import { GraphqlExpressContext } from '@lib/commons/graphql/types/context.type';
-import {
-  CreateWebhookUseCase,
-  DeleteWebhookUseCase,
-  UpdateWebhookUseCase,
-  WebhookDbPort,
-} from '@lib/webhooks/core/webhooks.module';
+
 import { CreateWebhookDto } from '@lib/webhooks/core/application/dtos/create-webhook.dto';
 import { UpdateWebhookDto } from '@lib/webhooks/core/application/dtos/update-webhook.dto';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
+import { CreateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/create-webhook.use-case';
+import { UpdateWebhookUseCase } from '@lib/webhooks/core/application/use-cases/update-webhook.use-case';
+import { DeleteWebhookUseCase } from '@lib/webhooks/core/application/use-cases/delete-webhook.use-case';
 
 describe('WebhooksResolver', () => {
   let resolver: WebhooksResolver;

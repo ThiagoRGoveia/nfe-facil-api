@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { WebhookDelivery } from '../../domain/entities/webhook-delivery.entity';
 import { RequiredEntityData } from '@mikro-orm/core';
 import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
+import { WebhookDelivery } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 
 @Injectable()
 export abstract class WebhookDeliveryDbPort extends BaseDbPort<WebhookDelivery> {

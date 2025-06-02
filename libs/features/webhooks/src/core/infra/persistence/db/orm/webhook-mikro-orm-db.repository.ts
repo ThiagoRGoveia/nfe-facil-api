@@ -1,6 +1,6 @@
 import { RequiredEntityData } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
-import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
+import { WebhookDbPort } from '@lib/webhooks/core/application/ports/webhook-db.port';
 import { Webhook, WebhookEvent, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { Filter } from '@lib/commons/dtos/filter.dto';

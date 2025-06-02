@@ -60,7 +60,7 @@ describe('RequestTypeGuard (integration)', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         BaseIntegrationTestModule,
-        UsersModule.register('none'),
+        UsersModule,
         GraphQLModule.forRoot<YogaDriverConfig>({
           driver: YogaDriver,
           autoSchemaFile: true,

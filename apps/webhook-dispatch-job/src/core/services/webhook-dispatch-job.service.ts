@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
-import { WebhookDeliveryDbPort } from '@lib/webhooks/core/webhooks.module';
 import { WebhookDispatcherService } from 'apps/webhook-dispatch-job/src/core/services/webhook-dispatcher.service';
 import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
+import { WebhookDeliveryDbPort } from '@lib/webhook-dispatcher/core/application/ports/webhook-delivery-db.port';
 
 interface WebhookDispatchMessage {
   deliveryId: string;

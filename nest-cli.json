@@ -226,6 +226,15 @@
         "tsConfigPath": "apps/webhook-dispatch-job/tsconfig.app.json"
       }
     },
+    "webhook-dispatcher": {
+      "type": "library",
+      "root": "libs/webhook-dispatcher",
+      "entryFile": "index",
+      "sourceRoot": "libs/webhook-dispatcher/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/webhook-dispatcher/tsconfig.lib.json"
+      }
+    },
     "webhooks": {
       "type": "library",
       "root": "libs/webhooks",
