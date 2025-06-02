@@ -2,11 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';
-import { PinoLogger } from 'nestjs-pino';
 import { TriggerFileProcessUseCase } from './trigger-file-process.use-case';
 
 @Injectable()
@@ -15,9 +13,7 @@ export class AsyncBatchProcessUseCase {
   constructor(
     private readonly batchRepository: BatchDbPort,
     private readonly fileProcessRepository: FileProcessDbPort,
-    private readonly queuePort: QueuePort,
     private readonly configService: ConfigService,
-    private readonly logger: PinoLogger,
     private readonly triggerFileProcessUseCase: TriggerFileProcessUseCase,
   ) {
     const queueName = this.configService.get<string>('DOCUMENT_PROCESSING_QUEUE');
