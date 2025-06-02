@@ -1,10 +1,10 @@
 import { Entity, PrimaryKey, Property, ManyToOne, Ref } from '@mikro-orm/core';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { GraphQLJSON } from 'graphql-scalars';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 
 @ObjectType()
 @Entity({ tableName: 'templates' })

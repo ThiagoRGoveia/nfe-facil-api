@@ -1,10 +1,10 @@
 import { Entity, Enum, Index, ManyToOne, OptionalProps, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { BatchProcess } from './batch-process.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 export enum FileProcessStatus {
   PENDING = 'PENDING',

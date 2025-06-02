@@ -8,7 +8,7 @@ import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
 import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
 import { ExcelPort } from '@/infra/excel/ports/excel.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { PublicFileProcessDbPort } from '../ports/public-file-process-db.port';
 import { FileFormat } from '../../domain/constants/file-formats';
 import { ConfigService } from '@nestjs/config';

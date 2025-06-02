@@ -2,14 +2,14 @@ import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Template } from '@/core/templates/domain/entities/template.entity';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { TemplatesResolver } from '../templates.resolver';
 import { TemplatesModule } from '@/core/templates/templates.module';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 jest.setTimeout(100000);
 describe('TemplatesResolver (Integration)', () => {

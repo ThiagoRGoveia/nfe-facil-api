@@ -15,7 +15,7 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { MikroORM, Ref } from '@mikro-orm/core';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 export function EntityRepository<T>(entity: EntityClass<T>) {
   @Injectable()
   class Repository extends BaseMikroOrmDbRepository<T extends { id: string | number } ? T : never, typeof entity> {

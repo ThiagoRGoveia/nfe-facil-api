@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { BaseIntegrationTestModule } from './base-integration-test.module';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { RequestHandler } from 'express';
 
 export function useRestModule(user: () => User) {

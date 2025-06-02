@@ -16,7 +16,7 @@ import { Readable } from 'stream';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { HandleOutputFormatUseCase } from '../handle-output-format.use-case';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 
 describe('ProcessFileUseCase', () => {
   let useCase: ProcessFileUseCase;

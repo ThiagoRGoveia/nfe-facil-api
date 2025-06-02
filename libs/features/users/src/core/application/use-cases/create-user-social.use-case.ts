@@ -3,7 +3,7 @@ import { UserDbPort } from '../ports/users-db.port';
 import { CreateUserSocialDto } from '../dtos/create-user-social.dto';
 import { User, UserRole } from '../../domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { SecretAdapter } from '@/infra/adapters/secret.adapter';
 import { AuthPort } from '@/infra/auth/ports/auth.port';
 

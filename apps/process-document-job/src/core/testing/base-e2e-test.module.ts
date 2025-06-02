@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataloaderType, defineConfig } from '@mikro-orm/postgresql';
 import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
 import { HttpModule } from '@nestjs/axios';

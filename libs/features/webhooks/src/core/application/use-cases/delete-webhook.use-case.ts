@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { WebhookDbPort } from '../ports/webhook-db.port';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { Webhook } from '../../domain/entities/webhook.entity';
 import { PinoLogger } from 'nestjs-pino';
 

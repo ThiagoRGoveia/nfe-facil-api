@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/postgresql';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 

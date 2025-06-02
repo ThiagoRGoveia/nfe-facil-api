@@ -7,7 +7,7 @@ import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Filter } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 
 @Injectable()
 export class WebhookMikroOrmDbRepository extends EntityRepository(Webhook) implements WebhookDbPort {

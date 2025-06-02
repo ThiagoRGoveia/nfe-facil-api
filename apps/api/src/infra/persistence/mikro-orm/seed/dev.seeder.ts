@@ -4,7 +4,7 @@ import { UserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { TemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { BatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { FileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
 

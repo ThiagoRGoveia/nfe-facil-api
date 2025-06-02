@@ -4,12 +4,12 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { TemplateDbPort } from '../../ports/templates-db.port';
 import { UpdateTemplateUseCase } from '../update-template.use-case';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { UpdateTemplateDto } from '../../dtos/update-template.dto';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 
 describe('UpdateTemplateUseCase', () => {
   let useCase: UpdateTemplateUseCase;

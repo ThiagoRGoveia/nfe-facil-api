@@ -9,7 +9,7 @@ import { WebhookDispatcherPort } from '@/core/webhooks/application/ports/webhook
 import { Webhook, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
 import { WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
 import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useWebhookDeliveryFactory } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
 import { BadRequestException } from '@nestjs/common';

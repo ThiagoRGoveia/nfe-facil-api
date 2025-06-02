@@ -8,10 +8,10 @@ import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
 import { ZipPort } from '../../../../../infra/zip/zip.port';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 
 describe('CreateBatchProcessUseCase', () => {

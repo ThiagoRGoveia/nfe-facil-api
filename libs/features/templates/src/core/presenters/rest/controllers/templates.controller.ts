@@ -16,7 +16,7 @@ import { UpdateTemplateUseCase } from '../../../application/use-cases/update-tem
 import { DeleteTemplateUseCase } from '../../../application/use-cases/delete-template.use-case';
 import { TemplateDbPort } from '../../../application/ports/templates-db.port';
 import { Template } from '../../../domain/entities/template.entity';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';

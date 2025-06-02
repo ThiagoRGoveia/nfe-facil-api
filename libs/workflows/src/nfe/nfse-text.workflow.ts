@@ -3,7 +3,7 @@ import { validateOrReject } from 'class-validator';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
 import { PinoLogger } from 'nestjs-pino';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { plainToInstance } from 'class-transformer';
 import { NfseDto } from './dto/nfse.dto';
 import { BaseWorkflow } from '../_base.workflow';

@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { {{singularPascal}} } from '../../domain/entities/{{singularKebab}}.entity';
 import { {{singularPascal}}DbPort } from '../ports/{{pluralKebab}}-db.port';
 import { PinoLogger } from 'nestjs-pino';

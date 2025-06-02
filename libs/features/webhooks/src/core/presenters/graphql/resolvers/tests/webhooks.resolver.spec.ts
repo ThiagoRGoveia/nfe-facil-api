@@ -6,7 +6,7 @@ import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhook
 import { EntityManager } from '@mikro-orm/postgresql';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Request } from '@/infra/express/types/request';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { CreateWebhookDto } from '@/core/webhooks/application/dtos/create-webhook.dto';
 import { SortDirection } from '@/infra/dtos/sort.dto';
 import { UpdateWebhookDto } from '@/core/webhooks/application/dtos/update-webhook.dto';

@@ -1,4 +1,4 @@
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';

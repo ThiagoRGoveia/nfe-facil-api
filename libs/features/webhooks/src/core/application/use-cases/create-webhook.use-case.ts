@@ -3,7 +3,7 @@ import { WebhookDbPort } from '../ports/webhook-db.port';
 import { Webhook, WebhookStatus } from '../../domain/entities/webhook.entity';
 import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { CreateWebhookDto } from '../dtos/create-webhook.dto';
 import { PinoLogger } from 'nestjs-pino';
 interface CreateWebhookInput {

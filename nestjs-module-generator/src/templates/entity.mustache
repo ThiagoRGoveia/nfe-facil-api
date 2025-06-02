@@ -1,5 +1,5 @@
 import { Entity, PrimaryKey } from '@mikro-orm/core';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 @Entity({ tableName: '{{singularSnake}}' })

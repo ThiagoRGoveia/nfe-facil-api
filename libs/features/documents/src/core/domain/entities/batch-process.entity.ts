@@ -1,14 +1,14 @@
 import { Entity, Enum, ManyToOne, OneToMany, PrimaryKey, Property, Ref } from '@mikro-orm/core';
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { User } from '@/core/users/domain/entities/user.entity';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { Collection } from '@mikro-orm/core';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { BadRequestException } from '@nestjs/common';
 import { FileRecord } from './file-records.entity';
 import { OutputFormat } from '../types/output-format.type';
 import { FileFormat } from '../constants/file-formats';
+import { User } from '@lib/users/core/domain/entities/user.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 
 export enum BatchStatus {
   CREATED = 'CREATED',

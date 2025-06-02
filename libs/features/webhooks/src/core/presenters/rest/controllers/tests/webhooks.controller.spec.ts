@@ -4,7 +4,7 @@ import { WebhooksController } from '../webhooks.controller';
 import { HttpStatus } from '@nestjs/common';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Webhook, WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
 import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';

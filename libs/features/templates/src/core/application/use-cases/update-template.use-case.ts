@@ -1,10 +1,10 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '../../domain/entities/template.entity';
 import { TemplateDbPort } from '../ports/templates-db.port';
 import { PinoLogger } from 'nestjs-pino';
 import { UpdateTemplateDto } from '../dtos/update-template.dto';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 interface UpdateTemplateInput {
   user: User;

@@ -10,7 +10,7 @@ import { BadRequestException } from '@nestjs/common';
 import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
 import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { BatchOperationForbiddenError } from '@/core/documents/domain/errors/batch-errors';
 
 describe('CancelBatchProcessUseCase', () => {

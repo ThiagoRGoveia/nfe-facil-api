@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
 import { UserDbPort, DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { RequiredEntityData } from '@mikro-orm/core';
 
 @Injectable()

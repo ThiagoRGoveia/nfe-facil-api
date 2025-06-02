@@ -1,6 +1,6 @@
 import { Entity, Enum, Index, ManyToOne, OptionalProps, PrimaryKey, Property, Ref, types } from '@mikro-orm/core';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { ObjectType, registerEnumType, Field } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';

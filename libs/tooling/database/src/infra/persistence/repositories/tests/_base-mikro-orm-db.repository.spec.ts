@@ -5,8 +5,8 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort, SortDirection } from '@/infra/dtos/sort.dto';
 import { BaseMikroOrmDbRepository, EntityRepository } from '../_base-mikro-orm-db.repository';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 
 @Entity()
 class MockEntity extends BaseEntity {

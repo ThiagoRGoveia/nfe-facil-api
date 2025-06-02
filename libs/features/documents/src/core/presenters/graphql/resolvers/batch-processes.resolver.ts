@@ -8,8 +8,8 @@ import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-re
 import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Public } from '@/infra/auth/public.decorator';
 import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';

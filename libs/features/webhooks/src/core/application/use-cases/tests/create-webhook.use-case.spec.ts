@@ -4,7 +4,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { WebhookDbPort } from '../../ports/webhook-db.port';
 import { CreateWebhookUseCase } from '../create-webhook.use-case';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
 import { CreateWebhookDto } from '../../dtos/create-webhook.dto';
 import { BadRequestException } from '@nestjs/common';

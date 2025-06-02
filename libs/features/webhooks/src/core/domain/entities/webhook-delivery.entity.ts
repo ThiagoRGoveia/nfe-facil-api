@@ -1,8 +1,8 @@
 import { Entity, Enum, ManyToOne, PrimaryKey, Property, Ref } from '@mikro-orm/core';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Webhook } from './webhook.entity';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 export enum WebhookDeliveryStatus {

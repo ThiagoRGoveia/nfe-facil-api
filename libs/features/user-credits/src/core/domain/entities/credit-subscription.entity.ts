@@ -1,8 +1,8 @@
 import { Entity, PrimaryKey, Property, ManyToOne, Ref, Enum } from '@mikro-orm/core';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { User } from '@/core/users/domain/entities/user.entity';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { User } from '@lib/users/core/domain/entities/user.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum SubscriptionStatus {

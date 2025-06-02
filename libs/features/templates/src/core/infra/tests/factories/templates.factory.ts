@@ -1,5 +1,5 @@
-import { Template } from '@/core/templates/domain/entities/template.entity';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';

@@ -4,7 +4,7 @@ import { ProcessFileUseCase } from './process-file.use-case';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
 import { CreateBatchProcessUseCase } from './create-batch-process.use-case';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { CancelBatchProcessUseCase } from './cancel-batch-process.use-case';

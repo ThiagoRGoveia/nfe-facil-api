@@ -3,12 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Webhook, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { WebhooksResolver } from '../webhooks.resolver';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { WebhooksModule } from '@/core/webhooks/webhooks.module';
 
 jest.setTimeout(100000);

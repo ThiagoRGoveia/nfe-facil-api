@@ -2,7 +2,7 @@ import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UsersResolver } from '../users.resolver';
 import { UsersModule } from '@/core/users/users.module';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';

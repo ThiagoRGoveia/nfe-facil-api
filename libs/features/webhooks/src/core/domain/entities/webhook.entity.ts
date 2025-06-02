@@ -1,6 +1,6 @@
-import { User } from '@/core/users/domain/entities/user.entity';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { Entity, Enum, Index, ManyToOne, PrimaryKey, Property, Ref } from '@mikro-orm/core';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 

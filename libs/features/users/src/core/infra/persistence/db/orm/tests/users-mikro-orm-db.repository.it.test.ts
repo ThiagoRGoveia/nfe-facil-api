@@ -3,7 +3,7 @@ import { MikroORM, RequiredEntityData } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';

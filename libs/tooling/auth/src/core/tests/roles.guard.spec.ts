@@ -14,8 +14,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 

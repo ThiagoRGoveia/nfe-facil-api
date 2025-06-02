@@ -5,11 +5,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TemplateMikroOrmDbRepository } from '../templates-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 
 describe('TemplateMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;

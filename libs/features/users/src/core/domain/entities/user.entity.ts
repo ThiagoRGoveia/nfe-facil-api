@@ -1,8 +1,8 @@
 import { Entity, PrimaryKey, Property, Enum, Unique, Index } from '@mikro-orm/core';
-import { BaseEntity } from '@/infra/persistence/mikro-orm/entities/_base-entity';
+import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 
 export enum UserRole {
   ADMIN = 'admin',

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { WebhookNotifierPort } from '../../application/ports/webhook-notifier.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';
 import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';

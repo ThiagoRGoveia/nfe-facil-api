@@ -7,7 +7,7 @@ import { useTemplateFactory } from '../../../../infra/tests/factories/templates.
 import { EntityManager } from '@mikro-orm/postgresql';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { Request } from '@/infra/express/types/request';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { CreateTemplateDto } from '@/core/templates/application/dtos/create-template.dto';
 import { SortDirection } from '@/infra/dtos/sort.dto';
 import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';

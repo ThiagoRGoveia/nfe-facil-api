@@ -11,7 +11,7 @@ import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-re
 import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
-import { User, UserRole } from '@/core/users/domain/entities/user.entity';
+import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 
 const PaginatedTemplates = PaginatedGraphqlResponse(Template);

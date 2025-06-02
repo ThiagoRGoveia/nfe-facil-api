@@ -9,10 +9,10 @@ import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/
 import { useDbFileRecord, useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
 import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
 import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { Template } from '@/core/templates/domain/entities/template.entity';
+import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 
 describe('FileProcessMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;

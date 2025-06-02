@@ -5,7 +5,7 @@ import { WebhookDispatcherPort } from '../ports/webhook-dispatcher.port';
 import { WebhookEvent } from '../../domain/entities/webhook.entity';
 import { WebhookDeliveryStatus } from '../../domain/entities/webhook-delivery.entity';
 import { PinoLogger } from 'nestjs-pino';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 
 export interface NotifyWebhookParams {

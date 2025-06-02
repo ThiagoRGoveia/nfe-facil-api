@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreditSubscription, SubscriptionStatus } from '../../domain/entities/credit-subscription.entity';
 import { BaseDbPort } from '@/infra/ports/_base-db-port';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 
 @Injectable()
 export abstract class CreditSubscriptionDbPort extends BaseDbPort<CreditSubscription> {

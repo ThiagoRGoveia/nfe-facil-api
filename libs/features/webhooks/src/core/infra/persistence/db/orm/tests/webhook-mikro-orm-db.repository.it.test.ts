@@ -8,7 +8,7 @@ import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.m
 import { Webhook, WebhookAuthType, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
 import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 describe('WebhookMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;
   let orm: MikroORM;

@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { User } from '@/core/users/domain/entities/user.entity';
+import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UserDbPort } from '../ports/users-db.port';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { PinoLogger } from 'nestjs-pino';

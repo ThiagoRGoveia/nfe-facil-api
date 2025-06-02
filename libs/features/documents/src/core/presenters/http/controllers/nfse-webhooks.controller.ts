@@ -19,7 +19,7 @@ import { DeleteWebhookUseCase } from '@/core/webhooks/application/use-cases/dele
 import { WebhookDbPort } from '@/core/webhooks/application/ports/webhook-db.port';
 import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
 import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
-import { UserRole } from '@/core/users/domain/entities/user.entity';
+import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';

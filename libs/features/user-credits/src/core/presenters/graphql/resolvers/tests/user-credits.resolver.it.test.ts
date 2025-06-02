@@ -7,7 +7,7 @@
 // import { UsersModule } from '@/core/users/users.module';
 // import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 // import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-// import { User } from '@/core/users/domain/entities/user.entity';
+// import { User } from '@lib/users/core/domain/entities/user.entity';
 // import { UserCreditsResolver } from '../user-credits.resolver';
 // import { UserCreditDbPort } from '../../../application/ports/user-credits-db.port';
 

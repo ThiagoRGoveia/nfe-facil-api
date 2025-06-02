@@ -4,7 +4,7 @@ import { SQSClient as AwsSqsClient, SendMessageCommand, SQSClientConfig } from '
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { FifoOptions } from '../ports/queue.port';
-import { UuidAdapter } from '@/infra/adapters/uuid.adapter';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 @Injectable()
 export class SQSClient {
   private readonly sqsClient: AwsSqsClient;
