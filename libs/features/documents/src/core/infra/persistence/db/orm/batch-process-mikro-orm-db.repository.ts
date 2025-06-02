@@ -13,3 +13,8 @@ export class BatchMikroOrmRepository extends EntityRepository(BatchProcess) impl
     return this.em.map(BatchProcess, response[0]);
   }
 }
+
+export const BatchMikroOrmRepositoryProvider = {
+  provide: BatchDbPort,
+  useClass: BatchMikroOrmRepository,
+};

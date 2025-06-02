@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { CsvPort } from './core/ports/csv.port';
 import { Json2CsvAdapter } from './core/adapters/json-2-csv.adapter';
 
+@Global()
 @Module({
   providers: [
     {

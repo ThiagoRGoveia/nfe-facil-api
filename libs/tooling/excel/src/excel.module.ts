@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ExcelPort } from './core/ports/excel.port';
 import { ExcelJsAdapter } from './core/adapters/excel.adapter';
 
+@Global()
 @Module({
   providers: [
     {

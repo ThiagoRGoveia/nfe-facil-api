@@ -75,3 +75,8 @@ export class FileProcessMikroOrmDbRepository extends EntityRepository(FileRecord
     stream.push(null); // Signal end of stream
   }
 }
+
+export const FileProcessMikroOrmDbRepositoryProvider = {
+  provide: FileProcessDbPort,
+  useClass: FileProcessMikroOrmDbRepository,
+};

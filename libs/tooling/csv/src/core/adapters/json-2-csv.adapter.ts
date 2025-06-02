@@ -57,3 +57,8 @@ export class Json2CsvAdapter implements CsvPort {
     return transformStream;
   }
 }
+
+export const Json2CsvAdapterProvider = {
+  provide: CsvPort,
+  useClass: Json2CsvAdapter,
+};

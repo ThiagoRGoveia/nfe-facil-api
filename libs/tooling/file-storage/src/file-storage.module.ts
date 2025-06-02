@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { FileStoragePort } from './core/ports/file-storage.port';
 import { S3Client } from './core/clients/s3.client';
 
+@Global()
 @Module({
   providers: [
     {
