@@ -19,7 +19,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBasicAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
-import { Request } from '@/infra/express/types/request';
+import { Request } from '@lib/commons/types/express/request';
 import { MAX_FILE_SIZE_BYTES } from '@lib/commons/constants/max-file-size.constant';
 import { ConfigService } from '@nestjs/config';
 import { FileUploadDto, FileUploadWithFormatsDto } from '../dtos/file-upload.dto';

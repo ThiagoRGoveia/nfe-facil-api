@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { WebhooksController } from '../webhooks.controller';
 import { HttpStatus } from '@nestjs/common';
-import { Request } from '@/infra/express/types/request';
+import { Request } from '@lib/commons/types/express/request';
 import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';

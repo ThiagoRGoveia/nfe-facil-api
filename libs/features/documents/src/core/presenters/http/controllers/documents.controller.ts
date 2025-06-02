@@ -24,7 +24,7 @@ import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-c
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
 import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-cases/sync-file-process.use-case';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Request } from '@/infra/express/types/request';
+import { Request } from '@lib/commons/types/express/request';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
 import { MAX_FILE_SIZE_BYTES } from '@lib/commons/constants/max-file-size.constant';
 import { UpdateBatchTemplateUseCase } from '@lib/documents/core/application/use-cases/update-batch-template.use-case';

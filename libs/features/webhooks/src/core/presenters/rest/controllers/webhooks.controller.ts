@@ -17,7 +17,7 @@ import { WebhookDbPort } from '../../../application/ports/webhook-db.port';
 import { Webhook } from '../../../domain/entities/webhook.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@lib/commons/dtos/paginated-response.factory';
-import { Request } from '@/infra/express/types/request';
+import { Request } from '@lib/commons/types/express/request';
 import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
 import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { SortDirection } from '@lib/commons/dtos/sort.dto';

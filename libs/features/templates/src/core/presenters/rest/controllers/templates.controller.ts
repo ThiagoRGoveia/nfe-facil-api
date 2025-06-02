@@ -18,7 +18,7 @@ import { TemplateDbPort } from '../../../application/ports/templates-db.port';
 import { Template } from '../../../domain/entities/template.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@lib/commons/dtos/paginated-response.factory';
-import { Request } from '@/infra/express/types/request';
+import { Request } from '@lib/commons/types/express/request';
 import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
 import { Sort, SortDirection } from '@lib/commons/dtos/sort.dto';
 
