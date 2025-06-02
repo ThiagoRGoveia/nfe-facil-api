@@ -10,6 +10,7 @@ import { QueuePortProvider } from '@lib/queue/core/adapters/sqs.adapter';
 import { DatePortProvider } from '@lib/date/core/date.adapter';
 import { EncryptionAdapterProvider } from '@lib/encryption/core/adapters/encryption.adapter';
 import { FileStoragePortProvider } from '@lib/file-storage/core/clients/s3.client';
+import { SQSClient } from '@lib/queue/core/clients/sqs.client';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { FileStoragePortProvider } from '@lib/file-storage/core/clients/s3.clien
     QueuePortProvider,
     DatePortProvider,
     MikroOrmLambdaCompatibilityConfig,
+    SQSClient,
   ],
   exports: [
     EncryptionPort,
@@ -34,6 +36,7 @@ import { FileStoragePortProvider } from '@lib/file-storage/core/clients/s3.clien
     QueuePortProvider,
     DatePortProvider,
     MikroOrmLambdaCompatibilityConfig,
+    SQSClient,
   ],
 })
 export class ToolingModule {}
