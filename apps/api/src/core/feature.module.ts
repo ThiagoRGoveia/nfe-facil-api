@@ -1,9 +1,9 @@
 import { Module, DynamicModule } from '@nestjs/common';
-import { DocumentsModule } from './documents/documents.module';
-import { TemplatesModule } from './templates/templates.module';
-import { WebhooksModule } from './webhooks/webhooks.module';
-import { UsersModule } from './users/users.module';
-import { UserCreditsModule } from './user-credits/user-credits.module';
+import { DocumentsModule } from '@lib/documents/documents.module';
+import { TemplatesModule } from '@lib/templates/templates.module';
+import { UsersModule } from '@lib/users/users.module';
+import { UserCreditsModule } from '@lib/user-credits/user-credits.module';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
 
 @Module({
   // imports: [DocumentsModule, TemplatesModule, WebhooksModule, UsersModule, UserCreditsModule],

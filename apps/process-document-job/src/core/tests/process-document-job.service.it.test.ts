@@ -3,27 +3,32 @@ import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 import { ProcessDocumentJobService } from '../process-document-job.service';
-import { DocumentsModule } from 'apps/api/src/core/documents/documents.module';
-import { DocumentProcessorPort } from 'apps/api/src/core/documents/application/ports/document-processor.port';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useDbFileRecord } from '@/core/documents/infra/tests/factories/file-process.factory';
-import { FileProcessStatus, FileRecord } from '@/core/documents/domain/entities/file-records.entity';
-import { TemplatesModule } from '@/core/templates/templates.module';
-import { WebhooksModule } from '@/core/webhooks/webhooks.module';
-import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { useDbFileRecord } from '@lib/documents/core/infra/tests/factories/file-process.factory';
+import { FileProcessStatus, FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
+import { TemplatesModule } from '@lib/templates/templates.module';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
+import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
 import { createMock } from '@golevelup/ts-jest';
-import { Webhook, WebhookAuthType, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
+import {
+  Webhook,
+  WebhookAuthType,
+  WebhookEvent,
+  WebhookStatus,
+} from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { ConfigService } from '@nestjs/config';
-import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { HandleOutputFormatUseCase } from '@/core/documents/application/use-cases/handle-output-format.use-case';
+import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { DocumentsModule } from '@lib/documents';
+import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
 jest.setTimeout(30000);
 
 const mockBuffer = Buffer.from('test-data');

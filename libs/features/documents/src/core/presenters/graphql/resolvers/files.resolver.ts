@@ -10,7 +10,7 @@ import { Sort } from '@/infra/dtos/sort.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { ProcessFileUseCase } from '../../../application/use-cases/process-file.use-case';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 
 @Resolver(() => FileRecord)

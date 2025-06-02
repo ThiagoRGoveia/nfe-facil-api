@@ -2,9 +2,8 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from './public.decorator';
-import { UserDbPort } from '@/core/users/application/ports/users-db.port';
+import { CreateUserSocialUseCase, UserDbPort } from '@lib/users/users.module';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { CreateUserSocialUseCase } from '@/core/users/application/use-cases/create-user-social.use-case';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {

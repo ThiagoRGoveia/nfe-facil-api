@@ -1,8 +1,8 @@
-import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
-import { WebhookAuthType, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
+import { WebhookAuthType, WebhookEvent, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 
 export class WebhookFactory extends Factory<Webhook> {
   model = Webhook;

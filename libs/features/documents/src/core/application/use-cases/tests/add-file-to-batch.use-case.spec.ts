@@ -5,15 +5,15 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { AddFileToBatchUseCase } from '../add-file-to-batch.use-case';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { BadRequestException } from '@nestjs/common';
-import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { BatchProcess } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { useBatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 import { ZipPort } from 'libs/tooling/zip/src/core/zip.port';
 
 describe('AddFileToBatchUseCase', () => {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FileFormat } from '@/core/documents/domain/constants/file-formats';
-import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
+import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
+import { OutputFormat } from '@lib/documents/core/domain/types/output-format.type';
 
 /**
  * DTO para envio de arquivos via multipart/form-data

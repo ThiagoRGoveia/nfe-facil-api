@@ -5,11 +5,11 @@ import { DataloaderType, defineConfig } from '@mikro-orm/postgresql';
 import { PinoLogger } from 'nestjs-pino';
 import { createMock } from '@golevelup/ts-jest';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { PdfPort } from 'apps/process-document-job/src/infra/pdf/ports/pdf.port';
 import { HttpModule } from '@nestjs/axios';
-import { TogetherClient } from '../workflows/clients/together-client';
 import { DatabaseLifecycleService } from '@/infra/tests/database-lifecycle.service';
+import { TogetherClient } from '@lib/workflows/clients/together-client';
 
 @Global()
 @Module({

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
-import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
-import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { EntityRepository } from '@lib/database/infra/persistence/repositories/_base-mikro-orm-db.repository';
+import { FileRecord, FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 import { Readable } from 'stream';
+import { FileProcessDbPort } from '@lib/documents/core/application/ports/file-process-db.port';
 
 @Injectable()
 export class FileProcessMikroOrmDbRepository extends EntityRepository(FileRecord) implements FileProcessDbPort {

@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { UserDbPort } from '../../ports/users-db.port';
 import { DeleteUserUseCase } from '../delete-user.use-case';
 import { PinoLogger } from 'nestjs-pino';
 import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { AuthPort } from '@/infra/auth/ports/auth.port';
+import { AuthPort } from '@lib/auth/core/ports/auth.port';
 
 describe('DeleteUserUseCase', () => {
   let useCase: DeleteUserUseCase;

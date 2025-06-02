@@ -1,9 +1,7 @@
-import { FileFormat } from '@/core/documents/domain/constants/file-formats';
+import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal';
-
-
 
 registerEnumType(FileFormat, {
   name: 'FileFormat',

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { WebhookDispatcherPort } from '../../application/ports/webhook-dispatcher.port';
 import { WebhookDelivery } from '../../domain/entities/webhook-delivery.entity';
-import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
+import { QueuePort } from '@lib/queue/core/ports/queue.port';
 
 @Injectable()
 export class HttpWebhookDispatcherAdapter implements WebhookDispatcherPort {

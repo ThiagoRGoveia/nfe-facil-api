@@ -8,11 +8,11 @@ import { FileProcessDbPort } from '../../ports/file-process-db.port';
 import { ProcessFileUseCase } from '../process-file.use-case';
 import { CreateBatchProcessUseCase } from '../create-batch-process.use-case';
 import { CancelBatchProcessUseCase } from '../cancel-batch-process.use-case';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
-import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useBatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
+import { useFileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';
 describe('SyncBatchProcessUseCase', () => {
   let useCase: SyncFileProcessUseCase;
   let batchDbPort: jest.Mocked<BatchDbPort>;

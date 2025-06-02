@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
-import { useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { FileRecord, FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
+import { useFileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';
 
 describe('FileProcessMikroOrmDbRepository (unit)', () => {
   let em: EntityManager;

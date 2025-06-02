@@ -3,16 +3,16 @@ import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { CreateBatchProcessUseCase } from '../create-batch-process.use-case';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { ZipPort } from '../../../../../infra/zip/zip.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { ZipPort } from '@lib/zip/core/zip.port';
 
 describe('CreateBatchProcessUseCase', () => {
   let useCase: CreateBatchProcessUseCase;

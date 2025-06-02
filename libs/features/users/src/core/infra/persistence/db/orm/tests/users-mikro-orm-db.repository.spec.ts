@@ -3,8 +3,8 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/postgresql';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { UpdateUserDto } from '@lib/users/core/application/dtos/update-user.dto';
 
 describe('UserMikroOrmDbRepository', () => {
   let repository: UserMikroOrmDbRepository;

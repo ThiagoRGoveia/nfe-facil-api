@@ -11,14 +11,13 @@ import { Sort } from '@/infra/dtos/sort.dto';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Public } from '@/infra/auth/public.decorator';
 import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';
 import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
-import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
-import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
-import { ConfigService } from '@nestjs/config';
-import { HandleOutputFormatUseCase } from '@/core/documents/application/use-cases/handle-output-format.use-case';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
+import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { Public } from '@lib/auth/core/public.decorator';
+import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
 const PaginatedBatchProcesses = PaginatedGraphqlResponse(BatchProcess);
 
 @Resolver(() => BatchProcess)
@@ -28,7 +27,6 @@ export class BatchProcessesResolver {
     private readonly publicSyncBatchProcessUseCase: PublicSyncFileProcessUseCase,
     private readonly createBatchProcessUseCase: CreateBatchProcessUseCase,
     private readonly asyncBatchProcessUseCase: AsyncBatchProcessUseCase,
-    private readonly configService: ConfigService,
     private readonly handleOutputFormatUseCase: HandleOutputFormatUseCase,
     private readonly fileStorage: FileStoragePort,
   ) {}
@@ -155,7 +153,7 @@ export class BatchProcessesResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
-  async jsonResults(@Parent() batch: BatchProcess) {
+  jsonResults(@Parent() batch: BatchProcess) {
     if (!batch.jsonResults) {
       return null;
     }
@@ -163,7 +161,7 @@ export class BatchProcessesResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
-  async csvResults(@Parent() batch: BatchProcess) {
+  csvResults(@Parent() batch: BatchProcess) {
     if (!batch.csvResults) {
       return null;
     }
@@ -171,7 +169,7 @@ export class BatchProcessesResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
-  async excelResults(@Parent() batch: BatchProcess) {
+  excelResults(@Parent() batch: BatchProcess) {
     if (!batch.excelResults) {
       return null;
     }

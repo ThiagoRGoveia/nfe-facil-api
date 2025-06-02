@@ -5,13 +5,13 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { CancelBatchProcessUseCase } from '../cancel-batch-process.use-case';
 import { BatchDbPort } from '../../ports/batch-db.port';
 import { FileProcessDbPort } from '../../ports/file-process-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { BadRequestException } from '@nestjs/common';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { useBatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { BatchOperationForbiddenError } from '@/core/documents/domain/errors/batch-errors';
+import { BatchOperationForbiddenError } from '@lib/documents/core/domain/errors/batch-errors';
 
 describe('CancelBatchProcessUseCase', () => {
   let useCase: CancelBatchProcessUseCase;

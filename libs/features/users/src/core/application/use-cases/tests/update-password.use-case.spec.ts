@@ -5,10 +5,10 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { UserDbPort } from '../../ports/users-db.port';
 import { UpdatePasswordUseCase } from '../update-password.use-case';
 import { UpdatePasswordDto } from '../../dtos/update-password.dto';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
 import { BadRequestException } from '@nestjs/common';
-import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
+import { AuthPort, AuthUserDto } from '@lib/auth/core/ports/auth.port';
 
 describe('UpdatePasswordUseCase', () => {
   let useCase: UpdatePasswordUseCase;

@@ -5,8 +5,8 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { TemplateDbPort } from '../../ports/templates-db.port';
 import { DeleteTemplateUseCase } from '../delete-template.use-case';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 

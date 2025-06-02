@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
-import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { FileRecord, FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 export class FileRecordFactory extends Factory<FileRecord> {
   model = FileRecord;
 

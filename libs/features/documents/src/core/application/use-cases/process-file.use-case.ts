@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { FileRecord } from '@/core/documents/domain/entities/file-records.entity';
-import { DocumentProcessorPort } from '@/core/documents/application/ports/document-processor.port';
-import { WebhookNotifierPort } from '@/core/documents/application/ports/webhook-notifier.port';
-import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
-import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
+import { FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
+import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { WebhookNotifierPort } from '@lib/documents/core/application/ports/webhook-notifier.port';
+import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import { RetriableError } from '@doc/core/workflows/nfe/nfse-text.workflow';
+import { FileProcessDbPort } from '../ports/file-process-db.port';
+import { RetriableError } from '@lib/workflows/nfe/nfse-text.workflow';
 
 export interface ProcessFileParams {
   fileId: FileRecord['id'];

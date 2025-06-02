@@ -18,14 +18,8 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { CreateBatchProcessUseCase } from '@/core/documents/application/use-cases/create-batch-process.use-case';
-import { AddFileToBatchUseCase } from '@/core/documents/application/use-cases/add-file-to-batch.use-case';
-import { CancelBatchProcessUseCase } from '@/core/documents/application/use-cases/cancel-batch-process.use-case';
-import { AsyncBatchProcessUseCase } from '@/core/documents/application/use-cases/async-batch-process.use-case';
-import { SyncFileProcessUseCase } from '@/core/documents/application/use-cases/sync-file-process.use-case';
 import { ApiTags, ApiOperation, ApiResponse, ApiBasicAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
-import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
 import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
 import { ConfigService } from '@nestjs/config';
 import { FileUploadDto, FileUploadWithFormatsDto } from '../dtos/file-upload.dto';
@@ -33,6 +27,12 @@ import { SingleFileUploadDto } from '../dtos/single-file-upload.dto';
 import { plainToInstance } from 'class-transformer';
 import { NfseResponseDto } from '../dtos/nfse-response.dto';
 import { BatchProcessResponseDto } from '../dtos/batch-process-response.dto';
+import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
+import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
+import { SyncFileProcessUseCase } from '@lib/documents/core/application/use-cases/sync-file-process.use-case';
+import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
+import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-cases/cancel-batch-process.use-case';
+import { AddFileToBatchUseCase } from '@lib/documents/core/application/use-cases/add-file-to-batch.use-case';
 
 /**
  * Controlador para processamento de Notas Fiscais de Serviço Eletrônicas (NFSe).

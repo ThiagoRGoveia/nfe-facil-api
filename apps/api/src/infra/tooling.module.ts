@@ -1,28 +1,27 @@
 import { Global, Module } from '@nestjs/common';
-import { EncryptionAdapter } from '../../../../libs/tooling/encryption/src/core/adapters/encryption.adapter';
-import { EncryptionPort } from '../../../../libs/tooling/encryption/src/core/ports/encryption.port';
-import { UuidAdapter } from './adapters/uuid.adapter';
-import { SecretAdapter } from './adapters/secret.adapter';
 import { ZipPort } from 'libs/tooling/zip/src/core/zip.port';
-import { ZipAdapter } from '@/infra/zip/zip.adapter';
-import { CsvPort } from './json-to-csv/ports/csv.port';
-import { Json2CsvAdapter } from './json-to-csv/adapters/json-2-csv.adapter';
-import { ExcelPort } from './excel/ports/excel.port';
-import { ExcelJsAdapter } from './excel/adapters/excel.adapter';
-import { S3Client } from './aws/s3/clients/s3.client';
-import { FileStoragePort } from './aws/s3/ports/file-storage.port';
-import { QueuePort } from './aws/sqs/ports/queue.port';
-import { SQSClient } from './aws/sqs/clients/sqs.client';
-import { AuthModule } from './auth/auth.module';
 import { DocumentProcessModule } from 'apps/process-document-job/src/core/document-process.module';
 import { HttpModule } from '@nestjs/axios';
-import { DateAdapter } from '../../../../libs/tooling/date/src/core/date.adapter';
-import { DatePort } from '../../../../libs/tooling/date/src/core/date.adapter';
 import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { EntityManager } from '@mikro-orm/core';
-import { SQSAdapter } from './aws/sqs/adapters/sqs.adapter';
-import { OllamaClient } from '@doc/core/workflows/clients/ollama-client';
-import { TogetherClient } from '@doc/core/workflows/clients/together-client';
+import { AuthModule } from '@lib/auth/auth.module';
+import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
+import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
+import { ZipAdapter } from '@lib/zip/core/adapters/zip.adapter';
+import { CsvPort } from '@lib/csv/core/ports/csv.port';
+import { Json2CsvAdapter } from '@lib/csv/core/adapters/json-2-csv.adapter';
+import { ExcelPort } from '@lib/excel/core/ports/excel.port';
+import { ExcelJsAdapter } from '@lib/excel/core/adapters/excel.adapter';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { S3Client } from '@aws-sdk/client-s3';
+import { QueuePort } from '@lib/queue/core/ports/queue.port';
+import { SQSAdapter } from '@lib/queue/core/adapters/sqs.adapter';
+import { OllamaClient } from 'libs/workflows/src/clients/ollama-client';
+import { TogetherClient } from 'libs/workflows/src/clients/together-client';
+import { SQSClient } from '@lib/queue/core/clients/sqs.client';
+import { DateAdapter, DatePort } from '@lib/date/core/date.adapter';
+import { EncryptionPort } from '@lib/encryption/core/ports/encryption.port';
+import { EncryptionAdapter } from '@lib/encryption/core/adapters/encryption.adapter';
 
 @Global()
 @Module({

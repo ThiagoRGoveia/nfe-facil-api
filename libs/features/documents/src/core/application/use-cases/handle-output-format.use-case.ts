@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Transform, PassThrough, Readable } from 'stream';
-import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
-import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
-import { ExcelPort } from '@/infra/excel/ports/excel.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
-import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
-import { FileProcessDbPort } from '@/core/documents/application/ports/file-process-db.port';
+import { BatchProcess } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { CsvPort } from '@lib/csv/core/ports/csv.port';
+import { ExcelPort } from '@lib/excel/core/ports/excel.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
+import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
 import { FileFormat } from '../../domain/constants/file-formats';
-import { DownloadPath } from '@/core/documents/domain/value-objects/download-path.vo';
+import { FileProcessDbPort } from '../ports/file-process-db.port';
+import { DownloadPath } from '../../domain/value-objects/download-path.vo';
 
 const MAX_FILES_PER_BATCH = 100;
 

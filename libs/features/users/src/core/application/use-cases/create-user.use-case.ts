@@ -4,8 +4,8 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { User } from '../../domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { AuthPort } from '@/infra/auth/ports/auth.port';
+import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
+import { AuthPort } from '@lib/auth/core/ports/auth.port';
 
 @Injectable()
 export class CreateUserUseCase {

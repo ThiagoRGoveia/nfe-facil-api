@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { BatchProcess } from '../../domain/entities/batch-process.entity';
 import { FileRecord } from '../../domain/entities/file-records.entity';
 

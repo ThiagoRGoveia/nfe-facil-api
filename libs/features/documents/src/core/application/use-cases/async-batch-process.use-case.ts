@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ServiceUnavailableException } from '@nes
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { QueuePort } from '@/infra/aws/sqs/ports/queue.port';
+import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { FileRecord } from '../../domain/entities/file-records.entity';

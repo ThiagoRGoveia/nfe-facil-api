@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { BatchProcess, BatchStatus } from '../../domain/entities/batch-process.entity';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { CreateBatchDto } from '../dtos/create-batch.dto';
 import { BadRequestException } from '@nestjs/common';
-import { ZipPort } from '../../../../infra/zip/zip.port';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { FileProcessStatus } from '../../domain/entities/file-records.entity';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { FileFormat } from '../../domain/constants/file-formats';
 import { PinoLogger } from 'nestjs-pino';
+import { ZipPort } from '@lib/zip/core/zip.port';
 @Injectable()
 export class CreateBatchProcessUseCase {
   constructor(

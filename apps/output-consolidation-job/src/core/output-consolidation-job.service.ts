@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { BatchDbPort } from '@/core/documents/application/ports/batch-db.port';
-import { HandleOutputFormatUseCase } from '@/core/documents/application/use-cases/handle-output-format.use-case';
+import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
+import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
 import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
 
 interface ConsolidationMessage {

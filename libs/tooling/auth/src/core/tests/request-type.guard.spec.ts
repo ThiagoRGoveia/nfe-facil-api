@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
 import { RequestTypeGuard } from '../request-type.guard';
 import { Controller, Get } from '@nestjs/common';
 import { Public } from '../public.decorator';
@@ -8,14 +7,15 @@ import request from 'supertest';
 import { ApiKeyStrategy } from '../api-key.strategy';
 import { JwtStrategy } from '../jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { UsersModule } from '@/core/users/users.module';
 import { Resolver, Query, ObjectType, Field } from '@nestjs/graphql';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { JwtAuthGuard } from '../jwt.guard';
 import { ApiKeyAuthGuard } from '../api-key.guard';
+import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { UsersModule } from '@lib/users';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 
 jest.setTimeout(10000);
 

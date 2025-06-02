@@ -5,8 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { UserMikroOrmDbRepository } from '../users-mikro-orm-db.repository';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { UpdateUserDto } from '@/core/users/application/dtos/update-user.dto';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { UpdateUserDto } from '@lib/users/core/application/dtos/update-user.dto';
 
 describe('UserMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;

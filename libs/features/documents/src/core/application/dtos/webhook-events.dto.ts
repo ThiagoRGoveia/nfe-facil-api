@@ -1,4 +1,4 @@
-import { NfseDto } from '@doc/core/workflows/nfe/dto/nfse.dto';
+import { NfseDto } from '@lib/workflows/nfe/dto/nfse.dto';
 import { ApiProperty, ApiExtraModels } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsString, IsObject, IsDateString, ValidateNested, IsEnum } from 'class-validator';

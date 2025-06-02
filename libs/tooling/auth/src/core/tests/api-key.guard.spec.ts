@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
 import { ApiKeyAuthGuard } from '../api-key.guard';
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { Public } from '../public.decorator';
@@ -8,9 +7,10 @@ import request from 'supertest';
 import { ApiKeyStrategy } from '../api-key.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { UsersModule } from '@/core/users/users.module';
+import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { UsersModule } from '@lib/users';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 
 jest.setTimeout(10000);
 

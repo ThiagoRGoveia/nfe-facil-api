@@ -5,9 +5,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { TemplatesResolver } from '../templates.resolver';
-import { TemplatesModule } from '@/core/templates/templates.module';
-import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
+import { TemplatesModule } from '@lib/templates/templates.module';
+import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 

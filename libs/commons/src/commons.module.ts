@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CommonsService } from './commons.service';
 
 @Module({
-  providers: [CommonsService],
-  exports: [CommonsService],
+  providers: [],
+  exports: [],
 })
 export class CommonsModule {}

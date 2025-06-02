@@ -1,22 +1,20 @@
 import request from 'supertest';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
+import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { TemplatesModule } from '@/core/templates/templates.module';
-import { CreateTemplateDto } from '@/core/templates/application/dtos/create-template.dto';
-import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';
+import { TemplatesModule } from '@lib/templates/templates.module';
+import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-template.dto';
 import { useRestModule } from '@/infra/tests/rest-integration-test.module';
+import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
 
 jest.setTimeout(100000);
 describe('TemplateController (REST Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let user: User;
   let template: Template;
@@ -26,7 +24,6 @@ describe('TemplateController (REST Integration)', () => {
       imports: [useRestModule(() => user), TemplatesModule],
     }).compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));

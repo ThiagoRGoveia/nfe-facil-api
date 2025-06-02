@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
-import { CreditTransaction } from '@/core/user-credits/domain/entities/credit-transaction.entity';
-import { CreditTransactionDbPort } from '@/core/user-credits/application/ports/credit-transaction-db.port';
+import { EntityRepository } from '@lib/database/infra/persistence/repositories/_base-mikro-orm-db.repository';
+import { CreditTransaction } from '@lib/user-credits/core/domain/entities';
+import { CreditTransactionDbPort } from '@lib/user-credits/core/application/ports';
 
 @Injectable()
 export class CreditTransactionMikroOrmDbRepository

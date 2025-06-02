@@ -2,8 +2,8 @@ import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { DocumentProcessorPort } from '../../application/ports/document-processor.port';
 import { InternalServerErrorException, Injectable } from '@nestjs/common';
-import { BaseWorkflow } from '@doc/core/workflows/_base.workflow';
-import { NfeTextWorkflow } from '@doc/core/workflows/nfe/nfse-text.workflow';
+import { BaseWorkflow } from '@lib/workflows/_base.workflow';
+import { NfeTextWorkflow } from '@lib/workflows/nfe/nfse-text.workflow';
 
 @Injectable()
 export class DocumentProcessorAdapter implements DocumentProcessorPort {
@@ -12,7 +12,7 @@ export class DocumentProcessorAdapter implements DocumentProcessorPort {
     this.workflows = new Map([['nfe-json', nfeTextWorkflow]]);
   }
 
-  async process(fileBuffer: Buffer, template: Template): Promise<DocumentProcessResult> {
+  process(fileBuffer: Buffer, template: Template): Promise<DocumentProcessResult> {
     const workflow = this.workflows.get(template.processCode);
     if (!workflow) {
       throw new InternalServerErrorException(`Workflow for template ${template.id} not found`);

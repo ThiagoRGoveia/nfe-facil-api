@@ -1,7 +1,7 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { FileProcessStatus, FileRecord } from '../../domain/entities/file-records.entity';

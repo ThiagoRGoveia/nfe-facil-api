@@ -1,2 +1,1 @@
-export * from './secrets-lib.module';
-export * from './secrets-lib.service';
+export * from './secrets.module';

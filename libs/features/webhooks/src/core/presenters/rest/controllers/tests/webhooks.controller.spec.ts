@@ -5,18 +5,19 @@ import { HttpStatus } from '@nestjs/common';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { Webhook, WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { CreateWebhookUseCase, DeleteWebhookUseCase, UpdateWebhookUseCase } from '@/core/webhooks/webhooks.module';
-import { WebhookDbPort } from '@/core/webhooks/application/ports/webhook-db.port';
-import { CreateWebhookDto } from '@/core/webhooks/application/dtos/create-webhook.dto';
-import { UpdateWebhookDto } from '@/core/webhooks/application/dtos/update-webhook.dto';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { SortDirection } from '@/infra/dtos/sort.dto';
-import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
-import { NotifyWebhookDto } from '@/core/webhooks/application/dtos/notify-webhook.dto';
+import { CreateWebhookUseCase, NotifyWebhookUseCase, WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
+import { UpdateWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
+import { DeleteWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
+import { CreateWebhookDto } from '@lib/webhooks/core/application/dtos/create-webhook.dto';
+import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { UpdateWebhookDto } from '@lib/webhooks/core/application/dtos/update-webhook.dto';
+import { WebhookEvent } from '@lib/documents/core/application/dtos/webhook-events.dto';
+import { NotifyWebhookDto } from '@lib/webhooks/core/application/dtos/notify-webhook.dto';
 
 describe('WebhooksController', () => {
   let controller: WebhooksController;

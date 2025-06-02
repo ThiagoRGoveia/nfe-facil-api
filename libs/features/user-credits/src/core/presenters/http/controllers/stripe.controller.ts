@@ -4,7 +4,7 @@ import { HandleStripeEventUseCase, StripeEventDto } from '../../../application/u
 import { Request } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
-import { Public } from '@/infra/auth/public.decorator';
+import { Public } from '@lib/auth/core/public.decorator';
 
 @ApiTags('stripe')
 @Controller('stripe')

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { CreateRequestContext } from '@mikro-orm/core';
 import { MikroORM } from '@mikro-orm/core';
-import { SpendCreditsUseCase } from '@/core/user-credits/application/use-cases';
+import { SpendCreditsUseCase } from '@lib/user-credits/core/application/use-cases';
 export interface SpendCreditMessage {
   userId: string;
   operationId: string;

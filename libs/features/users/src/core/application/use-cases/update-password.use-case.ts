@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
-import { AuthPort } from '@/infra/auth/ports/auth.port';
+import { AuthPort } from '@lib/auth/core/ports/auth.port';
 import { UserDbPort } from '../ports/users-db.port';
 import { UpdatePasswordDto } from '../dtos/update-password.dto';
 import { User } from '../../domain/entities/user.entity';

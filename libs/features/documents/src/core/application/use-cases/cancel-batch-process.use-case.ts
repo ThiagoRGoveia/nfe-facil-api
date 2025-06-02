@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchStatus } from '../../domain/entities/batch-process.entity';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { FileProcessDbPort } from '../ports/file-process-db.port';
 
 @Injectable()

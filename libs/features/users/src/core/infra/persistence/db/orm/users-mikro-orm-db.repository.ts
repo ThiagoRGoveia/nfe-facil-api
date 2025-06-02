@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
-import { UserDbPort, DtoWithClientCredentials } from '@/core/users/application/ports/users-db.port';
+import { EntityRepository } from '@lib/database/infra/persistence/repositories/_base-mikro-orm-db.repository';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { RequiredEntityData } from '@mikro-orm/core';
+import { UserDbPort } from '@lib/users/users.module';
+import { DtoWithClientCredentials } from '@lib/users/core/application/ports/users-db.port';
 
 @Injectable()
 export class UserMikroOrmDbRepository extends EntityRepository(User) implements UserDbPort {

@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
-import { BatchProcess, BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileFormat } from '@/core/documents/domain/constants/file-formats';
+import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
 
 export class BatchProcessFactory extends Factory<BatchProcess> {
   model = BatchProcess;

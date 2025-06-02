@@ -11,9 +11,9 @@ import { RetryWebhookDeliveryUseCase } from './application/use-cases/retry-webho
 import { NotifyWebhookUseCase } from './application/use-cases/notify-webhook.use-case';
 import { WebhookDispatcherPort } from './application/ports/webhook-dispatcher.port';
 import { HttpWebhookDispatcherAdapter } from './infra/adapters/http-webhook-dispatcher.adapter';
-import { HttpClientAdapter } from '@/core/webhooks/infra/adapters/http-client.adapter';
-import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
 import { WebhooksController } from './presenters/rest/controllers/webhooks.controller';
+import { HttpClientPort } from './application/ports/http-client.port';
+import { HttpClientAdapter } from './infra/adapters/http-client.adapter';
 
 const controllers = [];
 const resolvers = [WebhooksResolver];

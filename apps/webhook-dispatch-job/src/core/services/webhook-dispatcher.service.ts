@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { WebhookDelivery } from '../../../../api/src/core/webhooks/domain/entities/webhook-delivery.entity';
 import {
+  BasicAuthConfig,
   HttpClientPort,
   HttpRequestConfig,
-} from '../../../../api/src/core/webhooks/application/ports/http-client.port';
-import { Webhook, WebhookAuthType } from '../../../../api/src/core/webhooks/domain/entities/webhook.entity';
-import { BasicAuthConfig, OAuth2Config } from '../../../../api/src/core/webhooks/application/ports/http-client.port';
+  OAuth2Config,
+} from '@lib/webhooks/core/application/ports/http-client.port';
+import { WebhookDelivery } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
+import { Webhook, WebhookAuthType } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { Injectable } from '@nestjs/common';
 import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 
 @Injectable()

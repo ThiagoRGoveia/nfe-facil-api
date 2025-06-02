@@ -1,21 +1,19 @@
 import { INestApplication } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 import { RetryWebhooksCron } from '../retry-webhooks.cron';
-import { WebhooksModule } from '@/core/webhooks/webhooks.module';
-import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
 import { createMock } from '@golevelup/ts-jest';
-import { WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
-import { useDbWebhookDelivery } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
+import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
+import { useDbWebhookDelivery } from '../../tests/factories/webhook-deliveries.factory';
 
 jest.setTimeout(100000);
 describe('RetryWebhooksCron (Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let cron: RetryWebhooksCron;
   let httpClient: jest.Mocked<HttpClientPort>;
@@ -33,7 +31,6 @@ describe('RetryWebhooksCron (Integration)', () => {
       .useValue(httpClient)
       .compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     cron = module.get<RetryWebhooksCron>(RetryWebhooksCron);
 

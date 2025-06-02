@@ -4,14 +4,14 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { UpdateBatchTemplateUseCase } from '../update-batch-template.use-case';
 import { BatchDbPort } from '../../ports/batch-db.port';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
-import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { BatchOperationForbiddenError } from '@/core/documents/domain/errors/batch-errors';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
+import { useBatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { NotFoundException } from '@nestjs/common';
+import { BatchOperationForbiddenError } from '@lib/documents/core/domain/errors/batch-errors';
 
 describe('UpdateBatchTemplateUseCase', () => {
   let useCase: UpdateBatchTemplateUseCase;

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { UserDbPort } from '../../ports/users-db.port';
 import { UpdateUserUseCase } from '../update-user.use-case';
 import { UpdateUserDto } from '../../dtos/update-user.dto';

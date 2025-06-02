@@ -1,9 +1,9 @@
 import { RequiredEntityData } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
-import { EntityRepository } from '@/infra/persistence/mikro-orm/repositories/_base-mikro-orm-db.repository';
-import { WebhookDeliveryDbPort } from '@/core/webhooks/application/ports/webhook-delivery-db.port';
-import { WebhookDelivery, WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
+import { EntityRepository } from '@lib/database/infra/persistence/repositories/_base-mikro-orm-db.repository';
+import { WebhookDelivery, WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { WebhookDeliveryDbPort } from '@lib/webhooks/core/webhooks.module';
 
 @Injectable()
 export class WebhookDeliveryMikroOrmDbRepository

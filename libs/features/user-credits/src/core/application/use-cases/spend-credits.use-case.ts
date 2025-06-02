@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { SpendCreditsDto } from '../dtos/spend-credits.dto';
 import { CreditTransactionDbPort } from '../ports/credit-transaction-db.port';
 import { TransactionStatus, TransactionType } from '../../domain/entities/credit-transaction.entity';
-import { UserDbPort } from '@/core/users/users.module';
+import { UserDbPort } from '@lib/users/users.module';
 
 @Injectable()
 export class SpendCreditsUseCase {

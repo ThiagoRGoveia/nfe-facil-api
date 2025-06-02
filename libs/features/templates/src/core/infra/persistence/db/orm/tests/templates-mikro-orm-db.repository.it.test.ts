@@ -6,9 +6,9 @@ import { TemplateMikroOrmDbRepository } from '../templates-mikro-orm-db.reposito
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';
+import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 
 describe('TemplateMikroOrmDbRepository (integration)', () => {

@@ -4,10 +4,10 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { UserDbPort } from '../../ports/users-db.port';
 import { RefreshClientSecretUseCase } from '../refresh-client-secret.use-case';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
 import { NotFoundException } from '@nestjs/common';
-import { SecretAdapter } from '@/infra/adapters/secret.adapter';
+import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
 
 describe('RefreshClientSecretUseCase', () => {
   let useCase: RefreshClientSecretUseCase;

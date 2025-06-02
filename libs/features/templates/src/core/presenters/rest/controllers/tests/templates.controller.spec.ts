@@ -6,15 +6,17 @@ import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { CreateTemplateUseCase, DeleteTemplateUseCase, UpdateTemplateUseCase } from '@/core/templates/templates.module';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
-import { CreateTemplateDto } from '@/core/templates/application/dtos/create-template.dto';
-import { UpdateTemplateDto } from '@/core/templates/application/dtos/update-template.dto';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { SortDirection } from '@/infra/dtos/sort.dto';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-template.dto';
+import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
+import { CreateTemplateUseCase } from '@lib/templates/core/application/use-cases/create-template.use-case';
+import { UpdateTemplateUseCase } from '@lib/templates/core/application/use-cases/update-template.use-case';
+import { DeleteTemplateUseCase } from '@lib/templates/core/application/use-cases/delete-template.use-case';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 
 describe('TemplateController', () => {
   let controller: TemplateController;

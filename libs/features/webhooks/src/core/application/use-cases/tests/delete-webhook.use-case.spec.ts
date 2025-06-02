@@ -5,10 +5,10 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { WebhookDbPort } from '../../ports/webhook-db.port';
 import { DeleteWebhookUseCase } from '../delete-webhook.use-case';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { BadRequestException } from '@nestjs/common';
-import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 
 describe('DeleteWebhookUseCase', () => {
   let useCase: DeleteWebhookUseCase;

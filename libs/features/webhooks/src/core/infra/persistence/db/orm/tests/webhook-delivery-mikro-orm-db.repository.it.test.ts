@@ -5,11 +5,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookDeliveryMikroOrmDbRepository } from '../webhook-delivery-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
-import { WebhookDelivery, WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useDbWebhookDelivery } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { WebhookDelivery, WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useDbWebhookDelivery } from '@lib/webhooks/core/infra/tests/factories/webhook-deliveries.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 describe('WebhookDeliveryMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;
   let orm: MikroORM;

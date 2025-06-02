@@ -5,13 +5,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FileProcessMikroOrmDbRepository } from '../file-process-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
-import { FileRecord, FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
-import { useDbFileRecord, useFileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
-import { BatchProcess } from '@/core/documents/domain/entities/batch-process.entity';
-import { useDbBatchProcess } from '@/core/documents/infra/tests/factories/batch-process.factory';
+import { FileRecord, FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
+import { useDbFileRecord, useFileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';
+import { BatchProcess } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbTemplate } from '@/core/templates/infra/tests/factories/templates.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 
 describe('FileProcessMikroOrmDbRepository (integration)', () => {

@@ -4,9 +4,9 @@
 // import { Test, TestingModule } from '@nestjs/testing';
 
 // import { UserCreditsModule } from '@/core/user-credits/user-credits.module';
-// import { UsersModule } from '@/core/users/users.module';
+// import { UsersModule } from '@lib/users/users.module';
 // import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
-// import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
+// import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 // import { User } from '@lib/users/core/domain/entities/user.entity';
 // import { UserCreditsResolver } from '../user-credits.resolver';
 // import { UserCreditDbPort } from '../../../application/ports/user-credits-db.port';

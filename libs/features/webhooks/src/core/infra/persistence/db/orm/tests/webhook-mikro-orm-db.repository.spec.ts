@@ -3,8 +3,13 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookMikroOrmDbRepository } from '../webhook-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { Webhook, WebhookAuthType, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import {
+  Webhook,
+  WebhookAuthType,
+  WebhookEvent,
+  WebhookStatus,
+} from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 
 describe('WebhookMikroOrmDbRepository (unit)', () => {
   let em: EntityManager;

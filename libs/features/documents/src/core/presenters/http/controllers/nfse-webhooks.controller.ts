@@ -11,22 +11,23 @@ import {
   refs,
   ApiBasicAuth,
 } from '@nestjs/swagger';
-import { CreateWebhookDto } from '@/core/webhooks/application/dtos/create-webhook.dto';
-import { UpdateWebhookDto } from '@/core/webhooks/application/dtos/update-webhook.dto';
-import { CreateWebhookUseCase } from '@/core/webhooks/application/use-cases/create-webhook.use-case';
-import { UpdateWebhookUseCase } from '@/core/webhooks/application/use-cases/update-webhook.use-case';
-import { DeleteWebhookUseCase } from '@/core/webhooks/application/use-cases/delete-webhook.use-case';
-import { WebhookDbPort } from '@/core/webhooks/application/ports/webhook-db.port';
-import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
-import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
+import { CreateWebhookDto } from '@lib/webhooks/core/application/dtos/create-webhook.dto';
+import { UpdateWebhookDto } from '@lib/webhooks/core/application/dtos/update-webhook.dto';
+import {
+  CreateWebhookUseCase,
+  DeleteWebhookUseCase,
+  NotifyWebhookUseCase,
+  UpdateWebhookUseCase,
+  WebhookDbPort,
+} from '@lib/webhooks/core/webhooks.module';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
 import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
 import { PaginatedResponse } from '@/infra/types/paginated-response.type';
 import { SortDirection } from '@/infra/dtos/sort.dto';
-import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
-import { NotifyWebhookDto } from '@/core/webhooks/application/dtos/notify-webhook.dto';
 // Import Portuguese DTOs for documentation
 import { BasicAuthConfigInputPt, CreateWebhookPtDto, OAuth2ConfigInputPt } from '../dtos/create-webhook-pt.dto';
 import { UpdateWebhookPtDto } from '../dtos/update-webhook-pt.dto';
@@ -36,6 +37,7 @@ import {
   DocumentFailedPayloadPtDto,
   BatchFinishedPayloadPtDto,
 } from '../dtos/webhook-events-pt.dto';
+import { NotifyWebhookDto } from '@lib/webhooks/core/application/dtos/notify-webhook.dto';
 
 const PaginatedWebhookResponse = PaginatedRestResponse(Webhook);
 

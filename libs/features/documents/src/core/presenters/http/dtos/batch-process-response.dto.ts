@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
 
 export class BatchProcessResponseDto {
   @ApiProperty({

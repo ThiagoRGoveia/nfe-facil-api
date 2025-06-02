@@ -1,12 +1,12 @@
 import { EntityManager } from '@mikro-orm/core';
 import { Seeder } from '@mikro-orm/seeder';
-import { UserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { TemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { BatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { FileRecordFactory } from '@/core/documents/infra/tests/factories/file-process.factory';
+import { UserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { BatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { FileRecordFactory } from '@lib/documents/core/infra/tests/factories/file-process.factory';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { BatchStatus } from '@/core/documents/domain/entities/batch-process.entity';
-import { FileProcessStatus } from '@/core/documents/domain/entities/file-records.entity';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
+import { TemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 
 export class DevSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {

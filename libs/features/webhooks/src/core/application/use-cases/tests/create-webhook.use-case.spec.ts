@@ -5,13 +5,13 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { WebhookDbPort } from '../../ports/webhook-db.port';
 import { CreateWebhookUseCase } from '../create-webhook.use-case';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { CreateWebhookDto } from '../../dtos/create-webhook.dto';
 import { BadRequestException } from '@nestjs/common';
 import { EncryptionPort } from 'libs/tooling/encryption/src/core/ports/encryption.port';
 import { ConfigService } from '@nestjs/config';
-import { WebhookAuthType } from '@/core/webhooks/domain/entities/webhook.entity';
-import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
+import { WebhookAuthType } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 
 describe('CreateWebhookUseCase', () => {
   let useCase: CreateWebhookUseCase;

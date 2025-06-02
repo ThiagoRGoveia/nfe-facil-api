@@ -2,9 +2,9 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchMikroOrmRepository } from '../batch-process-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { useBatchProcessFactory } from '@/core/documents/infra/tests/factories/batch-process.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
+import { useBatchProcessFactory } from '@lib/documents/core/infra/tests/factories/batch-process.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
 
 describe('BatchMikroOrmRepository (unit)', () => {
   let em: EntityManager;

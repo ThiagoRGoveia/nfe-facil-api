@@ -12,7 +12,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { WebhookAuthType, WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
+import { WebhookAuthType, WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { Type } from 'class-transformer';
 
 export class BasicAuthConfigInputPt {

@@ -4,17 +4,17 @@ import { BadRequestException } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { PublicSyncFileProcessUseCase } from '../public-sync-file-process.use-case';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
-import { FileStoragePort } from '@/infra/aws/s3/ports/file-storage.port';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
+import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { ConfigService } from '@nestjs/config';
 import { DocumentProcessorPort } from '../../ports/document-processor.port';
 import { PublicFileProcessDbPort } from '../../ports/public-file-process-db.port';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { FileFormat } from '@/core/documents/domain/constants/file-formats';
-import { CsvPort } from '@/infra/json-to-csv/ports/csv.port';
-import { ExcelPort } from '@/infra/excel/ports/excel.port';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
+import { CsvPort } from '@lib/csv/core/ports/csv.port';
+import { ExcelPort } from '@lib/excel/core/ports/excel.port';
 
 describe('PublicSyncFileProcessUseCase', () => {
   let useCase: PublicSyncFileProcessUseCase;

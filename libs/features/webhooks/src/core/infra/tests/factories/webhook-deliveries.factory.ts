@@ -1,6 +1,6 @@
-import { WebhookDelivery } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
-import { WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
+import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { faker } from '@faker-js/faker';
+import { WebhookDelivery } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { EntityManager, RequiredEntityData } from '@mikro-orm/core';
 import { Factory } from '@mikro-orm/seeder';
 

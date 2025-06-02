@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDbPort } from '../ports/users-db.port';
 import { User } from '../../domain/entities/user.entity';
 import { PinoLogger } from 'nestjs-pino';
-import { SecretAdapter } from '@/infra/adapters/secret.adapter';
+import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
 
 interface RefreshClientSecretInput {
   id: User['id'];

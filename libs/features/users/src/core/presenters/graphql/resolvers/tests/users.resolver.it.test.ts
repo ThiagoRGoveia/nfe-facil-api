@@ -4,12 +4,12 @@ import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UsersResolver } from '../users.resolver';
-import { UsersModule } from '@/core/users/users.module';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { createMock } from '@golevelup/ts-jest';
 import { faker } from '@faker-js/faker';
-import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
+import { AuthPort, AuthUserDto } from '@lib/auth/core/ports/auth.port';
+import { UsersModule } from '@lib/users/users.module';
 
 jest.setTimeout(100000);
 describe('UsersResolver (Integration)', () => {

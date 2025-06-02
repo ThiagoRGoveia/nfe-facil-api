@@ -4,8 +4,6 @@ import { TemplateMikroOrmDbRepository } from './core/infra/persistence/db/orm/te
 import { CreateTemplateUseCase } from './core/application/use-cases/create-template.use-case';
 import { UpdateTemplateUseCase } from './core/application/use-cases/update-template.use-case';
 import { DeleteTemplateUseCase } from './core/application/use-cases/delete-template.use-case';
-import { TemplatesResolver } from './core/presenters/graphql/resolvers/templates.resolver';
-import { TemplateController } from './core/presenters/rest/controllers/templates.controller';
 
 const controllers = [];
 const resolvers = [];
@@ -37,12 +35,3 @@ export class TemplatesModule {
     };
   }
 }
-
-export {
-  TemplateDbPort,
-  CreateTemplateUseCase,
-  UpdateTemplateUseCase,
-  DeleteTemplateUseCase,
-  TemplatesResolver,
-  TemplateController,
-};

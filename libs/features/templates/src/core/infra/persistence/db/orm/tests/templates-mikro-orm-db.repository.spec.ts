@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TemplateMikroOrmDbRepository } from '../templates-mikro-orm-db.repository';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 
 describe('TemplateMikroOrmDbRepository (unit)', () => {
   let em: EntityManager;

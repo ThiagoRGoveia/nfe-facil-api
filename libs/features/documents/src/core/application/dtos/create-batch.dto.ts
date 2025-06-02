@@ -1,5 +1,5 @@
 import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { OutputFormat } from '@/core/documents/domain/types/output-format.type';
+import { OutputFormat } from '@lib/documents/core/domain/types/output-format.type';
 import { FileFormat } from '../../domain/constants/file-formats';
 
 export class FileDto {

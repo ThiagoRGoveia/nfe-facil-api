@@ -3,7 +3,7 @@ import { BatchDbPort } from '../ports/batch-db.port';
 import { BatchProcess, BatchStatus } from '../../domain/entities/batch-process.entity';
 import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { TemplateDbPort } from '@/core/templates/application/ports/templates-db.port';
+import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 export class UpdateBatchTemplateParams {

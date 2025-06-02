@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMock } from '@golevelup/ts-jest';
 import { WebhookNotifierAdapter } from '../webhook-notifier.adapter';
-import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
-import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
-import { FileRecord } from '@/core/documents/domain/entities/file-records.entity';
+import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { FileRecord } from '@lib/documents/core/domain/entities/file-records.entity';
 import { useFileRecordFactory } from '../../tests/factories/file-process.factory';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { useTemplateFactory } from '@/core/templates/infra/tests/factories/templates.factory';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useTemplateFactory } from '@lib/templates/core/infra/tests/factories/templates.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { PinoLogger } from 'nestjs-pino';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
+import { NotifyWebhookUseCase } from '@lib/webhooks/core/webhooks.module';
 
 describe('WebhookNotifierAdapter', () => {
   let adapter: WebhookNotifierAdapter;

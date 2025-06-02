@@ -1,14 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseIntegrationTestModule } from '../../tests/base-integration-test.module';
 import { Controller, Get } from '@nestjs/common';
 import { Public } from '../public.decorator';
 import request from 'supertest';
 import { APP_GUARD } from '@nestjs/core';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbDrop, useDbSchema } from '../../tests/db-schema.seed';
-import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
-import { UsersModule } from '@/core/users/users.module';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { Resolver, Query, ObjectType, Field } from '@nestjs/graphql';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
@@ -18,6 +14,9 @@ import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
+import { UsersModule } from '@lib/users';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 
 jest.setTimeout(10000);
 
@@ -105,7 +104,6 @@ class TestAuthMiddleware implements NestMiddleware {
 describe('RolesGuard (integration)', () => {
   let app: INestApplication;
   let em: EntityManager;
-  let orm: MikroORM;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -133,7 +131,6 @@ describe('RolesGuard (integration)', () => {
     app.use(new TestAuthMiddleware().use.bind(new TestAuthMiddleware()));
 
     em = module.get<EntityManager>(EntityManager);
-    orm = module.get<MikroORM>(MikroORM);
     await app.init();
   });
 

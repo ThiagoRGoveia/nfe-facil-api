@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Migrator } from '@mikro-orm/migrations';
 import { DataloaderType } from '@mikro-orm/core';
-import entities from 'apps/api/src/infra/persistence/mikro-orm/entities';
+import entities from '@lib/database/infra/persistence/mikro-orm/entities';
 
 export const baseImports = [
   HttpModule,

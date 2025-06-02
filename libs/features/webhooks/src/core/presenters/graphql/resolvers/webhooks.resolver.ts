@@ -12,7 +12,7 @@ import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
-import { WebhookDbPort } from '@/core/webhooks/application/ports/webhook-db.port';
+import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
 
 const PaginatedWebhooks = PaginatedGraphqlResponse(Webhook);

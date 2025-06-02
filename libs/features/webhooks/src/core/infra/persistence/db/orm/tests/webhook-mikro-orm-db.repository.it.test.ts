@@ -5,9 +5,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookMikroOrmDbRepository } from '../webhook-mikro-orm-db.repository';
 import { BaseIntegrationTestModule } from '@/infra/tests/base-integration-test.module';
 
-import { Webhook, WebhookAuthType, WebhookEvent, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
+import {
+  Webhook,
+  WebhookAuthType,
+  WebhookEvent,
+  WebhookStatus,
+} from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 describe('WebhookMikroOrmDbRepository (integration)', () => {
   let app: INestApplication;

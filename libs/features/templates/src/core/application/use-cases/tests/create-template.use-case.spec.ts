@@ -6,7 +6,7 @@ import { TemplateDbPort } from '../../ports/templates-db.port';
 import { CreateTemplateUseCase } from '../create-template.use-case';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { CreateTemplateDto } from '../../dtos/create-template.dto';
 import { BadRequestException } from '@nestjs/common';
 

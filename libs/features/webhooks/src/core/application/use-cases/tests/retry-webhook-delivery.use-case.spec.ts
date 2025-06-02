@@ -5,11 +5,11 @@ import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { WebhookDeliveryDbPort } from '../../ports/webhook-delivery-db.port';
 import { WebhookDispatcherPort } from '../../ports/webhook-dispatcher.port';
 import { RetryWebhookDeliveryUseCase } from '../retry-webhook-delivery.use-case';
-import { Webhook } from '@/core/webhooks/domain/entities/webhook.entity';
-import { useWebhookFactory } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { useWebhookDeliveryFactory } from '@/core/webhooks/infra/tests/factories/webhook-deliveries.factory';
-import { WebhookDeliveryStatus } from '@/core/webhooks/domain/entities/webhook-delivery.entity';
+import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { WebhookDeliveryStatus } from '@lib/webhooks/core/domain/entities/webhook-delivery.entity';
 import { BadRequestException } from '@nestjs/common';
+import { useWebhookDeliveryFactory } from '@lib/webhooks/core/infra/tests/factories/webhook-deliveries.factory';
 
 describe('RetryWebhookDeliveryUseCase', () => {
   let useCase: RetryWebhookDeliveryUseCase;

@@ -2,14 +2,14 @@ import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Webhook, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
+import { Webhook, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { WebhooksResolver } from '../webhooks.resolver';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
 import { useGraphqlModule } from '@/infra/tests/graphql-integration-test.module';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { WebhooksModule } from '@/core/webhooks/webhooks.module';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
 
 jest.setTimeout(100000);
 describe('WebhooksResolver (Integration)', () => {

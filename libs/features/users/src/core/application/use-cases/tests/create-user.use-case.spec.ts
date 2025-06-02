@@ -6,11 +6,11 @@ import { UserDbPort } from '../../ports/users-db.port';
 import { CreateUserUseCase } from '../create-user.use-case';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { UserRole } from '../../../domain/entities/user.entity';
-import { useUserFactory } from '@/core/users/infra/tests/factories/users.factory';
+import { useUserFactory } from '@lib/users/core/infra/tests/factories/users.factory';
 import { BadRequestException } from '@nestjs/common';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { SecretAdapter } from '@/infra/adapters/secret.adapter';
-import { AuthPort, AuthUserDto } from '@/infra/auth/ports/auth.port';
+import { AuthPort, AuthUserDto } from '@lib/auth/core/ports/auth.port';
+import { SecretAdapter } from '@lib/secrets/core/secret.adapter';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;

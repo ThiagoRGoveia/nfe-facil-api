@@ -1,23 +1,21 @@
 import request from 'supertest';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Webhook, WebhookEvent, WebhookAuthType, WebhookStatus } from '@/core/webhooks/domain/entities/webhook.entity';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { useDbWebhook } from '@/core/webhooks/infra/tests/factories/webhooks.factory';
-import { useDbUser } from '@/core/users/infra/tests/factories/users.factory';
-import { useDbSchema, useDbDrop } from '@/infra/tests/db-schema.seed';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { WebhooksModule } from '@/core/webhooks/webhooks.module';
 import { useRestModule } from '@/infra/tests/rest-integration-test.module';
-import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
 import { createMock } from '@golevelup/ts-jest';
-import { NotifyWebhookUseCase } from '@/core/webhooks/application/use-cases/notify-webhook.use-case';
+import { Webhook, WebhookAuthType, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
+import { HttpClientPort } from '@lib/webhooks/core/application/ports/http-client.port';
+import { NotifyWebhookUseCase, WebhooksModule } from '@lib/webhooks/core/webhooks.module';
+import { useDbUser } from '@lib/users/core/infra/tests/factories/users.factory';
+import { useDbWebhook } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
+import { WebhookEvent } from '@lib/documents/core/application/dtos/webhook-events.dto';
 
 jest.setTimeout(100000);
 describe('WebhooksController (REST Integration)', () => {
   let app: INestApplication;
-  let orm: MikroORM;
   let em: EntityManager;
   let user: User;
   let webhook: Webhook;
@@ -36,7 +34,6 @@ describe('WebhooksController (REST Integration)', () => {
       .useValue(httpClient)
       .compile();
 
-    orm = module.get<MikroORM>(MikroORM);
     em = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));

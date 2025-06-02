@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsObject, IsString } from 'class-validator';
-import { WebhookEvent } from '@/core/webhooks/domain/entities/webhook.entity';
+import { WebhookEvent } from '@lib/webhooks/core/domain/entities/webhook.entity';
 
 export class DocumentProcessedPayloadPtDto {
   @ApiProperty({
