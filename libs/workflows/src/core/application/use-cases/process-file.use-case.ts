@@ -7,8 +7,8 @@ import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port'
 import { QueuePort } from '@lib/queue/core/ports/queue.port';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import { FileProcessDbPort } from '../ports/file-process-db.port';
 import { RetriableError } from '@lib/workflows/nfe/nfse-text.workflow';
+import { FileProcessDbPort } from '@lib/documents/core/application/ports/file-process-db.port';
 
 export interface ProcessFileParams {
   fileId: FileRecord['id'];

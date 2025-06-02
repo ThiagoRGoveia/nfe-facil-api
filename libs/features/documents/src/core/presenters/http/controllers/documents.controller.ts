@@ -22,7 +22,7 @@ import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-c
 import { AddFileToBatchUseCase } from '@lib/documents/core/application/use-cases/add-file-to-batch.use-case';
 import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-cases/cancel-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
-import { SyncFileProcessUseCase } from '@lib/documents/core/application/use-cases/sync-file-process.use-case';
+import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-cases/sync-file-process.use-case';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';

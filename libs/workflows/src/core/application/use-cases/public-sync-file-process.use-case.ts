@@ -1,7 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateBatchDto, FileDto } from '../dtos/create-batch.dto';
 import { PinoLogger } from 'nestjs-pino';
-import { DocumentProcessorPort } from '../ports/document-processor.port';
 import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain/value-objects/document-process-result';
 import { OutputFormat } from '@lib/documents/core/domain/types/output-format.type';
@@ -9,10 +7,12 @@ import { CsvPort } from '@lib/csv/core/ports/csv.port';
 import { ExcelPort } from '@lib/excel/core/ports/excel.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
-import { PublicFileProcessDbPort } from '../ports/public-file-process-db.port';
-import { FileFormat } from '../../domain/constants/file-formats';
 import { ConfigService } from '@nestjs/config';
-import { DownloadPath } from '../../domain/value-objects/download-path.vo';
+import { PublicFileProcessDbPort } from '@lib/documents/core/application/ports/public-file-process-db.port';
+import { CreateBatchDto, FileDto } from '@lib/documents/core/application/dtos/create-batch.dto';
+import { DocumentProcessorPort } from '@lib/documents/core/application/ports/document-processor.port';
+import { DownloadPath } from '@lib/documents/core/domain/value-objects/download-path.vo';
+import { FileFormat } from '@lib/documents/core/domain/constants/file-formats';
 
 type SyncProcessDto = Omit<CreateBatchDto, 'files'> & {
   files: FileDto[];

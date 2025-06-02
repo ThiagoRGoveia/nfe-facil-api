@@ -8,8 +8,7 @@ import { Filters } from '@/infra/dtos/filter.dto';
 import { Pagination } from '@/infra/dtos/pagination.dto';
 import { Sort } from '@/infra/dtos/sort.dto';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
-import { ProcessFileUseCase } from '../../../application/use-cases/process-file.use-case';
+import { ProcessFileUseCase } from '@lib/workflows/core/application/use-cases/process-file.use-case';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 
@@ -17,7 +16,6 @@ const PaginatedFiles = PaginatedGraphqlResponse(FileRecord);
 export class FilesResolver {
   constructor(
     private readonly fileProcessDbPort: FileProcessDbPort,
-    private readonly configService: ConfigService,
     private readonly processFileUseCase: ProcessFileUseCase,
     private readonly fileStorage: FileStoragePort,
   ) {}
@@ -37,12 +35,12 @@ export class FilesResolver {
   }
 
   @Mutation(() => FileRecord)
-  async processFile(@Args('fileId', { type: () => String }) fileId: string): Promise<FileRecord> {
+  processFile(@Args('fileId', { type: () => String }) fileId: string): Promise<FileRecord> {
     return this.processFileUseCase.execute({ fileId });
   }
 
   @ResolveField(() => String, { nullable: true })
-  async filePath(@Parent() file: FileRecord) {
+  filePath(@Parent() file: FileRecord) {
     if (!file.filePath) {
       return null;
     }

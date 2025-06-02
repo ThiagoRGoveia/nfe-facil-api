@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BatchDbPort } from '../ports/batch-db.port';
 import { ProcessFileUseCase } from './process-file.use-case';
-import { BatchOperationForbiddenError } from '../../domain/errors/batch-errors';
-import { BatchStatus } from '../../domain/entities/batch-process.entity';
-import { CreateBatchProcessUseCase } from './create-batch-process.use-case';
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { CreateBatchDto } from '../dtos/create-batch.dto';
-import { FileProcessDbPort } from '../ports/file-process-db.port';
-import { CancelBatchProcessUseCase } from './cancel-batch-process.use-case';
 import { PinoLogger } from 'nestjs-pino';
+import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
+import { FileProcessDbPort } from '@lib/documents/core/application/ports/file-process-db.port';
+import { CreateBatchDto } from '@lib/documents/core/application/dtos/create-batch.dto';
+import { BatchOperationForbiddenError } from '@lib/documents/core/domain/errors/batch-errors';
+import { BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
+import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
+import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-cases/cancel-batch-process.use-case';
 
 @Injectable()
 export class SyncFileProcessUseCase {

@@ -11,7 +11,7 @@ import { Sort } from '@/infra/dtos/sort.dto';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { PublicSyncFileProcessUseCase } from '../../../application/use-cases/public-sync-file-process.use-case';
+import { PublicSyncFileProcessUseCase } from '../../../../../../../workflows/src/core/application/use-cases/public-sync-file-process.use-case';
 import { PublicSyncProcessResponse } from '../dtos/public-sync-process.response';
 import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';

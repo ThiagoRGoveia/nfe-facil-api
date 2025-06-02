@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatePort } from 'libs/tooling/date/src/core/date.adapter';
 import { PinoLogger } from 'nestjs-pino';
 import { CreateRequestContext, MikroORM } from '@mikro-orm/core';
-import { ProcessFileUseCase } from '@lib/documents/core/application/use-cases/process-file.use-case';
+import { ProcessFileUseCase } from '@lib/workflows/core/application/use-cases/process-file.use-case';
 import { RetriableError } from '@lib/workflows/nfe/nfse-text.workflow';
 type MessageParam = {
   fileId: string;

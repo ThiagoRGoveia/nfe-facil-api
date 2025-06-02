@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { BadRequestException } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
-import { PublicSyncFileProcessUseCase } from '../public-sync-file-process.use-case';
+import { PublicSyncFileProcessUseCase } from '../../../../../../../workflows/src/core/application/use-cases/public-sync-file-process.use-case';
 import { TemplateDbPort } from '@lib/templates/core/application/ports/templates-db.port';
 import { FileStoragePort } from '@lib/file-storage/core/ports/file-storage.port';
 import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';

@@ -3,7 +3,7 @@ import { AddFileToBatchUseCase } from '@lib/documents/core/application/use-cases
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
 import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-cases/cancel-batch-process.use-case';
 import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
-import { SyncFileProcessUseCase } from '@lib/documents/core/application/use-cases/sync-file-process.use-case';
+import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-cases/sync-file-process.use-case';
 import { NFSeWebhooksController } from '@lib/documents/core/presenters/http/controllers/nfse-webhooks.controller';
 import { NFSeController } from '@lib/documents/core/presenters/http/controllers/nfse.controller';
 import {

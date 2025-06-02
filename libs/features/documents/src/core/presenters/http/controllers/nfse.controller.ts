@@ -29,7 +29,7 @@ import { NfseResponseDto } from '../dtos/nfse-response.dto';
 import { BatchProcessResponseDto } from '../dtos/batch-process-response.dto';
 import { CreateBatchProcessUseCase } from '@lib/documents/core/application/use-cases/create-batch-process.use-case';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
-import { SyncFileProcessUseCase } from '@lib/documents/core/application/use-cases/sync-file-process.use-case';
+import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-cases/sync-file-process.use-case';
 import { AsyncBatchProcessUseCase } from '@lib/documents/core/application/use-cases/async-batch-process.use-case';
 import { CancelBatchProcessUseCase } from '@lib/documents/core/application/use-cases/cancel-batch-process.use-case';
 import { AddFileToBatchUseCase } from '@lib/documents/core/application/use-cases/add-file-to-batch.use-case';
