@@ -26,7 +26,7 @@ import { SyncFileProcessUseCase } from '@lib/workflows/core/application/use-case
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request } from '@/infra/express/types/request';
 import { BatchDbPort } from '@lib/documents/core/application/ports/batch-db.port';
-import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
+import { MAX_FILE_SIZE_BYTES } from '@lib/commons/constants/max-file-size.constant';
 import { UpdateBatchTemplateUseCase } from '@lib/documents/core/application/use-cases/update-batch-template.use-case';
 
 @ApiTags('Documents')

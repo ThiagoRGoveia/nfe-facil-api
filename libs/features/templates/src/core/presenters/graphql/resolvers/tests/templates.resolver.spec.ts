@@ -5,11 +5,11 @@ import { TemplateDbPort } from '../../../../application/ports/templates-db.port'
 import { Template } from '../../../../domain/entities/template.entity';
 import { useTemplateFactory } from '../../../../infra/tests/factories/templates.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { Request } from '@/infra/express/types/request';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { CreateTemplateDto } from '@lib/templates/core/application/dtos/create-template.dto';
-import { SortDirection } from '@/infra/dtos/sort.dto';
+import { SortDirection } from '@lib/commons/dtos/sort.dto';
 import { UpdateTemplateDto } from '@lib/templates/core/application/dtos/update-template.dto';
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';

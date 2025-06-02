@@ -4,10 +4,10 @@ import { WebhooksResolver } from '../webhooks.resolver';
 import { Webhook } from '@lib/webhooks/core/domain/entities/webhook.entity';
 import { useWebhookFactory } from '@lib/webhooks/core/infra/tests/factories/webhooks.factory';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { Request } from '@/infra/express/types/request';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { SortDirection } from '@/infra/dtos/sort.dto';
+import { SortDirection } from '@lib/commons/dtos/sort.dto';
 
 import { useUnitTestModule } from '@/infra/tests/base-unit-test.module';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';

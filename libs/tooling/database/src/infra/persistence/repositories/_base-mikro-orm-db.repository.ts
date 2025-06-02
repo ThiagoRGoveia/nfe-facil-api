@@ -9,11 +9,11 @@ import {
   RequiredEntityData,
 } from '@mikro-orm/postgresql';
 import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
-import { Sort } from '@/infra/dtos/sort.dto';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
+import { Filter } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { MikroORM, Ref } from '@mikro-orm/core';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 export function EntityRepository<T>(entity: EntityClass<T>) {

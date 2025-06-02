@@ -1,8 +1,8 @@
 import { User } from '@lib/users/core/domain/entities/user.entity';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { Filter } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { Ref, RequiredEntityData } from '@mikro-orm/core';
 
 export abstract class BaseDbPort<T extends { id: string | number }> {

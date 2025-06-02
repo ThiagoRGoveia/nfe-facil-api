@@ -2,10 +2,10 @@ import { RequiredEntityData } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { WebhookDbPort } from '@lib/webhooks/core/webhooks.module';
 import { Webhook, WebhookEvent, WebhookStatus } from '@lib/webhooks/core/domain/entities/webhook.entity';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
+import { Filter } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 import { EntityRepository } from '@lib/database/infra/persistence/repositories/_base-mikro-orm-db.repository';
 

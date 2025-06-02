@@ -9,11 +9,11 @@ import { UpdateUserUseCase } from '../../../application/use-cases/update-user.us
 import { DeleteUserUseCase } from '../../../application/use-cases/delete-user.use-case';
 import { RefreshClientSecretUseCase } from '../../../application/use-cases/refresh-client-secret.use-case';
 import { UpdatePasswordUseCase } from '../../../application/use-cases/update-password.use-case';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
-import { Filters } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
+import { Filters } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 const PaginatedUsers = PaginatedGraphqlResponse(User);
 

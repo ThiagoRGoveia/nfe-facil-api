@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { defineConfig, Entity, EntityManager, MikroORM, PrimaryKey, Property } from '@mikro-orm/postgresql';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort, SortDirection } from '@/infra/dtos/sort.dto';
+import { Filter } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort, SortDirection } from '@lib/commons/dtos/sort.dto';
 import { BaseMikroOrmDbRepository, EntityRepository } from '../_base-mikro-orm-db.repository';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { BaseEntity } from '@lib/database/infra/persistence/mikro-orm/entities/_base-entity';

@@ -16,11 +16,11 @@ import { DeleteWebhookUseCase } from '../../../application/use-cases/delete-webh
 import { WebhookDbPort } from '../../../application/ports/webhook-db.port';
 import { Webhook } from '../../../domain/entities/webhook.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
+import { PaginatedRestResponse } from '@lib/commons/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
-import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { SortDirection } from '@/infra/dtos/sort.dto';
+import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
+import { SortDirection } from '@lib/commons/dtos/sort.dto';
 import { NotifyWebhookUseCase } from '../../../application/use-cases/notify-webhook.use-case';
 import { NotifyWebhookDto } from '../../../application/dtos/notify-webhook.dto';
 

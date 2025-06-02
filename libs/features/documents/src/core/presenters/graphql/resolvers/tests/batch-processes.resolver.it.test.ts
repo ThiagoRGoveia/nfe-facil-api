@@ -12,7 +12,7 @@ import { useDbBatchProcess } from '@lib/documents/core/infra/tests/factories/bat
 import { BatchProcess, BatchStatus } from '@lib/documents/core/domain/entities/batch-process.entity';
 import { FileProcessStatus } from '@lib/documents/core/domain/entities/file-records.entity';
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
-import { MAX_FILE_SIZE_BYTES } from '@/infra/constants/max-file-size.constant';
+import { MAX_FILE_SIZE_BYTES } from '@lib/commons/constants/max-file-size.constant';
 import { graphqlUploadExpress } from 'graphql-upload-minimal';
 import { ZipPort } from 'libs/tooling/zip/src/core/zip.port';
 import { ZipAdapter } from '@lib/zip/core/adapters/zip.adapter';

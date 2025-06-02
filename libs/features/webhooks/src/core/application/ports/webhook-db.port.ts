@@ -3,10 +3,10 @@ import { Webhook } from '../../domain/entities/webhook.entity';
 import { WebhookEvent } from '../../domain/entities/webhook.entity';
 import { BaseDbPort } from '@lib/commons/core/ports/_base-db-port';
 import { RequiredEntityData } from '@mikro-orm/core';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
-import { Filter } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
+import { Filter } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User } from '@lib/users/core/domain/entities/user.entity';
 
 @Injectable()

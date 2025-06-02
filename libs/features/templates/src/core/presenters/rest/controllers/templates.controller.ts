@@ -9,7 +9,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { CreateTemplateDto } from '../../../application/dtos/create-template.dto';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { UpdateTemplateDto } from '../../../application/dtos/update-template.dto';
 import { CreateTemplateUseCase } from '../../../application/use-cases/create-template.use-case';
 import { UpdateTemplateUseCase } from '../../../application/use-cases/update-template.use-case';
@@ -17,10 +17,10 @@ import { DeleteTemplateUseCase } from '../../../application/use-cases/delete-tem
 import { TemplateDbPort } from '../../../application/ports/templates-db.port';
 import { Template } from '../../../domain/entities/template.entity';
 import { UserRole } from '@lib/users/core/domain/entities/user.entity';
-import { PaginatedRestResponse } from '@/infra/dtos/paginated-response.factory';
+import { PaginatedRestResponse } from '@lib/commons/dtos/paginated-response.factory';
 import { Request } from '@/infra/express/types/request';
-import { RestQueryDto } from '@/infra/dtos/rest.query.dto';
-import { Sort, SortDirection } from '@/infra/dtos/sort.dto';
+import { RestQueryDto } from '@lib/commons/dtos/rest.query.dto';
+import { Sort, SortDirection } from '@lib/commons/dtos/sort.dto';
 
 const PaginatedTemplateResponse = PaginatedRestResponse(Template);
 

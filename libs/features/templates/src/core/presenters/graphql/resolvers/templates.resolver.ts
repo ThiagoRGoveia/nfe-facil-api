@@ -6,11 +6,11 @@ import { TemplateDbPort } from '../../../application/ports/templates-db.port';
 import { CreateTemplateUseCase } from '../../../application/use-cases/create-template.use-case';
 import { UpdateTemplateUseCase } from '../../../application/use-cases/update-template.use-case';
 import { DeleteTemplateUseCase } from '../../../application/use-cases/delete-template.use-case';
-import { PaginatedResponse } from '@/infra/types/paginated-response.type';
+import { PaginatedResponse } from '@lib/commons/types/paginated-response.type';
 import { PaginatedGraphqlResponse } from '@/infra/graphql/factories/paginated-response.factory';
-import { Filters } from '@/infra/dtos/filter.dto';
-import { Pagination } from '@/infra/dtos/pagination.dto';
-import { Sort } from '@/infra/dtos/sort.dto';
+import { Filters } from '@lib/commons/dtos/filter.dto';
+import { Pagination } from '@lib/commons/dtos/pagination.dto';
+import { Sort } from '@lib/commons/dtos/sort.dto';
 import { User, UserRole } from '@lib/users/core/domain/entities/user.entity';
 import { GraphqlExpressContext } from '@/infra/graphql/types/context.type';
 
