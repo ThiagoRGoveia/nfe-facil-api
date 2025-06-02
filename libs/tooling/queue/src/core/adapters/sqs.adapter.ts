@@ -15,3 +15,8 @@ export class SQSAdapter implements QueuePort {
     }
   }
 }
+
+export const QueuePortProvider = {
+  provide: QueuePort,
+  useClass: SQSAdapter,
+};

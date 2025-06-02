@@ -23,3 +23,8 @@ export class ZipAdapter implements ZipPort {
     return files;
   }
 }
+
+export const ZipAdapterProvider = {
+  provide: ZipPort,
+  useClass: ZipAdapter,
+};

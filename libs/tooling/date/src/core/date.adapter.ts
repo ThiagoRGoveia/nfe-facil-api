@@ -14,3 +14,8 @@ export class DateAdapter implements DatePort {
     return new Date();
   }
 }
+
+export const DatePortProvider = {
+  provide: DatePort,
+  useClass: DateAdapter,
+};

@@ -28,3 +28,8 @@ export class EncryptionAdapter implements EncryptionPort {
     return decrypted;
   }
 }
+
+export const EncryptionAdapterProvider = {
+  provide: EncryptionPort,
+  useClass: EncryptionAdapter,
+};

@@ -176,3 +176,8 @@ export class S3Client implements FileStoragePort {
     }
   }
 }
+
+export const FileStoragePortProvider = {
+  provide: FileStoragePort,
+  useClass: S3Client,
+};
