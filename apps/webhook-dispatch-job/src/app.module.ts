@@ -1,46 +1,42 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WebhookDispatchJobService } from './core/services/webhook-dispatch-job.service';
-import { baseImports } from 'apps/api/base-module-imports';
-import { HttpClientPort } from '@/core/webhooks/application/ports/http-client.port';
-import { HttpClientAdapter } from '@/core/webhooks/infra/adapters/http-client.adapter';
-import { EncryptionAdapter } from '@/infra/encryption/adapters/encryption.adapter';
-import { EncryptionPort } from '@/infra/encryption/ports/encryption.port';
-import { WebhookDeliveryDbPort } from '@/core/webhooks/webhooks.module';
-import { WebhookDeliveryMikroOrmDbRepository } from '@/core/webhooks/infra/persistence/db/orm/webhook-delivery-mikro-orm-db.repository';
 import { WebhookDispatcherService } from './core/services/webhook-dispatcher.service';
-import { SqlEntityManager } from '@mikro-orm/postgresql';
-import { EntityManager } from '@mikro-orm/core';
+
+import { WebhookDeliveryMikroOrmDbRepositoryProvider } from '@lib/webhook-dispatcher/core/infra/persistence/db/orm/webhook-delivery-mikro-orm-db.repository';
+import { HttpClientAdapterProvider } from '@lib/webhook-dispatcher/core/infra/adapters/http-client.adapter';
+import { EncryptionAdapterProvider } from '@lib/encryption/core/adapters/encryption.adapter';
+import { MikroOrmLambdaCompatibilityConfig } from '@lib/commons/infra/configs/mikro-orm-lambda-compatibility.config';
+import { HttpModule } from '@nestjs/axios';
+import { LoggerModule } from 'nestjs-pino';
+import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { dbConfig } from '@lib/database/infra/config/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env' : undefined,
       isGlobal: true,
     }),
-    ...baseImports,
+    HttpModule,
+    LoggerModule.forRootAsync({
+      useFactory: loggerConfig,
+      inject: [ConfigService],
+    }),
+    MikroOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: dbConfig,
+    }),
   ],
   providers: [
     WebhookDispatchJobService,
     WebhookDispatcherService,
-    {
-      provide: WebhookDeliveryDbPort,
-      useClass: WebhookDeliveryMikroOrmDbRepository,
-    },
-    {
-      provide: HttpClientPort,
-      useClass: HttpClientAdapter,
-    },
-    {
-      provide: EncryptionPort,
-      useClass: EncryptionAdapter,
-    },
-    {
-      provide: SqlEntityManager,
-      useFactory: (em: EntityManager) => em,
-      inject: [EntityManager],
-    },
+    WebhookDeliveryMikroOrmDbRepositoryProvider,
+    HttpClientAdapterProvider,
+    EncryptionAdapterProvider,
+    MikroOrmLambdaCompatibilityConfig,
   ],
-  exports: [SqlEntityManager],
+  exports: [MikroOrmLambdaCompatibilityConfig],
 })
 export class AppModule {}

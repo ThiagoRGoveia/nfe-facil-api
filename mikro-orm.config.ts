@@ -1,7 +1,7 @@
 import { defineConfig } from '@mikro-orm/postgresql';
-import entities from './apps/api/src/infra/persistence/mikro-orm/entities';
 import { Migrator } from '@mikro-orm/migrations';
 import dotenv from 'dotenv';
+import entities from './libs/tooling/database/src/infra/persistence/mikro-orm/entities';
 
 dotenv.config();
 
@@ -30,5 +30,6 @@ export default defineConfig({
     pathTs: `./apps/api/src/infra/persistence/mikro-orm/seed`,
     glob: '!(*.d).{js,ts}',
   },
-  driverOptions: process.env.NODE_ENV !== 'production' ? { connection: { ssl: { rejectUnauthorized: false } } } : undefined,
+  driverOptions:
+    process.env.NODE_ENV !== 'production' ? { connection: { ssl: { rejectUnauthorized: false } } } : undefined,
 });

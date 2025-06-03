@@ -1,20 +1,42 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OutputConsolidationJobService } from './core/output-consolidation-job.service';
-import { baseImports } from 'apps/api/base-module-imports';
-import { FeatureModule } from '@/core/feature.module';
-import { ToolingModule } from '@/infra/tooling.module';
+import { HttpModule } from '@nestjs/axios';
+import { LoggerModule } from 'nestjs-pino';
+import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { dbConfig } from '@lib/database/infra/config/config';
+import { ExcelLibModule } from '@lib/excel';
+import { CsvModule } from '@lib/csv';
+import { BatchMikroOrmRepositoryProvider } from '@lib/documents/core/infra/persistence/db/orm/batch-process-mikro-orm-db.repository';
+import { FileStorageLibModule } from '@lib/file-storage';
+import { FileProcessMikroOrmDbRepositoryProvider } from '@lib/documents/core/infra/persistence/db/orm/file-process-mikro-orm-db.repository';
+import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env' : undefined,
       isGlobal: true,
     }),
-    ToolingModule,
-    FeatureModule.register('none'),
-    ...baseImports,
+    HttpModule,
+    LoggerModule.forRootAsync({
+      useFactory: loggerConfig,
+      inject: [ConfigService],
+    }),
+    MikroOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: dbConfig,
+    }),
+    ExcelLibModule,
+    CsvModule,
+    FileStorageLibModule,
   ],
-  providers: [OutputConsolidationJobService],
+  providers: [
+    OutputConsolidationJobService,
+    HandleOutputFormatUseCase,
+    BatchMikroOrmRepositoryProvider,
+    FileProcessMikroOrmDbRepositoryProvider,
+  ],
 })
 export class AppModule {}

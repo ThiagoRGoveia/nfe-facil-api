@@ -19,13 +19,22 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
-    "public-api": {
-      "type": "application",
-      "root": "apps/public-api",
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
       "entryFile": "index",
-      "sourceRoot": "apps/public-api/src",
+      "sourceRoot": "libs/auth/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/public-api/tsconfig.app.json"
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "commons": {
+      "type": "library",
+      "root": "libs/commons",
+      "entryFile": "index",
+      "sourceRoot": "libs/commons/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/commons/tsconfig.lib.json"
       }
     },
     "contact-form-api": {
@@ -35,6 +44,105 @@
       "sourceRoot": "apps/contact-form-api/src",
       "compilerOptions": {
         "tsConfigPath": "apps/contact-form-api/tsconfig.app.json"
+      }
+    },
+    "credit-spending-job": {
+      "type": "application",
+      "root": "apps/credit-spending-job",
+      "entryFile": "index",
+      "sourceRoot": "apps/credit-spending-job/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/credit-spending-job/tsconfig.app.json"
+      }
+    },
+    "csv": {
+      "type": "library",
+      "root": "libs/csv",
+      "entryFile": "index",
+      "sourceRoot": "libs/csv/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/csv/tsconfig.lib.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
+      }
+    },
+    "date": {
+      "type": "library",
+      "root": "libs/date",
+      "entryFile": "index",
+      "sourceRoot": "libs/date/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/date/tsconfig.lib.json"
+      }
+    },
+    "dev-modules": {
+      "type": "library",
+      "root": "libs/dev-modules",
+      "entryFile": "index",
+      "sourceRoot": "libs/dev-modules/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/dev-modules/tsconfig.lib.json"
+      }
+    },
+    "document-processing-api": {
+      "type": "application",
+      "root": "apps/document-processing-api",
+      "entryFile": "index",
+      "sourceRoot": "apps/document-processing-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/document-processing-api/tsconfig.app.json"
+      }
+    },
+    "documents": {
+      "type": "library",
+      "root": "libs/documents",
+      "entryFile": "index",
+      "sourceRoot": "libs/documents/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/documents/tsconfig.lib.json"
+      }
+    },
+    "encryption": {
+      "type": "library",
+      "root": "libs/encryption",
+      "entryFile": "index",
+      "sourceRoot": "libs/encryption/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/encryption/tsconfig.lib.json"
+      }
+    },
+    "excel": {
+      "type": "library",
+      "root": "libs/excel",
+      "entryFile": "index",
+      "sourceRoot": "libs/excel/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/excel/tsconfig.lib.json"
+      }
+    },
+    "file-storage": {
+      "type": "library",
+      "root": "libs/file-storage",
+      "entryFile": "index",
+      "sourceRoot": "libs/file-storage/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/file-storage/tsconfig.lib.json"
+      }
+    },
+    "http-client": {
+      "type": "library",
+      "root": "libs/http-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/http-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/http-client/tsconfig.lib.json"
       }
     },
     "output-consolidation-job": {
@@ -55,13 +163,67 @@
         "tsConfigPath": "apps/process-document-job/tsconfig.app.json"
       }
     },
-    "credit-spending-job": {
+    "public-api": {
       "type": "application",
-      "root": "apps/credit-spending-job",
+      "root": "apps/public-api",
       "entryFile": "index",
-      "sourceRoot": "apps/credit-spending-job/src",
+      "sourceRoot": "apps/public-api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/credit-spending-job/tsconfig.app.json"
+        "tsConfigPath": "apps/public-api/tsconfig.app.json"
+      }
+    },
+    "queue": {
+      "type": "library",
+      "root": "libs/queue",
+      "entryFile": "index",
+      "sourceRoot": "libs/queue/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/queue/tsconfig.lib.json"
+      }
+    },
+    "secrets": {
+      "type": "library",
+      "root": "libs/secrets",
+      "entryFile": "index",
+      "sourceRoot": "libs/secrets/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/secrets/tsconfig.lib.json"
+      }
+    },
+    "templates": {
+      "type": "library",
+      "root": "libs/templates",
+      "entryFile": "index",
+      "sourceRoot": "libs/templates/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/templates/tsconfig.lib.json"
+      }
+    },
+    "user-credits": {
+      "type": "library",
+      "root": "libs/user-credits",
+      "entryFile": "index",
+      "sourceRoot": "libs/user-credits/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/user-credits/tsconfig.lib.json"
+      }
+    },
+    "users": {
+      "type": "library",
+      "root": "libs/users",
+      "entryFile": "index",
+      "sourceRoot": "libs/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/users/tsconfig.lib.json"
+      }
+    },
+    "uuid": {
+      "type": "library",
+      "root": "libs/uuid",
+      "entryFile": "index",
+      "sourceRoot": "libs/uuid/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/uuid/tsconfig.lib.json"
       }
     },
     "webhook-dispatch-job": {
@@ -71,6 +233,42 @@
       "sourceRoot": "apps/webhook-dispatch-job/src",
       "compilerOptions": {
         "tsConfigPath": "apps/webhook-dispatch-job/tsconfig.app.json"
+      }
+    },
+    "webhook-dispatcher": {
+      "type": "library",
+      "root": "libs/webhook-dispatcher",
+      "entryFile": "index",
+      "sourceRoot": "libs/webhook-dispatcher/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/webhook-dispatcher/tsconfig.lib.json"
+      }
+    },
+    "webhooks": {
+      "type": "library",
+      "root": "libs/webhooks",
+      "entryFile": "index",
+      "sourceRoot": "libs/webhooks/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/webhooks/tsconfig.lib.json"
+      }
+    },
+    "workflows": {
+      "type": "library",
+      "root": "libs/workflows",
+      "entryFile": "index",
+      "sourceRoot": "libs/workflows/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/workflows/tsconfig.lib.json"
+      }
+    },
+    "zip": {
+      "type": "library",
+      "root": "libs/zip",
+      "entryFile": "index",
+      "sourceRoot": "libs/zip/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/zip/tsconfig.lib.json"
       }
     }
   }
