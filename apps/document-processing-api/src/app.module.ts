@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { LoggerModule } from 'nestjs-pino';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { AppController } from '../app.controller';
 import { dbConfig } from '@lib/database/infra/config/config';
 import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
 
@@ -27,7 +26,7 @@ import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
     FeatureModule,
     ToolingModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   exports: [],
 })
 export class AppModule {}

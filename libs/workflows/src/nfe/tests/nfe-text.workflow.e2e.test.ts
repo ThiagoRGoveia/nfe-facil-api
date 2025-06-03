@@ -9,7 +9,7 @@ import { DocumentProcessResult } from 'apps/process-document-job/src/core/domain
 import { Template } from '@lib/templates/core/domain/entities/template.entity';
 import { PdfAdapter } from '@lib/workflows/infra/pdf/adapters/pdf.adapter';
 import { useDbTemplate } from '@lib/templates/core/infra/tests/factories/templates.factory';
-import { BaseE2eTestModule } from '@doc/core/testing/base-e2e-test.module';
+import { BaseE2eTestModule } from 'apps/process-document-job/src/core/testing/base-e2e-test.module';
 
 const file = fs.readFileSync(path.join(__dirname, 'test-nfe.pdf'));
 jest.setTimeout(100000);

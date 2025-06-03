@@ -23,8 +23,6 @@ export function dbConfig(configService: ConfigService) {
     },
     debug: false,
     driverOptions:
-      configService.get('NODE_ENV') === 'production' || configService.get('NODE_ENV') === 'uat'
-        ? { connection: { ssl: { rejectUnauthorized: false } } }
-        : undefined,
+      configService.get('NODE_ENV') === 'uat' ? { connection: { ssl: { rejectUnauthorized: false } } } : undefined,
   });
 }

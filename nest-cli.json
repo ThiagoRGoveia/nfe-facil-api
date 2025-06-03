@@ -91,6 +91,15 @@
         "tsConfigPath": "libs/dev-modules/tsconfig.lib.json"
       }
     },
+    "document-processing-api": {
+      "type": "application",
+      "root": "apps/document-processing-api",
+      "entryFile": "index",
+      "sourceRoot": "apps/document-processing-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/document-processing-api/tsconfig.app.json"
+      }
+    },
     "documents": {
       "type": "library",
       "root": "libs/documents",

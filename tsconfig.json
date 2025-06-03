@@ -21,10 +21,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["apps/api/src/*"],
       "@dev-modules/dev-modules": ["libs/dev-modules/src"],
       "@dev-modules/dev-modules/*": ["libs/dev-modules/src/*"],
-      "@doc/*": ["apps/process-document-job/src/*"],
       "@lib/auth": ["libs/tooling/auth/src"],
       "@lib/auth/*": ["libs/tooling/auth/src/*"],
       "@lib/commons": ["libs/commons/src"],
