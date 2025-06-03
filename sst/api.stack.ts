@@ -111,6 +111,10 @@ export function ApiStack() {
     ...getContactFormConfig('index.handler', 'dist/apps/contact-form-api'),
   });
 
+  api.route('POST /nfse/extrair', {
+    ...getConfig('index.handler', 'dist/apps/document-processing-api'),
+  });
+
   // Add catch-all route for other endpoints using the public API lambda
   api.route('ANY /{proxy+}', {
     ...getConfig('index.handler', 'dist/apps/public-api'),

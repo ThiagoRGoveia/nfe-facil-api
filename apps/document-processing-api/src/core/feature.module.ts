@@ -4,12 +4,14 @@ import { TemplateMikroOrmDbRepositoryProvider } from '@lib/templates/core/infra/
 import { UserMikroOrmDbRepositoryProvider } from '@lib/users/core/infra/persistence/db/orm/users-mikro-orm-db.repository';
 import { NfeModule } from '@lib/workflows';
 import { NFSeController } from './nfse.controller';
+import { WebhooksModule } from '@lib/webhooks/core/webhooks.module';
+import { WebhookDispatcherModule } from '@lib/webhook-dispatcher';
 
 @Global()
 @Module({
   providers: [TemplateMikroOrmDbRepositoryProvider, UserMikroOrmDbRepositoryProvider],
   controllers: [NFSeController],
-  imports: [DocumentsModule, NfeModule],
+  imports: [DocumentsModule, NfeModule, WebhooksModule, WebhookDispatcherModule],
   exports: [TemplateMikroOrmDbRepositoryProvider, UserMikroOrmDbRepositoryProvider],
 })
 export class FeatureModule {}
