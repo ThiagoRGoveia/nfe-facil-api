@@ -12,6 +12,7 @@ import { BatchMikroOrmRepositoryProvider } from '@lib/documents/core/infra/persi
 import { FileStorageLibModule } from '@lib/file-storage';
 import { FileProcessMikroOrmDbRepositoryProvider } from '@lib/documents/core/infra/persistence/db/orm/file-process-mikro-orm-db.repository';
 import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-cases/handle-output-format.use-case';
+import { MikroOrmLambdaCompatibilityConfig } from '@lib/commons/infra/configs/mikro-orm-lambda-compatibility.config';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { HandleOutputFormatUseCase } from '@lib/documents/core/application/use-c
     HandleOutputFormatUseCase,
     BatchMikroOrmRepositoryProvider,
     FileProcessMikroOrmDbRepositoryProvider,
+    MikroOrmLambdaCompatibilityConfig,
   ],
 })
 export class AppModule {}

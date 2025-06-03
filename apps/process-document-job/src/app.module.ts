@@ -19,11 +19,22 @@ import { UuidAdapter } from '@lib/uuid/core/uuid.adapter';
 import { QueuePortProvider } from '@lib/queue/core/adapters/sqs.adapter';
 import { EncryptionAdapterProvider } from '@lib/encryption/core/adapters/encryption.adapter';
 import { SQSClient } from '@lib/queue/core/clients/sqs.client';
+import { MikroOrmLambdaCompatibilityConfig } from '@lib/commons/infra/configs/mikro-orm-lambda-compatibility.config';
 
 @Global()
 @Module({
-  providers: [TemplateMikroOrmDbRepositoryProvider, DatePortProvider, ProcessFileUseCase],
-  exports: [TemplateMikroOrmDbRepositoryProvider, DatePortProvider, ProcessFileUseCase],
+  providers: [
+    TemplateMikroOrmDbRepositoryProvider,
+    DatePortProvider,
+    ProcessFileUseCase,
+    MikroOrmLambdaCompatibilityConfig,
+  ],
+  exports: [
+    TemplateMikroOrmDbRepositoryProvider,
+    DatePortProvider,
+    ProcessFileUseCase,
+    MikroOrmLambdaCompatibilityConfig,
+  ],
 })
 class FeatureModule {}
 

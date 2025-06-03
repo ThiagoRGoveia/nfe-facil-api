@@ -9,8 +9,7 @@ import { dbConfig } from '@lib/database/infra/config/config';
 import { SpendCreditsUseCase } from '@lib/user-credits/core/application/use-cases';
 import { loggerConfig } from '@lib/commons/infra/configs/logger.config';
 import { LoggerModule } from 'nestjs-pino';
-import { SqlEntityManager } from '@mikro-orm/postgresql';
-import { EntityManager } from '@mikro-orm/core';
+import { MikroOrmLambdaCompatibilityConfig } from '@lib/commons/infra/configs/mikro-orm-lambda-compatibility.config';
 
 @Module({
   imports: [
@@ -32,11 +31,7 @@ import { EntityManager } from '@mikro-orm/core';
     SpendCreditsUseCase,
     CreditTransactionMikroOrmDbRepositoryProvider,
     UserMikroOrmDbRepositoryProvider,
-    {
-      provide: SqlEntityManager,
-      useFactory: (em: EntityManager) => em,
-      inject: [EntityManager],
-    },
+    MikroOrmLambdaCompatibilityConfig,
   ],
 })
 export class AppModule {}
