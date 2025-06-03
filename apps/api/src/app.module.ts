@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { HttpException, Module } from '@nestjs/common';
 import { YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { YogaDriver } from '@graphql-yoga/nestjs';
 import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLError } from 'graphql';
 import { FeatureModule } from './core/feature.module';
 import { ToolingModule } from './infra/tooling.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -39,6 +40,25 @@ export interface AppModuleOptions {
       autoSchemaFile: true,
       sortSchema: true,
       context: (ctx) => ctx,
+      maskedErrors: {
+        maskError: (error: unknown) => {
+          if (error instanceof GraphQLError && error.extensions) {
+            if (error.originalError instanceof HttpException) {
+              return error;
+            } else if (error.originalError instanceof Error) {
+              return new GraphQLError('Internal Server Error', {
+                extensions: { code: 'INTERNAL_SERVER_ERROR' },
+              });
+            }
+            return error;
+          } else if (error instanceof HttpException) {
+            return error;
+          }
+          return new GraphQLError('Internal Server Error', {
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
+          });
+        },
+      },
     }),
     FeatureModule,
     ToolingModule,
