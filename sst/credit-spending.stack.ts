@@ -6,7 +6,7 @@ import { getConfig } from './api.stack';
 export function CreditSpendingStack() {
   const creditSpendingQueue = new sst.aws.Queue('CreditSpendingQueue', {
     fifo: true,
-    visibilityTimeout: '30 seconds',
+    visibilityTimeout: '350 seconds',
   });
 
   creditSpendingQueue.subscribe(
