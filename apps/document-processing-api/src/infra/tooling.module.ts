@@ -9,14 +9,12 @@ import { DatePortProvider } from '@lib/date/core/date.adapter';
 import { MikroOrmLambdaCompatibilityConfig } from '@lib/commons/infra/configs/mikro-orm-lambda-compatibility.config';
 import { FileStoragePortProvider } from '@lib/file-storage/core/clients/s3.client';
 import { SQSClient } from '@lib/queue/core/clients/sqs.client';
-import { EncryptionAdapterProvider } from '@lib/encryption/core/adapters/encryption.adapter';
 
 @Global()
 @Module({
   imports: [AuthModule, HttpModule],
   providers: [
     UuidAdapter,
-    EncryptionAdapterProvider,
     SecretAdapter,
     ZipAdapterProvider,
     FileStoragePortProvider,
@@ -27,7 +25,6 @@ import { EncryptionAdapterProvider } from '@lib/encryption/core/adapters/encrypt
   ],
   exports: [
     UuidAdapter,
-    EncryptionAdapterProvider,
     SecretAdapter,
     ZipAdapterProvider,
     FileStoragePortProvider,
