@@ -9,6 +9,10 @@ declare module "sst" {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
+    "CreditSpendingDLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
     "CreditSpendingQueue": {
       "type": "sst.aws.Queue"
       "url": string

@@ -7,12 +7,14 @@ import { NFSeController } from '@lib/documents/core/presenters/http/controllers/
 import { NFSeWebhooksController } from '@lib/documents/core/presenters/http/controllers/nfse-webhooks.controller';
 import { WebhookDispatcherModule } from '@lib/webhook-dispatcher';
 import { AuthModule } from '@lib/auth';
+import { UserCreditsModule } from '@lib/user-credits';
+import { StripeController } from '@lib/user-credits/core/presenters/http/controllers/stripe.controller';
 
 @Global()
 @Module({
   providers: [TemplateMikroOrmDbRepositoryProvider, UserMikroOrmDbRepositoryProvider],
-  controllers: [NFSeController, NFSeWebhooksController],
-  imports: [AuthModule, DocumentsModule, WebhooksModule, WebhookDispatcherModule],
+  controllers: [NFSeController, NFSeWebhooksController, StripeController],
+  imports: [AuthModule, DocumentsModule, WebhooksModule, WebhookDispatcherModule, UserCreditsModule],
   exports: [TemplateMikroOrmDbRepositoryProvider, UserMikroOrmDbRepositoryProvider],
 })
 export class FeatureModule {}

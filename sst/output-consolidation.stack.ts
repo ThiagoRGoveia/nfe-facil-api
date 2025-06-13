@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../.sst/platform/config.d.ts" />
 
-import { getConfig } from "./api.stack";
+import { getConfig } from './api.stack';
 
 export function OutputConsolidationStack() {
   const outputConsolidationQueue = new sst.aws.Queue('OutputConsolidationQueue', {
@@ -24,4 +24,4 @@ export function OutputConsolidationStack() {
   return {
     outputConsolidationQueue,
   };
-} 
+}

@@ -34,6 +34,8 @@
     "nfse-doc:deploy": "ts-node --project tsconfig.json apps/_scripts/deploy-api-docs.ts",
     "nfse-doc:deploy:uat": "dotenv -e .env.uat -- pnpm nfse-doc:generate && dotenv -e .env.uat -- wrangler pages deploy ./docs/nfe-facil --branch uat",
     "nfse-doc:deploy:prod": "dotenv -e .env.production -- pnpm nfse-doc:generate && dotenv -e .env.production -- wrangler pages deploy ./docs/nfe-facil --branch main",
+    "sst:remove:dev": "dotenv -e .env.dev -- pnpm build && dotenv -e .env.dev -- npx sst remove --stage dev",
+    "sst:deploy:dev": "dotenv -e .env.dev -- pnpm build && dotenv -e .env.dev -- npx sst deploy --stage dev",
     "sst:deploy:uat": "dotenv -e .env.uat -- pnpm build && dotenv -e .env.uat -- npx sst deploy --stage uat",
     "sst:deploy:prod": "dotenv -e .env.production -- pnpm build && dotenv -e .env.production -- npx sst deploy --stage production",
     "seed:dev": "mikro-orm seeder:run --class DevSeeder",

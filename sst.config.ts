@@ -19,15 +19,16 @@ export default $config({
     const { api } = ApiStack();
     const { processDocumentQueue } = ProcessDocumentStack();
     const { outputConsolidationQueue } = OutputConsolidationStack();
-    const { creditSpendingQueue } = CreditSpendingStack();
-    const { webhookDispatchQueue, deadLetterQueue } = WebhookDispatchStack();
+    const { creditSpendingQueue, deadLetterQueue: creditSpendingDLQ } = CreditSpendingStack();
+    const { webhookDispatchQueue, deadLetterQueue: webhookDispatchDLQ } = WebhookDispatchStack();
     return Promise.resolve({
       api: api.url,
       processDocumentQueue: processDocumentQueue.url,
       outputConsolidationQueue: outputConsolidationQueue.url,
       creditSpendingQueue: creditSpendingQueue.url,
+      creditSpendingDLQ: creditSpendingDLQ.url,
       webhookDispatchQueue: webhookDispatchQueue.url,
-      webhookDispatchDLQ: deadLetterQueue.url,
+      webhookDispatchDLQ: webhookDispatchDLQ.url,
     });
   },
 });

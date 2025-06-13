@@ -4,9 +4,17 @@
 import { getConfig } from './api.stack';
 
 export function CreditSpendingStack() {
+  const deadLetterQueue = new sst.aws.Queue('CreditSpendingDLQ', {
+    fifo: true,
+  });
+
   const creditSpendingQueue = new sst.aws.Queue('CreditSpendingQueue', {
     fifo: true,
     visibilityTimeout: '30 seconds',
+    dlq: {
+      queue: deadLetterQueue.arn,
+      retry: 3,
+    },
   });
 
   creditSpendingQueue.subscribe(
@@ -24,5 +32,6 @@ export function CreditSpendingStack() {
 
   return {
     creditSpendingQueue,
+    deadLetterQueue,
   };
 }
