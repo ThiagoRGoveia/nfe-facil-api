@@ -36,7 +36,7 @@ export class CreateUserSocialUseCase {
       await this.userDb.save();
       return user;
     } catch (error) {
-      this.logger.error('Failed to create social user:', error);
+      this.logger.error('Failed to create social user: %s', error);
       if (error instanceof BadRequestException) {
         throw error;
       }

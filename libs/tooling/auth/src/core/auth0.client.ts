@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { GetUsers200ResponseOneOfInner, ManagementClient } from 'auth0';
 import { AuthPort, AuthUserDto } from './ports/auth.port';
+import { ProxyAgent } from 'undici';
 
 export class Auth0UserMapper {
   static toDto(auth0User: GetUsers200ResponseOneOfInner): AuthUserDto {
@@ -27,25 +28,48 @@ export class Auth0UserMapper {
   }
 }
 
+type ManagementClientOptionsWithClientSecret = {
+  domain: string;
+  clientId: string;
+  clientSecret: string;
+  audience?: string;
+  agent?: ProxyAgent; // Using 'any' here as it needs to be Dispatcher from undici
+};
+
 @Injectable()
 export class Auth0Client implements AuthPort {
   public client: ManagementClient;
 
   constructor(private readonly configService: ConfigService) {
-    const domain = this.configService.get<string>('AUTH_DOMAIN');
-    const clientId = this.configService.get<string>('AUTH_CLIENT_ID');
-    const clientSecret = this.configService.get<string>('AUTH_CLIENT_SECRET');
+    const domain = this.configService.get('AUTH_DOMAIN');
+    const clientId = this.configService.get('AUTH_CLIENT_ID');
+    const clientSecret = this.configService.get('AUTH_CLIENT_SECRET');
+    const proxyUrlValue = this.configService.get('PROXY_URL');
+    const proxyPortValue = this.configService.get('PROXY_PORT');
+    const proxyMode = this.configService.get('NODE_ENV') !== 'local';
+
+    if (proxyMode && (!proxyUrlValue || !proxyPortValue)) {
+      throw new Error('Proxy URL or Proxy Port is required');
+    }
 
     if (!domain || !clientId || !clientSecret) {
       throw new Error('Missing required Auth0 configuration');
     }
 
-    this.client = new ManagementClient({
+    const clientOptions: ManagementClientOptionsWithClientSecret = {
       domain: domain.replace('https://', ''),
       clientId,
       clientSecret,
       audience: `${domain}/api/v2/`,
-    });
+    };
+
+    if (proxyMode && proxyUrlValue && proxyPortValue) {
+      const proxyUrl = `http://${proxyUrlValue}:${proxyPortValue}`;
+      // ProxyAgent from undici implements the Dispatcher interface required by Auth0
+      clientOptions.agent = new ProxyAgent(proxyUrl);
+    }
+
+    this.client = new ManagementClient(clientOptions);
   }
 
   async getUserInfo(userId: string): Promise<AuthUserDto> {
