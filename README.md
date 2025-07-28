@@ -1,99 +1,84 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NFe Fácil API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This repository contains the backend services for the NFe Fácil application. It is a monorepo managed with pnpm workspaces, containing multiple NestJS applications and libraries.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## About the project
 
-## Description
+The project is structured as a monorepo with the following applications:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+-   `api`: The main API for the application.
+-   `public-api`: A public-facing API with limited access.
+-   `contact-form-api`: An API for handling contact form submissions.
+-   `document-processing-api`: An API for processing documents.
+-   `process-document-job`: A job for processing documents.
+-   `output-consolidation-job`: A job for consolidating output.
+-   `credit-spending-job`: A job for managing credit spending.
+-   `webhook-dispatch-job`: A job for dispatching webhooks.
 
-## Project setup
+## Getting Started
+
+To get the project up and running, follow these steps:
+
+1.  Install the dependencies:
 
 ```bash
 $ pnpm install
 ```
 
-## Compile and run the project
+2.  Set up your environment variables by creating a `.env` file in the root of the project. You can use the `.env.example` file as a template.
+
+3.  Run the database migrations:
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+$ pnpm run db-migrations:up
 ```
 
-## Run tests
+## Available Scripts
 
-```bash
-# unit tests
-$ pnpm run test
+### Build
 
-# e2e tests
-$ pnpm run test:e2e
+-   `pnpm run build`: Compiles all applications.
 
-# test coverage
-$ pnpm run test:cov
-```
+### Running the applications
 
-## Deployment
+Each application has its own set of scripts for running in different environments:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+-   `pnpm run <app-name>:start`: Starts the application.
+-   `pnpm run <app-name>:start:dev`: Starts the application in watch mode.
+-   `pnpm run <app-name>:start:debug`: Starts the application in debug mode.
+-   `pnpm run <app-name>:start:prod`: Starts the application in production mode.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Replace `<app-name>` with the name of the application you want to run (e.g., `api`, `public-api`, etc.).
 
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
+### Testing
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+-   `pnpm run test`: Runs the unit tests.
+-   `pnpm run test:cov`: Runs the unit tests and generates a coverage report.
+-   `pnpm run test:e2e`: Runs the end-to-end tests.
 
-## Resources
+### Database Migrations
 
-Check out a few resources that may come in handy when working with NestJS:
+-   `pnpm run db-migrations:generate`: Generates a new migration.
+-   `pnpm run db-migrations:up`: Runs all pending migrations.
+-   `pnpm run db-migrations:down`: Reverts the last migration.
+-   `pnpm run db-migrations:list`: Lists all migrations and their status.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### API Documentation
 
-## Support
+-   `pnpm run nfse-doc:generate`: Generates the API documentation.
+-   `pnpm run nfse-doc:deploy:uat`: Deploys the API documentation to the UAT environment.
+-   `pnpm run nfse-doc:deploy:prod`: Deploys the API documentation to the production environment.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Deployment
 
-## Stay in touch
+The application is deployed using the Serverless Stack (SST).
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+-   `pnpm run sst:deploy:dev`: Deploys the application to the development environment.
+-   `pnpm run sst:deploy:uat`: Deploys the application to the UAT environment.
+-   `pnpm run sst:deploy:prod`: Deploys the application to the production environment.
+-   `pnpm run sst:remove:dev`: Removes the application from the development environment.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is [UNLICENSED](./LICENSE).
+

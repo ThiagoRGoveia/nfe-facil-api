@@ -11,7 +11,7 @@ export default $config({
     return {
       name: 'api',
       removal: input?.stage === 'production' ? 'retain' : 'remove',
-      protect: ['production', 'uat'].includes(input?.stage),
+      protect: ['production'].includes(input?.stage),
       home: 'aws',
     };
   },

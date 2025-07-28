@@ -5,34 +5,6 @@
 
 declare module "sst" {
   export interface Resource {
-    "Api-production": {
-      "type": "sst.aws.ApiGatewayV2"
-      "url": string
-    }
-    "CreditSpendingDLQ": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "CreditSpendingQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "OutputConsolidationQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "ProcessDocumentQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "WebhookDispatchDLQ": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
-    "WebhookDispatchQueue": {
-      "type": "sst.aws.Queue"
-      "url": string
-    }
   }
 }
 /// <reference path="sst-env.d.ts" />
