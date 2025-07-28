@@ -2,6 +2,8 @@
 
 This repository contains a DEMO for a backend service for the an application that uses LLMs to extract data from documents. It is a monorepo managed with pnpm workspaces, containing multiple NestJS applications and libraries.
 
+It is deployed using the Serverless Stack (SST) on AWS and uses SQS for message processing.
+
 ## About the project
 
 The project is structured as a monorepo with the following applications:
